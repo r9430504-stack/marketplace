@@ -9,6 +9,7 @@ interface PreviewData {
   tagline: string;
   bannerImage: string;
   bannerText: string;
+  bannerTextColor: string;
   categories: string[];
   products: ProductDraft[];
   contactPhone: string;
@@ -43,15 +44,15 @@ export default function StorePreview({ data }: { data: PreviewData }) {
             // eslint-disable-next-line @next/next/no-img-element
             <img src={data.bannerImage} alt="" className="absolute inset-0 w-full h-full object-cover" />
           )}
-          <div className="relative z-10 text-center px-3">
-            <h1 className="text-xl font-bold text-white drop-shadow-lg">
+          <div className="relative z-10 text-center px-3" style={{ color: data.bannerTextColor || "#ffffff" }}>
+            <h1 className="text-xl font-bold drop-shadow-lg">
               {data.name || "Название магазина"}
             </h1>
             {data.tagline && (
-              <p className="text-white/90 mt-0.5 text-xs drop-shadow">{data.tagline}</p>
+              <p className="mt-0.5 text-xs opacity-90 drop-shadow">{data.tagline}</p>
             )}
             {data.bannerText && (
-              <p className="text-white/80 mt-0.5 text-[10px]">{data.bannerText}</p>
+              <p className="mt-0.5 text-[10px] opacity-80">{data.bannerText}</p>
             )}
           </div>
         </div>

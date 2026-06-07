@@ -27,6 +27,7 @@ interface StoreState {
   tagline: string;
   bannerImage: string;
   bannerText: string;
+  bannerTextColor: string;
   categories: string[];
   products: ProductDraft[];
   contactPhone: string;
@@ -42,6 +43,7 @@ const initial: StoreState = {
   tagline: "",
   bannerImage: "",
   bannerText: "",
+  bannerTextColor: "#ffffff",
   categories: [],
   products: [],
   contactPhone: "",
@@ -81,6 +83,7 @@ export default function WizardClient() {
           tagline: data.tagline,
           bannerImage: data.bannerImage,
           bannerText: data.bannerText,
+          bannerTextColor: data.bannerTextColor,
           theme: data.theme,
           contactPhone: data.contactPhone,
           contactEmail: data.contactEmail,
@@ -178,7 +181,7 @@ export default function WizardClient() {
           )}
           {step === 2 && (
             <StepBanner
-              value={{ name: data.name, tagline: data.tagline, bannerImage: data.bannerImage, bannerText: data.bannerText }}
+              value={{ name: data.name, tagline: data.tagline, bannerImage: data.bannerImage, bannerText: data.bannerText, bannerTextColor: data.bannerTextColor }}
               onChange={(patch) => update(patch as Partial<StoreState>)}
             />
           )}

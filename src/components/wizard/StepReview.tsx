@@ -7,6 +7,7 @@ interface StoreData {
   tagline: string;
   bannerImage: string;
   bannerText: string;
+  bannerTextColor: string;
   theme: Theme;
   categories: string[];
   products: ProductDraft[];
@@ -39,9 +40,9 @@ export default function StepReview({ data }: Props) {
             // eslint-disable-next-line @next/next/no-img-element
             <img src={data.bannerImage} alt="banner" className="absolute inset-0 w-full h-full object-cover opacity-80" />
           ) : null}
-          <div className="relative z-10 text-center">
-            <h3 className="text-xl font-bold text-white drop-shadow-md">{data.name || "Название магазина"}</h3>
-            {data.tagline && <p className="text-white/80 text-sm">{data.tagline}</p>}
+          <div className="relative z-10 text-center" style={{ color: data.bannerTextColor || "#ffffff" }}>
+            <h3 className="text-xl font-bold drop-shadow-md">{data.name || "Название магазина"}</h3>
+            {data.tagline && <p className="text-sm opacity-80">{data.tagline}</p>}
           </div>
         </div>
 

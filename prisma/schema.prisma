@@ -25,6 +25,7 @@ model Store {
   primaryColor    String      @default("#3B82F6")
   bannerImage     String?
   bannerText      String?
+  bannerTextColor String      @default("#ffffff")
   contactPhone    String?
   contactEmail    String?
   contactAddress  String?

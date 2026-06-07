@@ -41,15 +41,15 @@ export default async function StorePage({ params }: { params: Promise<{ slug: st
             className="absolute inset-0 w-full h-full object-cover"
           />
         )}
-        <div className="relative z-10 text-center px-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
+        <div className="relative z-10 text-center px-4" style={{ color: store.bannerTextColor || "#ffffff" }}>
+          <h1 className="text-4xl md:text-5xl font-bold drop-shadow-lg">
             {store.name}
           </h1>
           {store.tagline && (
-            <p className="text-white/90 mt-2 text-lg drop-shadow">{store.tagline}</p>
+            <p className="mt-2 text-lg opacity-90 drop-shadow">{store.tagline}</p>
           )}
           {store.bannerText && (
-            <p className="text-white/80 mt-1 text-sm">{store.bannerText}</p>
+            <p className="mt-1 text-sm opacity-80">{store.bannerText}</p>
           )}
         </div>
       </div>
