@@ -7,6 +7,7 @@ import StepCategories from "@/components/wizard/StepCategories";
 import StepProducts, { ProductDraft } from "@/components/wizard/StepProducts";
 import StepContact from "@/components/wizard/StepContact";
 import StepReview from "@/components/wizard/StepReview";
+import StorePreview from "@/components/wizard/StorePreview";
 import Button from "@/components/ui/Button";
 import { Theme } from "@/types";
 
@@ -130,7 +131,7 @@ export default function WizardClient() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
       {/* Progress bar */}
       <div className="bg-white border-b shadow-sm sticky top-0 z-10">
-        <div className="max-w-2xl mx-auto px-4 py-3">
+        <div className="max-w-6xl mx-auto px-4 py-3">
           <div className="flex items-center gap-1 overflow-x-auto">
             {STEPS.map((s) => (
               <div key={s.id} className="flex items-center gap-1 shrink-0">
@@ -158,9 +159,18 @@ export default function WizardClient() {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="max-w-2xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-3xl shadow-lg p-6 md:p-8">
+      {/* Split layout: preview (left) + form (right) */}
+      <div className="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        {/* Live preview */}
+        <div className="lg:sticky lg:top-24 order-2 lg:order-1">
+          <p className="text-sm font-semibold text-gray-500 mb-2 flex items-center gap-1.5">
+            👁️ Так выглядит ваш магазин
+          </p>
+          <StorePreview data={data} />
+        </div>
+
+        {/* Form */}
+        <div className="bg-white rounded-3xl shadow-lg p-6 md:p-8 order-1 lg:order-2">
           {step === 1 && (
             <StepTheme value={data.theme} onChange={(theme) => update({ theme })} />
           )}
