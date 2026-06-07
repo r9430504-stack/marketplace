@@ -24,9 +24,9 @@ export default function StepCategories({ value, onChange }: Props) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Категории товаров</h2>
-        <p className="text-gray-500 mt-1">Product categories</p>
-        <p className="text-sm text-gray-400 mt-2">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Категории товаров</h2>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">Product categories</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
           Например: Умные камеры, Домофоны, Умные лампочки
         </p>
       </div>
@@ -46,20 +46,20 @@ export default function StepCategories({ value, onChange }: Props) {
 
       <div className="space-y-2">
         {value.length === 0 && (
-          <p className="text-gray-400 text-sm text-center py-8 border-2 border-dashed border-gray-200 rounded-xl">
+          <p className="text-gray-400 dark:text-gray-500 text-sm text-center py-8 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl">
             Пока нет категорий — добавьте первую!
           </p>
         )}
         {value.map((cat, i) => (
           <div
             key={i}
-            className="flex items-center justify-between px-4 py-3 bg-gray-50 rounded-xl border border-gray-200"
+            className="flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700"
           >
             <div className="flex items-center gap-3">
-              <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold">
+              <span className="w-6 h-6 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300 rounded-full flex items-center justify-center text-xs font-bold">
                 {i + 1}
               </span>
-              <span className="font-medium text-gray-800">{cat}</span>
+              <span className="font-medium text-gray-800 dark:text-gray-200">{cat}</span>
             </div>
             <button
               onClick={() => remove(i)}

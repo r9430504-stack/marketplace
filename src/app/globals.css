@@ -1,8 +1,16 @@
 @import "tailwindcss";
 
+/* Тёмный режим через класс .dark на <html> (а не авто по системе) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+}
+
+.dark {
+  --background: #0b0f17;
+  --foreground: #e5e7eb;
 }
 
 @theme inline {
@@ -17,15 +25,26 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
-/* Поля ввода: явный тёмный текст и читаемые плейсхолдеры везде */
+/* Поля ввода: читаемый текст в обеих темах */
 input,
 textarea,
 select {
   color: #171717;
 }
-
 input::placeholder,
 textarea::placeholder {
   color: #9ca3af;
   opacity: 1;
+}
+
+.dark input,
+.dark textarea,
+.dark select {
+  color: #e5e7eb;
+  background-color: #1f2937;
+  border-color: #374151;
+}
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #6b7280;
 }

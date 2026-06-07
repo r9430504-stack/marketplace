@@ -41,11 +41,11 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="bg-white rounded-3xl shadow-xl p-8 w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-950 dark:to-gray-900 p-4">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-8 w-full max-w-md">
         <div className="text-center mb-8">
           <span className="text-4xl">🔑</span>
-          <h1 className="text-2xl font-bold text-gray-900 mt-2">Войти / Login</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-2">Войти / Login</h1>
         </div>
 
         <form onSubmit={submit} className="space-y-4">
@@ -67,7 +67,7 @@ export default function LoginPage() {
           />
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl p-3 text-sm">
+            <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-400 rounded-xl p-3 text-sm">
               {error}
             </div>
           )}
@@ -77,9 +77,9 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <p className="text-center text-sm text-gray-400 mt-4">
+        <p className="text-center text-sm text-gray-400 dark:text-gray-500 mt-4">
           Нет аккаунта?{" "}
-          <Link href="/register" className="text-blue-600 hover:underline">
+          <Link href="/register" className="text-blue-600 dark:text-blue-400 hover:underline">
             Зарегистрироваться / Register
           </Link>
         </p>

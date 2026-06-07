@@ -42,44 +42,44 @@ export default function RegisterPage() {
 
   if (!role) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-        <div className="bg-white rounded-3xl shadow-xl p-8 w-full max-w-md">
-          <h1 className="text-2xl font-bold text-gray-900 text-center mb-2">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-950 dark:to-gray-900 p-4">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-8 w-full max-w-md">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 text-center mb-2">
             Создать аккаунт
           </h1>
-          <p className="text-gray-500 text-center mb-8 text-sm">Create account</p>
+          <p className="text-gray-500 dark:text-gray-400 text-center mb-8 text-sm">Create account</p>
 
-          <p className="text-center font-semibold text-gray-700 mb-4">
+          <p className="text-center font-semibold text-gray-700 dark:text-gray-300 mb-4">
             Кем вы хотите быть? / Who are you?
           </p>
 
           <div className="grid grid-cols-2 gap-4">
             <button
               onClick={() => setRole("BUYER")}
-              className="flex flex-col items-center gap-3 p-6 rounded-2xl border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-all"
+              className="flex flex-col items-center gap-3 p-6 rounded-2xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all"
             >
               <span className="text-4xl">🛒</span>
               <div className="text-center">
-                <p className="font-semibold text-gray-800">Покупатель</p>
-                <p className="text-xs text-gray-400">Buyer</p>
+                <p className="font-semibold text-gray-800 dark:text-gray-100">Покупатель</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">Buyer</p>
               </div>
             </button>
 
             <button
               onClick={() => setRole("SELLER")}
-              className="flex flex-col items-center gap-3 p-6 rounded-2xl border-2 border-gray-200 hover:border-green-400 hover:bg-green-50 transition-all"
+              className="flex flex-col items-center gap-3 p-6 rounded-2xl border-2 border-gray-200 dark:border-gray-700 hover:border-green-400 hover:bg-green-50 dark:hover:bg-green-950/30 transition-all"
             >
               <span className="text-4xl">🏪</span>
               <div className="text-center">
-                <p className="font-semibold text-gray-800">Продавец</p>
-                <p className="text-xs text-gray-400">Seller</p>
+                <p className="font-semibold text-gray-800 dark:text-gray-100">Продавец</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">Seller</p>
               </div>
             </button>
           </div>
 
-          <p className="text-center text-sm text-gray-400 mt-6">
+          <p className="text-center text-sm text-gray-400 dark:text-gray-500 mt-6">
             Уже есть аккаунт?{" "}
-            <Link href="/login" className="text-blue-600 hover:underline">
+            <Link href="/login" className="text-blue-600 dark:text-blue-400 hover:underline">
               Войти / Login
             </Link>
           </p>
@@ -89,21 +89,21 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="bg-white rounded-3xl shadow-xl p-8 w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-950 dark:to-gray-900 p-4">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-8 w-full max-w-md">
         <button
           onClick={() => setRole(null)}
-          className="text-sm text-gray-400 hover:text-gray-600 mb-4 flex items-center gap-1"
+          className="text-sm text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 mb-4 flex items-center gap-1"
         >
           ← Назад
         </button>
 
         <div className="text-center mb-6">
           <span className="text-4xl">{role === "SELLER" ? "🏪" : "🛒"}</span>
-          <h1 className="text-2xl font-bold text-gray-900 mt-2">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-2">
             {role === "SELLER" ? "Создать магазин" : "Регистрация"}
           </h1>
-          <p className="text-gray-400 text-sm">
+          <p className="text-gray-400 dark:text-gray-500 text-sm">
             {role === "SELLER" ? "Create your store" : "Register as buyer"}
           </p>
         </div>
@@ -134,7 +134,7 @@ export default function RegisterPage() {
           />
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl p-3 text-sm">
+            <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-400 rounded-xl p-3 text-sm">
               {error}
             </div>
           )}
@@ -144,9 +144,9 @@ export default function RegisterPage() {
           </Button>
         </form>
 
-        <p className="text-center text-sm text-gray-400 mt-4">
+        <p className="text-center text-sm text-gray-400 dark:text-gray-500 mt-4">
           Уже есть аккаунт?{" "}
-          <Link href="/login" className="text-blue-600 hover:underline">
+          <Link href="/login" className="text-blue-600 dark:text-blue-400 hover:underline">
             Войти
           </Link>
         </p>

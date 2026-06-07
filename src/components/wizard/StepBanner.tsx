@@ -18,8 +18,8 @@ export default function StepBanner({ value, onChange }: Props) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Оформление магазина</h2>
-        <p className="text-gray-500 mt-1">Store appearance</p>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Оформление магазина</h2>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">Store appearance</p>
       </div>
 
       <Input

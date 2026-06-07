@@ -72,8 +72,8 @@ export default function StepProducts({ categories, products, onChange }: Props) 
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Добавление товаров</h2>
-        <p className="text-gray-500 mt-1">Add products by category</p>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Добавление товаров</h2>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">Add products by category</p>
       </div>
 
       {/* Category tabs */}
@@ -85,7 +85,7 @@ export default function StepProducts({ categories, products, onChange }: Props) 
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               activeCat === i
                 ? "bg-blue-600 text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
             }`}
           >
             {cat}
@@ -100,15 +100,15 @@ export default function StepProducts({ categories, products, onChange }: Props) 
       {catProducts.length > 0 && (
         <div className="space-y-2">
           {catProducts.map((p, i) => (
-            <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border">
+            <div key={i} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border dark:border-gray-700">
               <div className="flex items-center gap-3">
                 {p.images[0] && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={p.images[0]} alt="" className="w-10 h-10 rounded-lg object-cover" />
                 )}
                 <div>
-                  <p className="font-medium text-sm">{p.name}</p>
-                  <p className="text-xs text-gray-500">{p.price} {p.currency}</p>
+                  <p className="font-medium text-sm text-gray-900 dark:text-gray-100">{p.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{p.price} {p.currency}</p>
                 </div>
               </div>
               <button onClick={() => removeProduct(i)} className="text-red-400 hover:text-red-600 text-xs">
@@ -120,8 +120,8 @@ export default function StepProducts({ categories, products, onChange }: Props) 
       )}
 
       {/* Add product form */}
-      <div className="border-2 border-dashed border-blue-200 rounded-2xl p-4 space-y-3 bg-blue-50/30">
-        <p className="font-semibold text-gray-700 text-sm">
+      <div className="border-2 border-dashed border-blue-200 dark:border-blue-900 rounded-2xl p-4 space-y-3 bg-blue-50/30 dark:bg-blue-950/20">
+        <p className="font-semibold text-gray-700 dark:text-gray-200 text-sm">
           + Новый товар в «{categories[activeCat]}»
         </p>
         <Input
@@ -139,11 +139,11 @@ export default function StepProducts({ categories, products, onChange }: Props) 
             onChange={(e) => setForm({ ...form, price: e.target.value })}
           />
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Валюта</label>
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Валюта</label>
             <select
               value={form.currency}
               onChange={(e) => setForm({ ...form, currency: e.target.value })}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              className="border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-sm"
             >
               <option value="RUB">₽ Рубль</option>
               <option value="USD">$ Доллар</option>
@@ -153,9 +153,9 @@ export default function StepProducts({ categories, products, onChange }: Props) 
           </div>
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-700">Описание</label>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Описание</label>
           <textarea
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm resize-none"
+            className="border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-sm resize-none"
             rows={2}
             placeholder="Краткое описание товара..."
             value={form.description}

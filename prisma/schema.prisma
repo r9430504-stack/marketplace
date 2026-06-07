@@ -74,6 +74,13 @@ enum Theme {
   BOLD
   MINIMAL
   WARM
+  OCEAN
+  FOREST
+  SUNSET
+  ROSE
+  MIDNIGHT
+  CANDY
+  MONO
 }
 
 enum StoreStatus {

@@ -18,8 +18,8 @@ export default function StepContact({ value, onChange }: Props) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Контактные данные</h2>
-        <p className="text-gray-500 mt-1">Contact information</p>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Контактные данные</h2>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">Contact information</p>
       </div>
 
       <Input
@@ -44,8 +44,8 @@ export default function StepContact({ value, onChange }: Props) {
         onChange={(e) => onChange({ contactAddress: e.target.value })}
       />
 
-      <div className="border-t pt-4 space-y-4">
-        <p className="text-sm font-semibold text-gray-600">Социальные сети (необязательно)</p>
+      <div className="border-t dark:border-gray-700 pt-4 space-y-4">
+        <p className="text-sm font-semibold text-gray-600 dark:text-gray-400">Социальные сети (необязательно)</p>
         <Input
           label="WhatsApp"
           placeholder="+7 (999) 123-45-67"

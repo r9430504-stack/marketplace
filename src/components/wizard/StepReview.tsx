@@ -27,8 +27,8 @@ export default function StepReview({ data }: Props) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Проверьте ваш магазин</h2>
-        <p className="text-gray-500 mt-1">Review your store before publishing</p>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Проверьте ваш магазин</h2>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">Review your store before publishing</p>
       </div>
 
       {/* Preview card */}
@@ -58,7 +58,7 @@ export default function StepReview({ data }: Props) {
         </div>
       </div>
 
-      <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-sm text-green-800">
+      <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 rounded-xl p-4 text-sm text-green-800 dark:text-green-300">
         ✅ После публикации ваш магазин будет доступен по уникальной ссылке. Вы сможете редактировать его в любое время из личного кабинета.
       </div>
     </div>

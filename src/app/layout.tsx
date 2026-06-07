@@ -12,14 +12,20 @@ export const metadata: Metadata = {
   description: "Платформа для создания интернет-магазинов. Create your online store in minutes.",
 };
 
+// Ставит тему до отрисовки страницы, чтобы не было вспышки светлого фона.
+const themeScript = `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark');}}catch(e){}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={`${geistSans.variable} h-full antialiased`} style={{ colorScheme: "light" }}>
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="ru" className={`${geistSans.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className="min-h-full flex flex-col bg-white dark:bg-[#0b0f17]">{children}</body>
     </html>
   );
 }

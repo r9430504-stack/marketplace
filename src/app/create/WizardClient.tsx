@@ -9,6 +9,7 @@ import StepContact from "@/components/wizard/StepContact";
 import StepReview from "@/components/wizard/StepReview";
 import StorePreview from "@/components/wizard/StorePreview";
 import Button from "@/components/ui/Button";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 import { Theme } from "@/types";
 
 const STEPS = [
@@ -128,11 +129,11 @@ export default function WizardClient() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-950 dark:to-gray-900">
       {/* Progress bar */}
-      <div className="bg-white border-b shadow-sm sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 py-3">
-          <div className="flex items-center gap-1 overflow-x-auto">
+      <div className="bg-white dark:bg-gray-900 border-b dark:border-gray-800 shadow-sm sticky top-0 z-10">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
+          <div className="flex items-center gap-1 overflow-x-auto flex-1">
             {STEPS.map((s) => (
               <div key={s.id} className="flex items-center gap-1 shrink-0">
                 <div
@@ -156,6 +157,7 @@ export default function WizardClient() {
               </div>
             ))}
           </div>
+          <ThemeToggle />
         </div>
       </div>
 
@@ -163,14 +165,14 @@ export default function WizardClient() {
       <div className="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         {/* Live preview */}
         <div className="lg:sticky lg:top-24 order-2 lg:order-1">
-          <p className="text-sm font-semibold text-gray-500 mb-2 flex items-center gap-1.5">
+          <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-1.5">
             👁️ Так выглядит ваш магазин
           </p>
           <StorePreview data={data} />
         </div>
 
         {/* Form */}
-        <div className="bg-white rounded-3xl shadow-lg p-6 md:p-8 order-1 lg:order-2">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg p-6 md:p-8 order-1 lg:order-2">
           {step === 1 && (
             <StepTheme value={data.theme} onChange={(theme) => update({ theme })} />
           )}
@@ -211,7 +213,7 @@ export default function WizardClient() {
           )}
 
           {/* Navigation */}
-          <div className="flex justify-between mt-8 pt-4 border-t">
+          <div className="flex justify-between mt-8 pt-4 border-t dark:border-gray-800">
             <Button
               variant="ghost"
               onClick={() => setStep((s) => s - 1)}

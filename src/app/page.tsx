@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import Link from "next/link";
 import { THEMES } from "@/types";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 export default async function HomePage() {
   const [stores, session] = await Promise.all([
@@ -14,26 +15,26 @@ export default async function HomePage() {
   ]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-950 dark:to-gray-900">
       {/* Navbar */}
-      <nav className="bg-white/80 backdrop-blur border-b border-gray-100 sticky top-0 z-10">
+      <nav className="bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b border-gray-100 dark:border-gray-800 sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold text-blue-600">
+          <Link href="/" className="text-xl font-bold text-blue-600 dark:text-blue-400">
             🏗️ StoreBuilder
           </Link>
           <div className="flex items-center gap-3">
             {session ? (
               <>
-                <span className="text-sm text-gray-500">Привет, {session.name}</span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">Привет, {session.name}</span>
                 {session.role === "SELLER" && (
-                  <Link href="/dashboard" className="text-sm font-medium text-blue-600 hover:underline">
+                  <Link href="/dashboard" className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">
                     Мой магазин
                   </Link>
                 )}
               </>
             ) : (
               <>
-                <Link href="/login" className="text-sm text-gray-600 hover:text-gray-900">
+                <Link href="/login" className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
                   Войти / Login
                 </Link>
                 <Link
@@ -44,18 +45,19 @@ export default async function HomePage() {
                 </Link>
               </>
             )}
+            <ThemeToggle />
           </div>
         </div>
       </nav>
 
       {/* Hero */}
       <section className="text-center py-16 px-4">
-        <h1 className="text-5xl font-bold text-gray-900 leading-tight">
+        <h1 className="text-5xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
           Создай свой магазин
           <br />
-          <span className="text-blue-600">за 5 минут</span>
+          <span className="text-blue-600 dark:text-blue-400">за 5 минут</span>
         </h1>
-        <p className="text-xl text-gray-500 mt-4 max-w-xl mx-auto">
+        <p className="text-xl text-gray-500 dark:text-gray-400 mt-4 max-w-xl mx-auto">
           Выбери стиль, добавь товары и получи готовый сайт-магазин.
           <br />
           <span className="text-sm">Create your store in minutes — no code needed.</span>
@@ -69,7 +71,7 @@ export default async function HomePage() {
           </Link>
           <Link
             href="#stores"
-            className="bg-white text-gray-700 px-8 py-3 rounded-2xl font-semibold text-lg hover:bg-gray-50 transition-colors border border-gray-200"
+            className="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-8 py-3 rounded-2xl font-semibold text-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-700"
           >
             Смотреть магазины
           </Link>
@@ -83,23 +85,23 @@ export default async function HomePage() {
           { icon: "📦", title: "Любые категории товаров", sub: "Any product categories" },
           { icon: "🔗", title: "Готовая ссылка на магазин", sub: "Instant store URL" },
         ].map((f) => (
-          <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm text-center">
+          <div key={f.title} className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm text-center">
             <span className="text-3xl">{f.icon}</span>
-            <p className="font-semibold text-gray-800 mt-2">{f.title}</p>
-            <p className="text-xs text-gray-400">{f.sub}</p>
+            <p className="font-semibold text-gray-800 dark:text-gray-100 mt-2">{f.title}</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">{f.sub}</p>
           </div>
         ))}
       </section>
 
       {/* Published stores */}
       <section id="stores" className="max-w-6xl mx-auto px-4 py-12">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
           Магазины на платформе
-          <span className="text-sm font-normal text-gray-400 ml-2">Stores on the platform</span>
+          <span className="text-sm font-normal text-gray-400 dark:text-gray-500 ml-2">Stores on the platform</span>
         </h2>
 
         {stores.length === 0 ? (
-          <div className="text-center py-16 text-gray-400">
+          <div className="text-center py-16 text-gray-400 dark:text-gray-500">
             <span className="text-5xl">🏪</span>
             <p className="mt-4 text-lg">Пока нет магазинов. Будь первым!</p>
             <p className="text-sm">No stores yet. Be the first!</p>
@@ -112,7 +114,7 @@ export default async function HomePage() {
                 <Link
                   key={store.id}
                   href={`/store/${store.slug}`}
-                  className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden group"
+                  className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow overflow-hidden group"
                 >
                   <div className={`h-28 bg-gradient-to-br ${theme.preview} relative`}>
                     {store.bannerImage && (
@@ -124,8 +126,8 @@ export default async function HomePage() {
                     </div>
                   </div>
                   <div className="p-4">
-                    {store.tagline && <p className="text-sm text-gray-500 line-clamp-1">{store.tagline}</p>}
-                    <p className="text-xs text-gray-400 mt-1">{store._count.products} товаров</p>
+                    {store.tagline && <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{store.tagline}</p>}
+                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{store._count.products} товаров</p>
                   </div>
                 </Link>
               );
