@@ -4,8 +4,9 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "npx prisma db push --skip-generate; cp -r .next/static .next/standalone/.next/static; cp -r public .next/standalone/public; node .next/standalone/server.js",
+    "startCommand": "npx prisma db push; npx next start -p ${PORT:-3000}",
     "healthcheckPath": "/api/auth/me",
+    "healthcheckTimeout": 120,
     "restartPolicyType": "ON_FAILURE"
   }
 }
