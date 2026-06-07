@@ -54,6 +54,7 @@ model Product {
   name        String
   description String?
   price       Float
+  oldPrice    Float?
   currency    String   @default("RUB")
   images      String[]
   inStock     Boolean  @default(true)

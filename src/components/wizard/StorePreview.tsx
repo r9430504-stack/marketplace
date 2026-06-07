@@ -21,6 +21,18 @@ const currencySymbols: Record<string, string> = {
   RUB: "₽", USD: "$", EUR: "€", KZT: "₸",
 };
 
+function hasDiscount(p: ProductDraft): boolean {
+  const oldP = Number(p.oldPrice);
+  const price = Number(p.price);
+  return !!p.oldPrice && oldP > price && price > 0;
+}
+
+function discountPct(p: ProductDraft): number {
+  const oldP = Number(p.oldPrice);
+  const price = Number(p.price);
+  return Math.round(((oldP - price) / oldP) * 100);
+}
+
 export default function StorePreview({ data }: { data: PreviewData }) {
   const theme = getTheme(data.theme);
 
@@ -88,7 +100,12 @@ export default function StorePreview({ data }: { data: PreviewData }) {
                 ) : (
                   <div className="grid grid-cols-2 gap-2">
                     {catProducts.map((product, pi) => (
-                      <div key={pi} className={cn("rounded-xl overflow-hidden", theme.card)}>
+                      <div key={pi} className={cn("rounded-xl overflow-hidden relative", theme.card)}>
+                        {hasDiscount(product) && (
+                          <span className="absolute top-1 left-1 z-10 bg-red-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">
+                            -{discountPct(product)}%
+                          </span>
+                        )}
                         {product.images[0] ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img src={product.images[0]} alt="" className="w-full h-20 object-cover" />
@@ -102,10 +119,17 @@ export default function StorePreview({ data }: { data: PreviewData }) {
                           {product.description && (
                             <p className="text-[9px] opacity-60 line-clamp-1">{product.description}</p>
                           )}
-                          <p className="text-xs font-bold mt-1">
-                            {product.price ? Number(product.price).toLocaleString("ru-RU") : "0"}{" "}
-                            {currencySymbols[product.currency] ?? product.currency}
-                          </p>
+                          <div className="flex items-baseline gap-1 mt-1">
+                            <p className="text-xs font-bold">
+                              {product.price ? Number(product.price).toLocaleString("ru-RU") : "0"}{" "}
+                              {currencySymbols[product.currency] ?? product.currency}
+                            </p>
+                            {hasDiscount(product) && (
+                              <span className="text-[9px] line-through opacity-50">
+                                {Number(product.oldPrice).toLocaleString("ru-RU")}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     ))}

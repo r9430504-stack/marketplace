@@ -116,6 +116,7 @@ export default function WizardClient() {
             name: p.name,
             description: p.description,
             price: parseFloat(p.price),
+            oldPrice: p.oldPrice ? parseFloat(p.oldPrice) : null,
             currency: p.currency,
             images: p.images,
             categoryId: cat.id,

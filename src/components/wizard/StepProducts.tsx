@@ -8,6 +8,7 @@ export type ProductDraft = {
   name: string;
   description: string;
   price: string;
+  oldPrice: string;
   currency: string;
   images: string[];
   categoryIndex: number;
@@ -23,6 +24,7 @@ const empty = (categoryIndex: number): ProductDraft => ({
   name: "",
   description: "",
   price: "",
+  oldPrice: "",
   currency: "RUB",
   images: [],
   categoryIndex,
@@ -130,13 +132,20 @@ export default function StepProducts({ categories, products, onChange }: Props) 
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
         />
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           <Input
             label="Цена"
             type="number"
             placeholder="1990"
             value={form.price}
             onChange={(e) => setForm({ ...form, price: e.target.value })}
+          />
+          <Input
+            label="Старая цена"
+            type="number"
+            placeholder="скидка"
+            value={form.oldPrice}
+            onChange={(e) => setForm({ ...form, oldPrice: e.target.value })}
           />
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Валюта</label>

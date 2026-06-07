@@ -13,6 +13,7 @@ type Product = {
   name: string;
   description: string | null;
   price: number;
+  oldPrice: number | null;
   currency: string;
   images: string[];
   inStock: boolean;
@@ -45,7 +46,7 @@ const currencySymbols: Record<string, string> = {
   RUB: "₽", USD: "$", EUR: "€", KZT: "₸",
 };
 
-const emptyForm = { name: "", price: "", currency: "RUB", description: "", image: "", inStock: true };
+const emptyForm = { name: "", price: "", oldPrice: "", currency: "RUB", description: "", image: "", inStock: true };
 
 export default function DashboardClient({ store: initialStore }: Props) {
   const router = useRouter();
@@ -83,6 +84,7 @@ export default function DashboardClient({ store: initialStore }: Props) {
       name: form.name,
       description: form.description,
       price: parseFloat(form.price),
+      oldPrice: form.oldPrice ? parseFloat(form.oldPrice) : null,
       currency: form.currency,
       images: form.image ? [form.image] : [],
       inStock: form.inStock,
@@ -112,6 +114,7 @@ export default function DashboardClient({ store: initialStore }: Props) {
     setForm({
       name: p.name,
       price: String(p.price),
+      oldPrice: p.oldPrice != null ? String(p.oldPrice) : "",
       currency: p.currency,
       description: p.description ?? "",
       image: p.images[0] ?? "",
@@ -273,8 +276,9 @@ export default function DashboardClient({ store: initialStore }: Props) {
                   {editingId ? "✏️ Редактировать товар" : "Добавить товар"}
                 </p>
                 <Input placeholder="Название товара" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   <Input placeholder="Цена" type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
+                  <Input placeholder="Старая цена" type="number" value={form.oldPrice} onChange={(e) => setForm({ ...form, oldPrice: e.target.value })} />
                   <select
                     value={form.currency}
                     onChange={(e) => setForm({ ...form, currency: e.target.value })}
@@ -328,7 +332,12 @@ export default function DashboardClient({ store: initialStore }: Props) {
                         {product.name}
                         {!product.inStock && <span className="ml-2 text-xs text-red-500">нет в наличии</span>}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{fmt(product.price, product.currency)}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {fmt(product.price, product.currency)}
+                        {product.oldPrice != null && product.oldPrice > product.price && (
+                          <span className="ml-2 line-through opacity-50">{fmt(product.oldPrice, product.currency)}</span>
+                        )}
+                      </p>
                     </div>
                     <button onClick={() => startEdit(product)} className="text-blue-500 hover:text-blue-700 text-xs shrink-0">
                       Изменить
