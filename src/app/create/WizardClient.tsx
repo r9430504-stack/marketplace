@@ -1,0 +1,227 @@
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import StepTheme from "@/components/wizard/StepTheme";
+import StepBanner from "@/components/wizard/StepBanner";
+import StepCategories from "@/components/wizard/StepCategories";
+import StepProducts, { ProductDraft } from "@/components/wizard/StepProducts";
+import StepContact from "@/components/wizard/StepContact";
+import StepReview from "@/components/wizard/StepReview";
+import Button from "@/components/ui/Button";
+import { Theme } from "@/types";
+
+const STEPS = [
+  { id: 1, title: "Стиль", en: "Style" },
+  { id: 2, title: "Оформление", en: "Appearance" },
+  { id: 3, title: "Категории", en: "Categories" },
+  { id: 4, title: "Товары", en: "Products" },
+  { id: 5, title: "Контакты", en: "Contacts" },
+  { id: 6, title: "Публикация", en: "Publish" },
+];
+
+interface StoreState {
+  theme: Theme;
+  name: string;
+  tagline: string;
+  bannerImage: string;
+  bannerText: string;
+  categories: string[];
+  products: ProductDraft[];
+  contactPhone: string;
+  contactEmail: string;
+  contactAddress: string;
+  contactWhatsapp: string;
+  contactInstagram: string;
+}
+
+const initial: StoreState = {
+  theme: "MODERN",
+  name: "",
+  tagline: "",
+  bannerImage: "",
+  bannerText: "",
+  categories: [],
+  products: [],
+  contactPhone: "",
+  contactEmail: "",
+  contactAddress: "",
+  contactWhatsapp: "",
+  contactInstagram: "",
+};
+
+export default function WizardClient() {
+  const router = useRouter();
+  const [step, setStep] = useState(1);
+  const [data, setData] = useState<StoreState>(initial);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  function update(patch: Partial<StoreState>) {
+    setData((d) => ({ ...d, ...patch }));
+  }
+
+  function canNext(): boolean {
+    if (step === 2 && !data.name) return false;
+    if (step === 3 && data.categories.length === 0) return false;
+    return true;
+  }
+
+  async function publish() {
+    setLoading(true);
+    setError("");
+    try {
+      // 1. Create store
+      const storeRes = await fetch("/api/stores", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.name,
+          tagline: data.tagline,
+          bannerImage: data.bannerImage,
+          bannerText: data.bannerText,
+          theme: data.theme,
+          contactPhone: data.contactPhone,
+          contactEmail: data.contactEmail,
+          contactAddress: data.contactAddress,
+          contactWhatsapp: data.contactWhatsapp,
+          contactInstagram: data.contactInstagram,
+          status: "PUBLISHED",
+        }),
+      });
+      const store = await storeRes.json();
+      if (!storeRes.ok) throw new Error(store.error);
+
+      // 2. Create categories
+      const catRes = await fetch("/api/categories", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data.categories.map((name, i) => ({ name, order: i }))),
+      });
+      const cats = await catRes.json();
+      if (!catRes.ok) throw new Error("Ошибка создания категорий");
+
+      // 3. Create products
+      for (const p of data.products) {
+        const cat = cats[p.categoryIndex];
+        if (!cat) continue;
+        await fetch("/api/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: p.name,
+            description: p.description,
+            price: parseFloat(p.price),
+            currency: p.currency,
+            images: p.images,
+            categoryId: cat.id,
+          }),
+        });
+      }
+
+      router.push(`/store/${store.slug}`);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Ошибка публикации");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+      {/* Progress bar */}
+      <div className="bg-white border-b shadow-sm sticky top-0 z-10">
+        <div className="max-w-2xl mx-auto px-4 py-3">
+          <div className="flex items-center gap-1 overflow-x-auto">
+            {STEPS.map((s) => (
+              <div key={s.id} className="flex items-center gap-1 shrink-0">
+                <div
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                    step === s.id
+                      ? "bg-blue-600 text-white"
+                      : step > s.id
+                      ? "bg-green-100 text-green-700"
+                      : "bg-gray-100 text-gray-400"
+                  }`}
+                >
+                  <span className="w-4 h-4 rounded-full border flex items-center justify-center text-[10px] font-bold
+                    border-current">
+                    {step > s.id ? "✓" : s.id}
+                  </span>
+                  {s.title}
+                </div>
+                {s.id < STEPS.length && (
+                  <div className={`w-4 h-0.5 ${step > s.id ? "bg-green-300" : "bg-gray-200"}`} />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-3xl shadow-lg p-6 md:p-8">
+          {step === 1 && (
+            <StepTheme value={data.theme} onChange={(theme) => update({ theme })} />
+          )}
+          {step === 2 && (
+            <StepBanner
+              value={{ name: data.name, tagline: data.tagline, bannerImage: data.bannerImage, bannerText: data.bannerText }}
+              onChange={(patch) => update(patch as Partial<StoreState>)}
+            />
+          )}
+          {step === 3 && (
+            <StepCategories value={data.categories} onChange={(categories) => update({ categories })} />
+          )}
+          {step === 4 && (
+            <StepProducts
+              categories={data.categories}
+              products={data.products}
+              onChange={(products) => update({ products })}
+            />
+          )}
+          {step === 5 && (
+            <StepContact
+              value={{
+                contactPhone: data.contactPhone,
+                contactEmail: data.contactEmail,
+                contactAddress: data.contactAddress,
+                contactWhatsapp: data.contactWhatsapp,
+                contactInstagram: data.contactInstagram,
+              }}
+              onChange={(patch) => update(patch as Partial<StoreState>)}
+            />
+          )}
+          {step === 6 && <StepReview data={data} />}
+
+          {error && (
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
+              {error}
+            </div>
+          )}
+
+          {/* Navigation */}
+          <div className="flex justify-between mt-8 pt-4 border-t">
+            <Button
+              variant="ghost"
+              onClick={() => setStep((s) => s - 1)}
+              disabled={step === 1}
+            >
+              ← Назад
+            </Button>
+
+            {step < STEPS.length ? (
+              <Button onClick={() => setStep((s) => s + 1)} disabled={!canNext()}>
+                Далее →
+              </Button>
+            ) : (
+              <Button onClick={publish} loading={loading} className="bg-green-600 hover:bg-green-700">
+                🚀 Опубликовать магазин
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      Role     @default(BUYER)
+  createdAt DateTime @default(now())
+  store     Store?
+}
+
+model Store {
+  id              String      @id @default(cuid())
+  slug            String      @unique
+  name            String
+  tagline         String?
+  theme           Theme       @default(MODERN)
+  primaryColor    String      @default("#3B82F6")
+  bannerImage     String?
+  bannerText      String?
+  contactPhone    String?
+  contactEmail    String?
+  contactAddress  String?
+  contactWhatsapp String?
+  contactInstagram String?
+  status          StoreStatus @default(DRAFT)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  owner           User        @relation(fields: [ownerId], references: [id])
+  ownerId         String      @unique
+  categories      Category[]
+  products        Product[]
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String
+  order    Int       @default(0)
+  store    Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  storeId  String
+  products Product[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  currency    String   @default("RUB")
+  images      String[]
+  inStock     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  storeId     String
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId  String
+}
+
+enum Role {
+  BUYER
+  SELLER
+}
+
+enum Theme {
+  MODERN
+  DARK
+  BOLD
+  MINIMAL
+  WARM
+}
+
+enum StoreStatus {
+  DRAFT
+  PUBLISHED
+}
