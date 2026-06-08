@@ -61,6 +61,7 @@ model Product {
   oldPrice    Float?
   currency    String   @default("RUB")
   images      String[]
+  videoUrl    String?
   inStock     Boolean  @default(true)
   createdAt   DateTime @default(now())
   store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)

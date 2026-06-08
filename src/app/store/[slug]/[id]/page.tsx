@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import AddToCart from "@/components/store/AddToCart";
 import CartFab from "@/components/store/CartFab";
+import { parseVideo } from "@/lib/video";
 
 const currencySymbols: Record<string, string> = {
   RUB: "₽", USD: "$", EUR: "€", KZT: "₸",
@@ -43,20 +44,41 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       </div>
 
       <div className="max-w-5xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Image */}
-        <div className="relative">
+        {/* Media */}
+        <div className="relative space-y-3">
           {onSale && (
             <span className="absolute top-3 left-3 z-10 bg-red-500 text-white text-sm font-bold px-3 py-1.5 rounded-full shadow">
               −{pct}%
             </span>
           )}
-          {product.images[0] ? (
+          {(() => {
+            const video = parseVideo(product.videoUrl);
+            if (video.type === "youtube") {
+              return (
+                <div className="aspect-video rounded-2xl overflow-hidden">
+                  <iframe src={video.embed} className="w-full h-full" allowFullScreen title={product.name} />
+                </div>
+              );
+            }
+            if (video.type === "file") {
+              return (
+                // eslint-disable-next-line jsx-a11y/media-has-caption
+                <video src={video.src} controls className="w-full rounded-2xl max-h-[420px]" />
+              );
+            }
+            return product.images[0] ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={product.images[0]} alt={product.name} className="w-full rounded-2xl object-cover aspect-square" />
+            ) : (
+              <div className={cn("w-full aspect-square rounded-2xl flex items-center justify-center text-7xl", theme.card)}>
+                📦
+              </div>
+            );
+          })()}
+          {/* Если есть и видео, и фото — показываем фото под видео */}
+          {parseVideo(product.videoUrl).type !== "none" && product.images[0] && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={product.images[0]} alt={product.name} className="w-full rounded-2xl object-cover aspect-square" />
-          ) : (
-            <div className={cn("w-full aspect-square rounded-2xl flex items-center justify-center text-7xl", theme.card)}>
-              📦
-            </div>
+            <img src={product.images[0]} alt={product.name} className="w-full rounded-2xl object-cover max-h-64" />
           )}
         </div>
 

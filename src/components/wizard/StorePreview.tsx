@@ -36,6 +36,7 @@ export default function StorePreview({ data }: { data: PreviewData }) {
     return (
       <div className={cn("rounded-lg overflow-hidden relative", theme.card)}>
         {hasDiscount(p) && <span className="absolute top-1 left-1 z-10 bg-red-500 text-white text-[7px] font-bold px-1 py-0.5 rounded-full">SALE</span>}
+        {p.videoUrl && <span className="absolute bottom-1 right-1 z-10 bg-black/70 text-white text-[7px] font-bold px-1 py-0.5 rounded-full">▶</span>}
         {p.images[0] ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={p.images[0]} alt="" className={cn("w-full object-cover", big ? "h-24" : "h-16")} />

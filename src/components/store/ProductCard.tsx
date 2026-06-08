@@ -16,6 +16,7 @@ export type ProductLike = {
   currency: string;
   images: string[];
   inStock: boolean;
+  videoUrl?: string | null;
   createdAt?: string | Date;
 };
 
@@ -57,6 +58,11 @@ export default function ProductCard({ product, theme, slug, storeName, variant =
       −{pct}%
     </span>
   );
+  const videoBadge = product.videoUrl && (
+    <span className="absolute bottom-2 right-2 z-10 bg-black/70 text-white text-xs font-bold px-2 py-1 rounded-full shadow flex items-center gap-1">
+      ▶ Видео
+    </span>
+  );
   const oosOverlay = !product.inStock && (
     <div className="absolute inset-0 z-10 bg-black/50 flex items-center justify-center">
       <span className="bg-white/90 text-gray-900 text-xs font-bold px-3 py-1.5 rounded-full">Нет в наличии</span>
@@ -73,6 +79,7 @@ export default function ProductCard({ product, theme, slug, storeName, variant =
         <div className="relative w-28 sm:w-40 shrink-0">
           {saleBadge}
           {newBadge}
+          {videoBadge}
           {oosOverlay}
           {product.images[0] ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -100,6 +107,7 @@ export default function ProductCard({ product, theme, slug, storeName, variant =
         <div className={cn("relative", reverse && "sm:order-2")}>
           {saleBadge}
           {newBadge}
+          {videoBadge}
           {oosOverlay}
           {product.images[0] ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -128,6 +136,7 @@ export default function ProductCard({ product, theme, slug, storeName, variant =
       <div className="relative overflow-hidden">
         {saleBadge}
         {newBadge}
+        {videoBadge}
         {oosOverlay}
         {product.images[0] ? (
           // eslint-disable-next-line @next/next/no-img-element

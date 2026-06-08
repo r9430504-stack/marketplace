@@ -131,6 +131,7 @@ export default function WizardClient() {
             oldPrice: p.oldPrice ? parseFloat(p.oldPrice) : null,
             currency: p.currency,
             images: p.images,
+            videoUrl: p.videoUrl || null,
             categoryId: cat.id,
           }),
         });

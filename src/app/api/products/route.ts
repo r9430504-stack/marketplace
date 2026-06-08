@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
   const store = await prisma.store.findUnique({ where: { ownerId: session.userId } });
   if (!store) return NextResponse.json({ error: "Магазин не найден" }, { status: 404 });
 
-  const { name, description, details, price, oldPrice, currency, images, categoryId, inStock } = await req.json();
+  const { name, description, details, price, oldPrice, currency, images, videoUrl, categoryId, inStock } = await req.json();
 
   const product = await prisma.product.create({
     data: {
@@ -22,6 +22,7 @@ export async function POST(req: NextRequest) {
       oldPrice: oldPrice ?? null,
       currency: currency ?? "RUB",
       images: images ?? [],
+      videoUrl: videoUrl ?? null,
       categoryId,
       storeId: store.id,
       inStock: inStock ?? true,

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import ImageUpload from "@/components/ui/ImageUpload";
+import MediaPicker from "@/components/ui/MediaPicker";
 
 export type ProductDraft = {
   name: string;
@@ -12,6 +12,7 @@ export type ProductDraft = {
   oldPrice: string;
   currency: string;
   images: string[];
+  videoUrl: string;
   categoryIndex: number;
 };
 
@@ -29,6 +30,7 @@ const empty = (categoryIndex: number): ProductDraft => ({
   oldPrice: "",
   currency: "RUB",
   images: [],
+  videoUrl: "",
   categoryIndex,
 });
 
@@ -183,10 +185,12 @@ export default function StepProducts({ categories, products, onChange }: Props) 
             onChange={(e) => setForm({ ...form, details: e.target.value })}
           />
         </div>
-        <ImageUpload
-          label="Фото товара"
-          value={form.images[0]}
-          onChange={(url) => setForm({ ...form, images: [url] })}
+        <MediaPicker
+          label="Медиа товара"
+          image={form.images[0] ?? ""}
+          videoUrl={form.videoUrl}
+          onImageChange={(url) => setForm({ ...form, images: url ? [url] : [] })}
+          onVideoChange={(url) => setForm({ ...form, videoUrl: url })}
         />
         <Button onClick={save} disabled={!form.name || !form.price} className="w-full justify-center">
           Добавить товар

@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import ImageUpload from "@/components/ui/ImageUpload";
+import MediaPicker from "@/components/ui/MediaPicker";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { SessionPayload } from "@/lib/session";
 
@@ -17,6 +17,7 @@ type Product = {
   oldPrice: number | null;
   currency: string;
   images: string[];
+  videoUrl: string | null;
   inStock: boolean;
 };
 
@@ -47,7 +48,7 @@ const currencySymbols: Record<string, string> = {
   RUB: "₽", USD: "$", EUR: "€", KZT: "₸",
 };
 
-const emptyForm = { name: "", price: "", oldPrice: "", currency: "RUB", description: "", details: "", image: "", inStock: true };
+const emptyForm = { name: "", price: "", oldPrice: "", currency: "RUB", description: "", details: "", image: "", videoUrl: "", inStock: true };
 
 export default function DashboardClient({ store: initialStore }: Props) {
   const router = useRouter();
@@ -89,6 +90,7 @@ export default function DashboardClient({ store: initialStore }: Props) {
       oldPrice: form.oldPrice ? parseFloat(form.oldPrice) : null,
       currency: form.currency,
       images: form.image ? [form.image] : [],
+      videoUrl: form.videoUrl || null,
       inStock: form.inStock,
       categoryId: selectedCat,
     };
@@ -121,6 +123,7 @@ export default function DashboardClient({ store: initialStore }: Props) {
       description: p.description ?? "",
       details: p.details ?? "",
       image: p.images[0] ?? "",
+      videoUrl: p.videoUrl ?? "",
       inStock: p.inStock,
     });
   }
@@ -316,7 +319,13 @@ export default function DashboardClient({ store: initialStore }: Props) {
                   />
                   В наличии
                 </label>
-                <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} label="Фото товара" />
+                <MediaPicker
+                  label="Медиа товара"
+                  image={form.image}
+                  videoUrl={form.videoUrl}
+                  onImageChange={(url) => setForm({ ...form, image: url })}
+                  onVideoChange={(url) => setForm({ ...form, videoUrl: url })}
+                />
                 <div className="flex gap-2">
                   <Button onClick={saveProduct} loading={savingProduct} disabled={!form.name || !form.price} className="flex-1 justify-center">
                     {editingId ? "Сохранить изменения" : "Добавить товар"}
