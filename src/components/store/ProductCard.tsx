@@ -16,6 +16,7 @@ export type ProductLike = {
   currency: string;
   images: string[];
   inStock: boolean;
+  createdAt?: string | Date;
 };
 
 interface Props {
@@ -32,6 +33,14 @@ export default function ProductCard({ product, theme, slug, storeName, variant =
   const onSale = product.oldPrice != null && product.oldPrice > product.price;
   const pct = onSale ? Math.round(((product.oldPrice! - product.price) / product.oldPrice!) * 100) : 0;
   const href = `/store/${slug}/${product.id}`;
+  const isNew = product.createdAt
+    ? Date.now() - new Date(product.createdAt).getTime() < 14 * 24 * 60 * 60 * 1000
+    : false;
+  const newBadge = isNew && (
+    <span className="absolute top-2 right-2 z-10 bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow">
+      НОВОЕ
+    </span>
+  );
 
   const cartItem = {
     id: product.id,
@@ -63,6 +72,7 @@ export default function ProductCard({ product, theme, slug, storeName, variant =
       <Link href={href} className={cn("group flex gap-4 rounded-2xl overflow-hidden transition-all hover:shadow-lg", theme.card)}>
         <div className="relative w-28 sm:w-40 shrink-0">
           {saleBadge}
+          {newBadge}
           {oosOverlay}
           {product.images[0] ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -89,6 +99,7 @@ export default function ProductCard({ product, theme, slug, storeName, variant =
       <Link href={href} className={cn("group grid sm:grid-cols-2 gap-0 rounded-3xl overflow-hidden transition-all hover:shadow-xl", theme.card)}>
         <div className={cn("relative", reverse && "sm:order-2")}>
           {saleBadge}
+          {newBadge}
           {oosOverlay}
           {product.images[0] ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -116,6 +127,7 @@ export default function ProductCard({ product, theme, slug, storeName, variant =
     <Link href={href} className={cn("group rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-xl flex flex-col", theme.card)}>
       <div className="relative overflow-hidden">
         {saleBadge}
+        {newBadge}
         {oosOverlay}
         {product.images[0] ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -136,7 +148,11 @@ export default function ProductCard({ product, theme, slug, storeName, variant =
           {onSale && <span className={cn("line-through opacity-40 mb-0.5", compact ? "text-xs" : "text-sm")}>{money(product.oldPrice!)}</span>}
         </div>
         <div className="mt-3 flex items-center justify-between gap-2 mt-auto pt-2">
-          {!compact && <span className="text-xs opacity-40">Подробнее →</span>}
+          {!compact && (
+            <span className={cn("text-xs font-semibold px-3 py-1.5 rounded-full border", theme.border)}>
+              Подробнее →
+            </span>
+          )}
           <AddToCart inStock={product.inStock} item={cartItem} className={compact ? "w-full justify-center" : ""} />
         </div>
       </div>
