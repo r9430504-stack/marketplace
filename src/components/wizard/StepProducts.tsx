@@ -7,6 +7,7 @@ import ImageUpload from "@/components/ui/ImageUpload";
 export type ProductDraft = {
   name: string;
   description: string;
+  details: string;
   price: string;
   oldPrice: string;
   currency: string;
@@ -23,6 +24,7 @@ interface Props {
 const empty = (categoryIndex: number): ProductDraft => ({
   name: "",
   description: "",
+  details: "",
   price: "",
   oldPrice: "",
   currency: "RUB",
@@ -162,13 +164,23 @@ export default function StepProducts({ categories, products, onChange }: Props) 
           </div>
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Описание</label>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Краткое описание</label>
           <textarea
             className="border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-sm resize-none"
             rows={2}
-            placeholder="Краткое описание товара..."
+            placeholder="Короткая строка под названием..."
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Подробное описание (на странице товара)</label>
+          <textarea
+            className="border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-sm resize-none"
+            rows={4}
+            placeholder="Характеристики, комплектация, условия — всё подробно. Можно с переносами строк."
+            value={form.details}
+            onChange={(e) => setForm({ ...form, details: e.target.value })}
           />
         </div>
         <ImageUpload

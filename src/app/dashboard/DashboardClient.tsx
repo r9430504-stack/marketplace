@@ -12,6 +12,7 @@ type Product = {
   id: string;
   name: string;
   description: string | null;
+  details: string | null;
   price: number;
   oldPrice: number | null;
   currency: string;
@@ -46,7 +47,7 @@ const currencySymbols: Record<string, string> = {
   RUB: "₽", USD: "$", EUR: "€", KZT: "₸",
 };
 
-const emptyForm = { name: "", price: "", oldPrice: "", currency: "RUB", description: "", image: "", inStock: true };
+const emptyForm = { name: "", price: "", oldPrice: "", currency: "RUB", description: "", details: "", image: "", inStock: true };
 
 export default function DashboardClient({ store: initialStore }: Props) {
   const router = useRouter();
@@ -83,6 +84,7 @@ export default function DashboardClient({ store: initialStore }: Props) {
     const body = {
       name: form.name,
       description: form.description,
+      details: form.details,
       price: parseFloat(form.price),
       oldPrice: form.oldPrice ? parseFloat(form.oldPrice) : null,
       currency: form.currency,
@@ -117,6 +119,7 @@ export default function DashboardClient({ store: initialStore }: Props) {
       oldPrice: p.oldPrice != null ? String(p.oldPrice) : "",
       currency: p.currency,
       description: p.description ?? "",
+      details: p.details ?? "",
       image: p.images[0] ?? "",
       inStock: p.inStock,
     });
@@ -293,9 +296,16 @@ export default function DashboardClient({ store: initialStore }: Props) {
                 <textarea
                   className="w-full border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm resize-none"
                   rows={2}
-                  placeholder="Описание..."
+                  placeholder="Краткое описание (под названием)..."
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
+                />
+                <textarea
+                  className="w-full border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm resize-none"
+                  rows={4}
+                  placeholder="Подробное описание (на странице товара): характеристики, комплектация..."
+                  value={form.details}
+                  onChange={(e) => setForm({ ...form, details: e.target.value })}
                 />
                 <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
                   <input

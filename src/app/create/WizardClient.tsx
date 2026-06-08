@@ -35,6 +35,7 @@ interface StoreState {
   contactAddress: string;
   contactWhatsapp: string;
   contactInstagram: string;
+  deliveryInfo: string;
 }
 
 const initial: StoreState = {
@@ -51,6 +52,7 @@ const initial: StoreState = {
   contactAddress: "",
   contactWhatsapp: "",
   contactInstagram: "",
+  deliveryInfo: "",
 };
 
 export default function WizardClient() {
@@ -90,6 +92,7 @@ export default function WizardClient() {
           contactAddress: data.contactAddress,
           contactWhatsapp: data.contactWhatsapp,
           contactInstagram: data.contactInstagram,
+          deliveryInfo: data.deliveryInfo,
           status: "PUBLISHED",
         }),
       });
@@ -115,6 +118,7 @@ export default function WizardClient() {
           body: JSON.stringify({
             name: p.name,
             description: p.description,
+            details: p.details,
             price: parseFloat(p.price),
             oldPrice: p.oldPrice ? parseFloat(p.oldPrice) : null,
             currency: p.currency,
@@ -204,6 +208,7 @@ export default function WizardClient() {
                 contactAddress: data.contactAddress,
                 contactWhatsapp: data.contactWhatsapp,
                 contactInstagram: data.contactInstagram,
+                deliveryInfo: data.deliveryInfo,
               }}
               onChange={(patch) => update(patch as Partial<StoreState>)}
             />

@@ -15,6 +15,7 @@ interface PreviewData {
   contactPhone: string;
   contactEmail: string;
   contactAddress: string;
+  deliveryInfo: string;
 }
 
 const currencySymbols: Record<string, string> = {
@@ -139,6 +140,14 @@ export default function StorePreview({ data }: { data: PreviewData }) {
             );
           })}
         </div>
+
+        {/* Delivery */}
+        {data.deliveryInfo && (
+          <div className={cn("border-t px-3 py-3 text-[10px]", theme.border)}>
+            <p className="font-bold text-xs mb-1">🚚 Доставка</p>
+            <p className="opacity-80 whitespace-pre-line">{data.deliveryInfo}</p>
+          </div>
+        )}
 
         {/* Contact footer */}
         {(data.contactPhone || data.contactEmail || data.contactAddress) && (

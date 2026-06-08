@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { getTheme } from "@/types";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import AddToCart from "@/components/store/AddToCart";
+import CartFab from "@/components/store/CartFab";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -105,10 +107,11 @@ export default async function StorePage({ params }: { params: Promise<{ slug: st
                     ? Math.round(((product.oldPrice! - product.price) / product.oldPrice!) * 100)
                     : 0;
                   return (
-                    <div
+                    <Link
                       key={product.id}
+                      href={`/store/${store.slug}/${product.id}`}
                       className={cn(
-                        "group rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-xl",
+                        "group rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-xl flex flex-col",
                         theme.card
                       )}
                     >
@@ -141,7 +144,7 @@ export default async function StorePage({ params }: { params: Promise<{ slug: st
                           </div>
                         )}
                       </div>
-                      <div className="p-4">
+                      <div className="p-4 flex flex-col flex-1">
                         <h3 className="font-semibold text-base leading-snug line-clamp-2">{product.name}</h3>
                         {product.description && (
                           <p className="text-sm opacity-60 mt-1 line-clamp-2">{product.description}</p>
@@ -161,8 +164,23 @@ export default async function StorePage({ params }: { params: Promise<{ slug: st
                             Выгода {money(product.oldPrice! - product.price, product.currency)}
                           </p>
                         )}
+                        <div className="mt-3 pt-1 flex items-center justify-between gap-2 mt-auto">
+                          <span className="text-xs opacity-40">Подробнее →</span>
+                          <AddToCart
+                            inStock={product.inStock}
+                            item={{
+                              id: product.id,
+                              name: product.name,
+                              price: product.price,
+                              currency: product.currency,
+                              image: product.images[0] ?? "",
+                              storeSlug: store.slug,
+                              storeName: store.name,
+                            }}
+                          />
+                        </div>
                       </div>
-                    </div>
+                    </Link>
                   );
                 })}
               </div>
@@ -170,6 +188,16 @@ export default async function StorePage({ params }: { params: Promise<{ slug: st
           </section>
         ))}
       </div>
+
+      {/* Delivery */}
+      {store.deliveryInfo && (
+        <div className={cn("border-t py-8 px-4", theme.border)}>
+          <div className="max-w-5xl mx-auto">
+            <h3 className="text-xl font-bold mb-2">🚚 Доставка</h3>
+            <p className="text-sm opacity-80 whitespace-pre-line leading-relaxed">{store.deliveryInfo}</p>
+          </div>
+        </div>
+      )}
 
       {/* Contact footer */}
       {(store.contactPhone || store.contactEmail || store.contactAddress) && (
@@ -215,6 +243,8 @@ export default async function StorePage({ params }: { params: Promise<{ slug: st
           StoreBuilder
         </Link>
       </div>
+
+      <CartFab />
     </div>
   );
 }

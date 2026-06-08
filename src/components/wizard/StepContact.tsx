@@ -7,6 +7,7 @@ interface ContactData {
   contactAddress: string;
   contactWhatsapp: string;
   contactInstagram: string;
+  deliveryInfo: string;
 }
 
 interface Props {
@@ -43,6 +44,17 @@ export default function StepContact({ value, onChange }: Props) {
         value={value.contactAddress}
         onChange={(e) => onChange({ contactAddress: e.target.value })}
       />
+
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">🚚 Условия доставки / Delivery</label>
+        <textarea
+          className="border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-sm resize-none"
+          rows={3}
+          placeholder="Например: Доставка по городу 300₽, бесплатно от 5000₽. По России — СДЭК 1-5 дней."
+          value={value.deliveryInfo}
+          onChange={(e) => onChange({ deliveryInfo: e.target.value })}
+        />
+      </div>
 
       <div className="border-t dark:border-gray-700 pt-4 space-y-4">
         <p className="text-sm font-semibold text-gray-600 dark:text-gray-400">Социальные сети (необязательно)</p>
