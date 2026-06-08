@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import StepLayout from "@/components/wizard/StepLayout";
 import StepTheme from "@/components/wizard/StepTheme";
 import StepBanner from "@/components/wizard/StepBanner";
 import StepCategories from "@/components/wizard/StepCategories";
@@ -10,19 +11,22 @@ import StepReview from "@/components/wizard/StepReview";
 import StorePreview from "@/components/wizard/StorePreview";
 import Button from "@/components/ui/Button";
 import ThemeToggle from "@/components/ui/ThemeToggle";
-import { Theme } from "@/types";
+import { Theme, Layout } from "@/types";
 
 const STEPS = [
-  { id: 1, title: "Стиль", en: "Style" },
-  { id: 2, title: "Оформление", en: "Appearance" },
-  { id: 3, title: "Категории", en: "Categories" },
-  { id: 4, title: "Товары", en: "Products" },
-  { id: 5, title: "Контакты", en: "Contacts" },
-  { id: 6, title: "Публикация", en: "Publish" },
+  { id: 1, title: "Макет", en: "Layout" },
+  { id: 2, title: "Стиль", en: "Style" },
+  { id: 3, title: "Оформление", en: "Appearance" },
+  { id: 4, title: "Категории", en: "Categories" },
+  { id: 5, title: "Товары", en: "Products" },
+  { id: 6, title: "Контакты", en: "Contacts" },
+  { id: 7, title: "Публикация", en: "Publish" },
 ];
 
 interface StoreState {
+  layout: Layout;
   theme: Theme;
+  aboutText: string;
   name: string;
   tagline: string;
   bannerImage: string;
@@ -39,7 +43,9 @@ interface StoreState {
 }
 
 const initial: StoreState = {
+  layout: "CATALOG",
   theme: "MODERN",
+  aboutText: "",
   name: "",
   tagline: "",
   bannerImage: "",
@@ -67,8 +73,8 @@ export default function WizardClient() {
   }
 
   function canNext(): boolean {
-    if (step === 2 && !data.name) return false;
-    if (step === 3 && data.categories.length === 0) return false;
+    if (step === 3 && !data.name) return false;
+    if (step === 4 && data.categories.length === 0) return false;
     return true;
   }
 
@@ -87,6 +93,8 @@ export default function WizardClient() {
           bannerText: data.bannerText,
           bannerTextColor: data.bannerTextColor,
           theme: data.theme,
+          layout: data.layout,
+          aboutText: data.aboutText,
           contactPhone: data.contactPhone,
           contactEmail: data.contactEmail,
           contactAddress: data.contactAddress,
@@ -182,25 +190,28 @@ export default function WizardClient() {
         {/* Form */}
         <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg p-6 md:p-8 order-1 lg:order-2">
           {step === 1 && (
-            <StepTheme value={data.theme} onChange={(theme) => update({ theme })} />
+            <StepLayout value={data.layout} onChange={(layout) => update({ layout })} />
           )}
           {step === 2 && (
+            <StepTheme value={data.theme} onChange={(theme) => update({ theme })} />
+          )}
+          {step === 3 && (
             <StepBanner
               value={{ name: data.name, tagline: data.tagline, bannerImage: data.bannerImage, bannerText: data.bannerText, bannerTextColor: data.bannerTextColor }}
               onChange={(patch) => update(patch as Partial<StoreState>)}
             />
           )}
-          {step === 3 && (
+          {step === 4 && (
             <StepCategories value={data.categories} onChange={(categories) => update({ categories })} />
           )}
-          {step === 4 && (
+          {step === 5 && (
             <StepProducts
               categories={data.categories}
               products={data.products}
               onChange={(products) => update({ products })}
             />
           )}
-          {step === 5 && (
+          {step === 6 && (
             <StepContact
               value={{
                 contactPhone: data.contactPhone,
@@ -209,11 +220,12 @@ export default function WizardClient() {
                 contactWhatsapp: data.contactWhatsapp,
                 contactInstagram: data.contactInstagram,
                 deliveryInfo: data.deliveryInfo,
+                aboutText: data.aboutText,
               }}
               onChange={(patch) => update(patch as Partial<StoreState>)}
             />
           )}
-          {step === 6 && <StepReview data={data} />}
+          {step === 7 && <StepReview data={data} />}
 
           {error && (
             <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">

@@ -162,3 +162,152 @@ export const THEMES: ThemeConfig[] = [
 export function getTheme(id: Theme): ThemeConfig {
   return THEMES.find((t) => t.id === id) ?? THEMES[0];
 }
+
+/* ─────────────  МАКЕТЫ (структура страницы магазина)  ───────────── */
+
+export type Layout =
+  | "SHOWCASE"
+  | "CATALOG"
+  | "MAGAZINE"
+  | "DENSE"
+  | "MINIMAL"
+  | "BOUTIQUE"
+  | "LOOKBOOK"
+  | "SIDEBAR"
+  | "STORY"
+  | "MARKET";
+
+export type HeroVariant =
+  | "big"
+  | "fullscreen"
+  | "centered"
+  | "minimal"
+  | "split"
+  | "strip"
+  | "overlay";
+export type NavVariant = "topbar" | "pills" | "sidebar" | "none";
+export type GridVariant =
+  | "cards3"
+  | "cards2"
+  | "compact"
+  | "list"
+  | "showcase"
+  | "row";
+
+export type LayoutConfig = {
+  id: Layout;
+  nameRu: string;
+  nameEn: string;
+  desc: string;
+  emoji: string;
+  hero: HeroVariant;
+  nav: NavVariant;
+  grid: GridVariant;
+};
+
+export const LAYOUTS: LayoutConfig[] = [
+  {
+    id: "SHOWCASE",
+    nameRu: "Витрина с меню",
+    nameEn: "Showcase",
+    emoji: "🏬",
+    desc: "Большая шапка, сверху меню: Товары · О нас · Контакты. Классика брендового сайта.",
+    hero: "big",
+    nav: "topbar",
+    grid: "cards3",
+  },
+  {
+    id: "CATALOG",
+    nameRu: "Каталог",
+    nameEn: "Catalog",
+    emoji: "🛍️",
+    desc: "Категории-кнопки прилипают сверху, аккуратная сетка 3 в ряд. Удобно для многих товаров.",
+    hero: "big",
+    nav: "pills",
+    grid: "cards3",
+  },
+  {
+    id: "MAGAZINE",
+    nameRu: "Журнал",
+    nameEn: "Magazine",
+    emoji: "📰",
+    desc: "Крупные чередующиеся блоки фото+текст. Журнальный, премиальный стиль.",
+    hero: "overlay",
+    nav: "topbar",
+    grid: "showcase",
+  },
+  {
+    id: "DENSE",
+    nameRu: "Маркетплейс",
+    nameEn: "Dense grid",
+    emoji: "🔲",
+    desc: "Много мелких карточек в ряд. Как большой маркетплейс с кучей позиций.",
+    hero: "strip",
+    nav: "pills",
+    grid: "compact",
+  },
+  {
+    id: "MINIMAL",
+    nameRu: "Минимал",
+    nameEn: "Minimal",
+    emoji: "⚪",
+    desc: "Максимум воздуха, тонкая шапка, товары списком. Сдержанно и элегантно.",
+    hero: "minimal",
+    nav: "none",
+    grid: "list",
+  },
+  {
+    id: "BOUTIQUE",
+    nameRu: "Бутик",
+    nameEn: "Boutique",
+    emoji: "💎",
+    desc: "Центрированная шапка, крупные карточки 2 в ряд. Для премиум-товаров.",
+    hero: "centered",
+    nav: "topbar",
+    grid: "cards2",
+  },
+  {
+    id: "LOOKBOOK",
+    nameRu: "Лукбук",
+    nameEn: "Lookbook",
+    emoji: "🖼️",
+    desc: "Фото на весь экран, товары едут горизонтально лентой. Модный, визуальный.",
+    hero: "fullscreen",
+    nav: "none",
+    grid: "row",
+  },
+  {
+    id: "SIDEBAR",
+    nameRu: "С боковым меню",
+    nameEn: "Sidebar",
+    emoji: "📑",
+    desc: "Категории в колонке слева, товары справа. Как в больших интернет-магазинах.",
+    hero: "strip",
+    nav: "sidebar",
+    grid: "cards3",
+  },
+  {
+    id: "STORY",
+    nameRu: "История",
+    nameEn: "Storytelling",
+    emoji: "📖",
+    desc: "Текст на фото снизу, крупные блоки с историей бренда. Эмоциональный стиль.",
+    hero: "overlay",
+    nav: "none",
+    grid: "showcase",
+  },
+  {
+    id: "MARKET",
+    nameRu: "Базар",
+    nameEn: "Market",
+    emoji: "🏪",
+    desc: "Шапка-полоса, плотная сетка и кнопки категорий. Живой, насыщенный вид.",
+    hero: "split",
+    nav: "pills",
+    grid: "compact",
+  },
+];
+
+export function getLayout(id: Layout): LayoutConfig {
+  return LAYOUTS.find((l) => l.id === id) ?? LAYOUTS[1];
+}

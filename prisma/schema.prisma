@@ -22,6 +22,8 @@ model Store {
   name            String
   tagline         String?
   theme           Theme       @default(MODERN)
+  layout          Layout      @default(CATALOG)
+  aboutText       String?
   primaryColor    String      @default("#3B82F6")
   bannerImage     String?
   bannerText      String?
@@ -90,4 +92,17 @@ enum Theme {
 enum StoreStatus {
   DRAFT
   PUBLISHED
+}
+
+enum Layout {
+  SHOWCASE
+  CATALOG
+  MAGAZINE
+  DENSE
+  MINIMAL
+  BOUTIQUE
+  LOOKBOOK
+  SIDEBAR
+  STORY
+  MARKET
 }
