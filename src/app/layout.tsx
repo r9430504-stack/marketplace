@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
+import { SITE_URL } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -8,8 +9,28 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "StoreBuilder — создай магазин за 5 минут",
-  description: "Платформа для создания интернет-магазинов. Create your online store in minutes.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "StoreBuilder — создай интернет-магазин за 5 минут",
+    template: "%s — StoreBuilder",
+  },
+  description:
+    "StoreBuilder — бесплатный конструктор интернет-магазинов. Выберите дизайн, добавьте товары с фото и видео, укажите цены и получите готовый сайт-магазин за 5 минут.",
+  keywords: ["конструктор магазинов", "создать интернет-магазин", "онлайн магазин", "storebuilder", "сайт магазин бесплатно"],
+  alternates: { canonical: SITE_URL },
+  openGraph: {
+    title: "StoreBuilder — создай интернет-магазин за 5 минут",
+    description: "Бесплатный конструктор интернет-магазинов: дизайн, товары, фото и видео — готовый сайт за 5 минут.",
+    url: SITE_URL,
+    siteName: "StoreBuilder",
+    type: "website",
+    locale: "ru_RU",
+  },
+  robots: { index: true, follow: true },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
+    yandex: process.env.YANDEX_VERIFICATION,
+  },
 };
 
 // Ставит тему до отрисовки страницы, чтобы не было вспышки светлого фона.
