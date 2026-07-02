@@ -1,18 +1,27 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+
+// Тема хранится как класс .dark на <html> (его ставит инлайн-скрипт в layout
+// до отрисовки). Читаем это внешнее состояние через useSyncExternalStore —
+// без setState в эффекте и без рассинхронизации при гидратации.
+function subscribe(callback: () => void) {
+  const observer = new MutationObserver(callback);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+  return () => observer.disconnect();
+}
+
+function getSnapshot() {
+  return document.documentElement.classList.contains("dark");
+}
 
 export default function ThemeToggle({ className = "" }: { className?: string }) {
-  const [dark, setDark] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setDark(document.documentElement.classList.contains("dark"));
-    setMounted(true);
-  }, []);
+  const dark = useSyncExternalStore(subscribe, getSnapshot, () => false);
 
   function toggle() {
     const next = !dark;
-    setDark(next);
     document.documentElement.classList.toggle("dark", next);
     try {
       localStorage.setItem("theme", next ? "dark" : "light");
@@ -26,7 +35,7 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
       aria-label="Переключить тему"
       className={`w-9 h-9 rounded-full flex items-center justify-center text-lg transition-colors bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 ${className}`}
     >
-      {mounted ? (dark ? "☀️" : "🌙") : "🌙"}
+      {dark ? "☀️" : "🌙"}
     </button>
   );
 }

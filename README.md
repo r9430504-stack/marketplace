@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Galaxy Archive — история телефонов Samsung Galaxy
 
-## Getting Started
+Справочный сайт об истории смартфонов Samsung Galaxy: точные характеристики,
+даты выхода и история создания флагманов серий **S**, **Note**, складных
+**Z Fold** и **Z Flip**, а также знаковых моделей **Galaxy A** — с 2013 года
+до наших дней. Есть поиск по моделям, фильтры по линейке и году, хронология и
+блоки под рекламу Google AdSense.
 
-First, run the development server:
+Построен на **Next.js 16** (App Router) + **Tailwind CSS 4**. Данные хранятся
+статически (без БД), поэтому сайт мгновенно рендерится и деплоится куда угодно.
+
+## Запуск локально
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Откройте [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Структура
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Путь | Назначение |
+|------|-----------|
+| `src/data/phones.ts` | **Каталог телефонов** — единственный источник данных. Добавить модель = дописать объект. |
+| `src/lib/phones.ts` | Типы `Phone`/`Specs`, метаданные линеек, функции поиска и фильтрации. |
+| `src/app/page.tsx` | Главная страница. |
+| `src/app/phones/` | Каталог `/phones` и страница модели `/phones/[slug]`. |
+| `src/app/history/` | Хронология по годам `/history`. |
+| `src/components/AdSlot.tsx` | Рекламный блок AdSense (с плейсхолдером, пока не настроен). |
 
-## Learn More
+## Как добавить телефон
 
-To learn more about Next.js, take a look at the following resources:
+Откройте `src/data/phones.ts`, скопируйте любой объект и заполните поля.
+Обязательны уникальный `slug`, `name`, `series`, `releaseYear`, `releaseDate`,
+`tagline`, `history`, `keyFeatures` и `specs`. Поле `image` необязательное —
+без него показывается стилизованная заглушка в цвете линейки.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Переменные окружения
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Скопируйте `.env.example` в `.env` и заполните (см. комментарии в файле):
 
-## Deploy on Vercel
+- `NEXT_PUBLIC_SITE_URL` — публичный адрес для canonical/sitemap/OpenGraph.
+- `NEXT_PUBLIC_ADSENSE_CLIENT` — издательский ID Google AdSense
+  (`ca-pub-…`). Пока пуст — реклама заменяется плейсхолдерами.
+- `GOOGLE_SITE_VERIFICATION`, `YANDEX_VERIFICATION` — верификация в вебмастере.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Google AdSense
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Задайте `NEXT_PUBLIC_ADSENSE_CLIENT` — на всех страницах подключится скрипт AdSense.
+2. Отредактируйте `public/ads.txt`, подставив ваш `pub-…` ID.
+3. При необходимости добавьте `data-ad-slot` в конкретные `<AdSlot slot="…" />`.
+
+## Деплой
+
+Проект деплоится на **Railway** (конфиг `railway.json`, сборщик Nixpacks).
+Команда сборки — `npm run build`, запуск — `next start`. База данных не требуется.
