@@ -406,6 +406,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s10-plus",
+    image: "/models/galaxy-s10-plus.jpg",
     name: "Galaxy S10+",
     series: "Galaxy S",
     releaseYear: 2019,
@@ -1169,6 +1170,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s10e",
+    image: "/models/galaxy-s10e.jpg",
     name: "Galaxy S10e",
     series: "Galaxy S",
     releaseYear: 2019,
@@ -1810,6 +1812,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s10-lite",
+    image: "/models/galaxy-s10-lite.jpg",
     name: "Galaxy S10 Lite",
     series: "Galaxy S",
     releaseYear: 2020,
@@ -1865,6 +1868,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s20-plus",
+    image: "/models/galaxy-s20-plus.jpg",
     name: "Galaxy S20+",
     series: "Galaxy S",
     releaseYear: 2020,
@@ -2768,6 +2772,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s10-5g",
+    image: "/models/galaxy-s10-5g.jpg",
     name: "Galaxy S10 5G",
     series: "Galaxy S",
     releaseYear: 2019,
