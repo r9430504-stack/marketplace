@@ -152,6 +152,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s6-edge",
+    image: "/models/galaxy-s6-edge.jpg",
     name: "Galaxy S6 Edge",
     series: "Galaxy S",
     releaseYear: 2015,
@@ -207,6 +208,7 @@ export const PHONES: Phone[] = [
   // ───────────────────────── 2016 ─────────────────────────
   {
     slug: "galaxy-s7-edge",
+    image: "/models/galaxy-s7-edge.jpg",
     name: "Galaxy S7 Edge",
     series: "Galaxy S",
     releaseYear: 2016,
@@ -1081,6 +1083,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s7",
+    image: "/models/galaxy-s7.jpg",
     name: "Galaxy S7",
     series: "Galaxy S",
     releaseYear: 2016,
@@ -2733,6 +2736,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s6-edge-plus",
+    image: "/models/galaxy-s6-edge-plus.jpg",
     name: "Galaxy S6 Edge+",
     series: "Galaxy S",
     releaseYear: 2015,
