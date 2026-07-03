@@ -65,13 +65,13 @@ export default async function PhonePage({
 
       {/* Хлебные крошки */}
       <nav className="text-sm text-gray-500 dark:text-gray-400 mb-6 flex flex-wrap gap-1">
-        <Link href="/" className="hover:text-blue-600 dark:hover:text-blue-400">Главная</Link>
+        <Link href="/" className="hover:text-orange-600 dark:hover:text-orange-400">Главная</Link>
         <span>/</span>
-        <Link href="/phones" className="hover:text-blue-600 dark:hover:text-blue-400">Каталог</Link>
+        <Link href="/phones" className="hover:text-orange-600 dark:hover:text-orange-400">Каталог</Link>
         <span>/</span>
         <Link
           href={`/phones?series=${encodeURIComponent(phone.series)}`}
-          className="hover:text-blue-600 dark:hover:text-blue-400"
+          className="hover:text-orange-600 dark:hover:text-orange-400"
         >
           {s.label}
         </Link>
@@ -96,7 +96,7 @@ export default async function PhonePage({
             {phone.keyFeatures.map((f) => (
               <span
                 key={f}
-                className="text-xs font-medium px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-900"
+                className="text-xs font-medium px-3 py-1.5 rounded-full bg-orange-50 dark:bg-orange-950/50 text-orange-700 dark:text-orange-300 border border-orange-100 dark:border-orange-900"
               >
                 {f}
               </span>

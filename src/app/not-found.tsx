@@ -13,7 +13,7 @@ export default function NotFound() {
       <div className="mt-8 flex flex-wrap gap-3 justify-center">
         <Link
           href="/phones"
-          className="bg-blue-600 text-white px-6 py-3 rounded-2xl font-semibold hover:bg-blue-700 transition-colors"
+          className="bg-orange-600 text-white px-6 py-3 rounded-2xl font-semibold hover:bg-orange-700 transition-colors"
         >
           Открыть каталог
         </Link>
