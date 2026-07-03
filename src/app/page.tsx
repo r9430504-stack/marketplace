@@ -1,139 +1,91 @@
-import { prisma } from "@/lib/prisma";
-import { getSession } from "@/lib/session";
 import Link from "next/link";
-import { THEMES } from "@/types";
-import ThemeToggle from "@/components/ui/ThemeToggle";
+import { getAllPhones, SERIES } from "@/lib/phones";
+import PhoneCard from "@/components/PhoneCard";
+import AdSlot from "@/components/AdSlot";
 
-export default async function HomePage() {
-  const [stores, session] = await Promise.all([
-    prisma.store.findMany({
-      where: { status: "PUBLISHED" },
-      include: { _count: { select: { products: true } } },
-      orderBy: { createdAt: "desc" },
-    }),
-    getSession(),
-  ]);
+export default function HomePage() {
+  const phones = getAllPhones();
+  const featured = phones.slice(0, 6);
+  const total = phones.length;
+  const firstYear = Math.min(...phones.map((p) => p.releaseYear));
+  const lastYear = Math.max(...phones.map((p) => p.releaseYear));
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-950 dark:to-gray-900">
-      {/* Navbar */}
-      <nav className="bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b border-gray-100 dark:border-gray-800 sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold text-blue-600 dark:text-blue-400">
-            🏗️ StoreBuilder
-          </Link>
-          <div className="flex items-center gap-3">
-            {session ? (
-              <>
-                <span className="text-sm text-gray-500 dark:text-gray-400">Привет, {session.name}</span>
-                {session.role === "SELLER" && (
-                  <Link href="/dashboard" className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">
-                    Мой магазин
-                  </Link>
-                )}
-              </>
-            ) : (
-              <>
-                <Link href="/login" className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
-                  Войти / Login
-                </Link>
-                <Link
-                  href="/register"
-                  className="bg-blue-600 text-white px-4 py-1.5 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors"
-                >
-                  Создать магазин
-                </Link>
-              </>
-            )}
-            <ThemeToggle />
-          </div>
-        </div>
-      </nav>
-
+    <div>
       {/* Hero */}
-      <section className="text-center py-16 px-4">
-        <h1 className="text-5xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
-          Создай свой магазин
-          <br />
-          <span className="text-blue-600 dark:text-blue-400">за 5 минут</span>
-        </h1>
-        <p className="text-xl text-gray-500 dark:text-gray-400 mt-4 max-w-xl mx-auto">
-          Выбери стиль, добавь товары и получи готовый сайт-магазин.
-          <br />
-          <span className="text-sm">Create your store in minutes — no code needed.</span>
-        </p>
-        <div className="flex flex-wrap gap-3 justify-center mt-8">
-          <Link
-            href="/register"
-            className="bg-blue-600 text-white px-8 py-3 rounded-2xl font-semibold text-lg hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200"
-          >
-            🚀 Начать бесплатно
-          </Link>
-          <Link
-            href="#stores"
-            className="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-8 py-3 rounded-2xl font-semibold text-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-700"
-          >
-            Смотреть магазины
-          </Link>
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800" />
+        <div className="relative max-w-6xl mx-auto px-4 py-20 text-center text-white">
+          <p className="inline-block text-xs font-semibold uppercase tracking-widest bg-white/15 rounded-full px-3 py-1 backdrop-blur">
+            {firstYear} — {lastYear} · {total} моделей
+          </p>
+          <h1 className="mt-5 text-4xl sm:text-6xl font-extrabold leading-tight drop-shadow">
+            История каждого
+            <br />
+            Samsung Galaxy
+          </h1>
+          <p className="mt-4 text-lg text-blue-100 max-w-2xl mx-auto">
+            Точные характеристики, даты выхода и история создания флагманов Samsung —
+            от Galaxy S4 до последних складных Z Fold и Z Flip.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3 justify-center">
+            <Link
+              href="/phones"
+              className="bg-white text-blue-700 px-7 py-3 rounded-2xl font-semibold text-lg hover:bg-blue-50 transition-colors shadow-lg"
+            >
+              🔍 Поиск по моделям
+            </Link>
+            <Link
+              href="/history"
+              className="bg-white/10 border border-white/30 text-white px-7 py-3 rounded-2xl font-semibold text-lg hover:bg-white/20 transition-colors backdrop-blur"
+            >
+              Хронология по годам
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="max-w-4xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[
-          { icon: "🎨", title: "5 стилей оформления", sub: "5 design themes" },
-          { icon: "📦", title: "Любые категории товаров", sub: "Any product categories" },
-          { icon: "🔗", title: "Готовая ссылка на магазин", sub: "Instant store URL" },
-        ].map((f) => (
-          <div key={f.title} className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm text-center">
-            <span className="text-3xl">{f.icon}</span>
-            <p className="font-semibold text-gray-800 dark:text-gray-100 mt-2">{f.title}</p>
-            <p className="text-xs text-gray-400 dark:text-gray-500">{f.sub}</p>
-          </div>
-        ))}
+      {/* Линейки */}
+      <section className="max-w-6xl mx-auto px-4 py-14">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Линейки Galaxy</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {SERIES.map((s) => {
+            const count = phones.filter((p) => p.series === s.id).length;
+            if (count === 0) return null;
+            return (
+              <Link
+                key={s.id}
+                href={`/phones?series=${encodeURIComponent(s.id)}`}
+                className={`rounded-2xl p-5 text-white bg-gradient-to-br ${s.from} ${s.to} shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-between min-h-[130px]`}
+              >
+                <div>
+                  <p className="font-bold text-lg">{s.label}</p>
+                  <p className="text-white/80 text-xs mt-1 leading-snug">{s.blurb}</p>
+                </div>
+                <p className="text-white/90 text-sm font-medium mt-3">{count} моделей →</p>
+              </Link>
+            );
+          })}
+        </div>
       </section>
 
-      {/* Published stores */}
-      <section id="stores" className="max-w-6xl mx-auto px-4 py-12">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-          Магазины на платформе
-          <span className="text-sm font-normal text-gray-400 dark:text-gray-500 ml-2">Stores on the platform</span>
-        </h2>
+      <div className="max-w-6xl mx-auto px-4">
+        <AdSlot />
+      </div>
 
-        {stores.length === 0 ? (
-          <div className="text-center py-16 text-gray-400 dark:text-gray-500">
-            <span className="text-5xl">🏪</span>
-            <p className="mt-4 text-lg">Пока нет магазинов. Будь первым!</p>
-            <p className="text-sm">No stores yet. Be the first!</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {stores.map((store) => {
-              const theme = THEMES.find((t) => t.id === store.theme) ?? THEMES[0];
-              return (
-                <Link
-                  key={store.id}
-                  href={`/store/${store.slug}`}
-                  className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow overflow-hidden group"
-                >
-                  <div className={`h-28 bg-gradient-to-br ${theme.preview} relative`}>
-                    {store.bannerImage && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={store.bannerImage} alt="" className="absolute inset-0 w-full h-full object-cover opacity-70" />
-                    )}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <p className="text-white font-bold text-lg drop-shadow">{store.name}</p>
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    {store.tagline && <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{store.tagline}</p>}
-                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{store._count.products} товаров</p>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        )}
+      {/* Свежие флагманы */}
+      <section className="max-w-6xl mx-auto px-4 py-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Последние флагманы</h2>
+          <Link href="/phones" className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">
+            Весь каталог →
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {featured.map((p) => (
+            <PhoneCard key={p.slug} phone={p} />
+          ))}
+        </div>
       </section>
     </div>
   );

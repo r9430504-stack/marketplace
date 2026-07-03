@@ -1,28 +1,39 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION, ADSENSE_CLIENT } from "@/lib/site";
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
-  subsets: ["latin"],
+  subsets: ["latin", "cyrillic"],
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "StoreBuilder — создай интернет-магазин за 5 минут",
-    template: "%s — StoreBuilder",
+    default: SITE_TITLE,
+    template: `%s — ${SITE_NAME}`,
   },
-  description:
-    "StoreBuilder — бесплатный конструктор интернет-магазинов. Выберите дизайн, добавьте товары с фото и видео, укажите цены и получите готовый сайт-магазин за 5 минут.",
-  keywords: ["конструктор магазинов", "создать интернет-магазин", "онлайн магазин", "storebuilder", "сайт магазин бесплатно"],
+  description: SITE_DESCRIPTION,
+  keywords: [
+    "Samsung Galaxy история",
+    "характеристики Samsung",
+    "Galaxy S",
+    "Galaxy Note",
+    "Galaxy Z Fold",
+    "Galaxy Z Flip",
+    "все телефоны Samsung",
+    "модели Samsung по годам",
+  ],
   alternates: { canonical: SITE_URL },
   openGraph: {
-    title: "StoreBuilder — создай интернет-магазин за 5 минут",
-    description: "Бесплатный конструктор интернет-магазинов: дизайн, товары, фото и видео — готовый сайт за 5 минут.",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     url: SITE_URL,
-    siteName: "StoreBuilder",
+    siteName: SITE_NAME,
     type: "website",
     locale: "ru_RU",
   },
@@ -46,7 +57,19 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="min-h-full flex flex-col bg-white dark:bg-[#0b0f17]">{children}</body>
+      <body className="min-h-full flex flex-col bg-white dark:bg-[#0b0f17]">
+        <SiteHeader />
+        <main className="flex-1">{children}</main>
+        <SiteFooter />
+        {ADSENSE_CLIENT && (
+          <Script
+            async
+            strategy="afterInteractive"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+            crossOrigin="anonymous"
+          />
+        )}
+      </body>
     </html>
   );
 }
