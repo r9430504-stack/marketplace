@@ -718,6 +718,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s22-ultra",
+    image: "/models/galaxy-s22-ultra.jpg",
     name: "Galaxy S22 Ultra",
     series: "Galaxy S",
     releaseYear: 2022,
@@ -1229,6 +1230,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s21-fe",
+    image: "/models/galaxy-s21-fe.jpg",
     name: "Galaxy S21 FE",
     series: "Galaxy S",
     releaseYear: 2022,
@@ -1257,6 +1259,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s22",
+    image: "/models/galaxy-s22.jpg",
     name: "Galaxy S22",
     series: "Galaxy S",
     releaseYear: 2022,
@@ -1986,6 +1989,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s23",
+    image: "/models/galaxy-s23.jpg",
     name: "Galaxy S23",
     series: "Galaxy S",
     releaseYear: 2023,
