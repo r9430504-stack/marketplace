@@ -517,6 +517,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s20-ultra",
+    image: "/models/galaxy-s20-ultra.jpg",
     name: "Galaxy S20 Ultra",
     series: "Galaxy S",
     releaseYear: 2020,
@@ -602,6 +603,7 @@ export const PHONES: Phone[] = [
   // ───────────────────────── 2021 ─────────────────────────
   {
     slug: "galaxy-s21-ultra",
+    image: "/models/galaxy-s21-ultra.jpg",
     name: "Galaxy S21 Ultra",
     series: "Galaxy S",
     releaseYear: 2021,
@@ -1198,6 +1200,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s20-fe",
+    image: "/models/galaxy-s20-fe.jpg",
     name: "Galaxy S20 FE",
     series: "Galaxy S",
     releaseYear: 2020,
@@ -1840,6 +1843,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s20",
+    image: "/models/galaxy-s20.jpg",
     name: "Galaxy S20",
     series: "Galaxy S",
     releaseYear: 2020,
@@ -1897,6 +1901,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s21",
+    image: "/models/galaxy-s21.jpg",
     name: "Galaxy S21",
     series: "Galaxy S",
     releaseYear: 2021,
