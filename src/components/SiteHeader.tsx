@@ -1,5 +1,4 @@
 import Link from "next/link";
-import ThemeToggle from "@/components/ui/ThemeToggle";
 import { SITE_NAME } from "@/lib/site";
 
 export default function SiteHeader() {
@@ -17,7 +16,6 @@ export default function SiteHeader() {
           <Link href="/history" className="text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium">
             История
           </Link>
-          <ThemeToggle />
         </div>
       </div>
     </nav>
