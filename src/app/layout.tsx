@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION, ADSENSE_CLIENT } from "@/lib/site";
@@ -41,6 +41,13 @@ export const metadata: Metadata = {
     google: process.env.GOOGLE_SITE_VERIFICATION,
     yandex: process.env.YANDEX_VERIFICATION,
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ea580c" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b0f17" },
+  ],
 };
 
 // Ставит тему до отрисовки страницы, чтобы не было вспышки светлого фона.
