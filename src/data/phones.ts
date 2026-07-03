@@ -265,6 +265,7 @@ export const PHONES: Phone[] = [
   // ───────────────────────── 2017 ─────────────────────────
   {
     slug: "galaxy-s8-plus",
+    image: "/models/galaxy-s8-plus.jpg",
     name: "Galaxy S8+",
     series: "Galaxy S",
     releaseYear: 2017,
@@ -321,6 +322,7 @@ export const PHONES: Phone[] = [
   // ───────────────────────── 2018 ─────────────────────────
   {
     slug: "galaxy-s9-plus",
+    image: "/models/galaxy-s9-plus.jpg",
     name: "Galaxy S9+",
     series: "Galaxy S",
     releaseYear: 2018,
@@ -1111,6 +1113,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s8",
+    image: "/models/galaxy-s8.jpg",
     name: "Galaxy S8",
     series: "Galaxy S",
     releaseYear: 2017,
@@ -1138,6 +1141,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s9",
+    image: "/models/galaxy-s9.jpg",
     name: "Galaxy S9",
     series: "Galaxy S",
     releaseYear: 2018,
@@ -1778,6 +1782,7 @@ export const PHONES: Phone[] = [
   // ═════════════ Базовые, Plus, Lite и FE-версии линейки S ═════════════
   {
     slug: "galaxy-s10",
+    image: "/models/galaxy-s10.jpg",
     name: "Galaxy S10",
     series: "Galaxy S",
     releaseYear: 2019,
