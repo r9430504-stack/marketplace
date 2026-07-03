@@ -15,6 +15,7 @@ export const PHONES: Phone[] = [
   // ───────────────────────── 2013 ─────────────────────────
   {
     slug: "galaxy-s4",
+    image: "/models/galaxy-s4.jpg",
     name: "Galaxy S4",
     series: "Galaxy S",
     releaseYear: 2013,
@@ -69,6 +70,7 @@ export const PHONES: Phone[] = [
   // ───────────────────────── 2014 ─────────────────────────
   {
     slug: "galaxy-s5",
+    image: "/models/galaxy-s5.jpg",
     name: "Galaxy S5",
     series: "Galaxy S",
     releaseYear: 2014,
@@ -1690,6 +1692,7 @@ export const PHONES: Phone[] = [
   // ═════════════ Классика: с чего началась серия Galaxy ═════════════
   {
     slug: "galaxy-s",
+    image: "/models/galaxy-s.jpg",
     name: "Galaxy S (I9000)",
     series: "Galaxy S",
     releaseYear: 2010,
@@ -1716,6 +1719,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s2",
+    image: "/models/galaxy-s2.jpg",
     name: "Galaxy S II",
     series: "Galaxy S",
     releaseYear: 2011,
@@ -1742,6 +1746,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s3",
+    image: "/models/galaxy-s3.jpg",
     name: "Galaxy S III",
     series: "Galaxy S",
     releaseYear: 2012,
