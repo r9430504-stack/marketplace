@@ -57,7 +57,9 @@ export type SeriesId =
   | "Galaxy Z Fold"
   | "Galaxy Z Flip"
   | "Galaxy Fold"
-  | "Galaxy A";
+  | "Galaxy A"
+  | "Galaxy M"
+  | "Galaxy J";
 
 export type SeriesMeta = {
   id: SeriesId;
@@ -117,6 +119,22 @@ export const SERIES: SeriesMeta[] = [
     to: "to-slate-800",
     accent: "text-slate-600 dark:text-slate-300",
     blurb: "Средний класс — доступные модели с флагманскими фишками.",
+  },
+  {
+    id: "Galaxy M",
+    label: "Galaxy M",
+    from: "from-rose-500",
+    to: "to-rose-800",
+    accent: "text-rose-600 dark:text-rose-400",
+    blurb: "Онлайн-серия с упором на огромные аккумуляторы и низкую цену.",
+  },
+  {
+    id: "Galaxy J",
+    label: "Galaxy J",
+    from: "from-lime-500",
+    to: "to-green-800",
+    accent: "text-lime-600 dark:text-lime-500",
+    blurb: "Ранняя бюджетная линейка — массовые доступные смартфоны 2015–2017.",
   },
 ];
 
