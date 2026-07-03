@@ -1,7 +1,7 @@
 // Базовый адрес сайта. Меняется через переменную NEXT_PUBLIC_SITE_URL в Railway,
 // когда подключишь свой домен. По умолчанию — текущий адрес на Railway.
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL || "https://samsung-history.up.railway.app"
+  process.env.NEXT_PUBLIC_SITE_URL || "https://marketplace-production-c8d6.up.railway.app"
 ).replace(/\/$/, "");
 
 export const SITE_NAME = "Galaxy Archive";
