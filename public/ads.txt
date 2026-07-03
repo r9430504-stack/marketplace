@@ -1,5 +1,1 @@
-# Google AdSense — файл ads.txt (Authorized Digital Sellers).
-# После одобрения аккаунта AdSense раскомментируйте строку ниже
-# и подставьте свой издательский ID (pub-XXXXXXXXXXXXXXXX):
-#
-# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+google.com, pub-5985897167482706, DIRECT, f08c47fec0942fa0
