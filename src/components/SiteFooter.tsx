@@ -11,7 +11,7 @@ export default function SiteFooter() {
             {SITE_NAME}
           </p>
           <p className="text-gray-500 dark:text-gray-400 mt-2 max-w-xs">
-            Независимый архив истории смартфонов Samsung Galaxy. Характеристики приведены по официальным данным производителя.
+            Независимый неофициальный архив истории смартфонов Samsung Galaxy. Характеристики собраны из открытых источников.
           </p>
         </div>
         <div>
@@ -19,17 +19,21 @@ export default function SiteFooter() {
           <ul className="space-y-1 text-gray-500 dark:text-gray-400">
             <li><Link href="/phones" className="hover:text-blue-600 dark:hover:text-blue-400">Каталог моделей</Link></li>
             <li><Link href="/history" className="hover:text-blue-600 dark:hover:text-blue-400">Хронология</Link></li>
+            <li><Link href="/disclaimer" className="hover:text-blue-600 dark:hover:text-blue-400">Правовая информация</Link></li>
           </ul>
         </div>
         <div>
           <p className="font-semibold text-gray-700 dark:text-gray-200 mb-2">О проекте</p>
           <p className="text-gray-500 dark:text-gray-400">
-            Samsung и Galaxy — товарные знаки Samsung Electronics. Сайт не связан с компанией и носит справочный характер.
+            <strong className="text-gray-700 dark:text-gray-200">Это не официальный сайт Samsung.</strong>{" "}
+            Проект не связан с Samsung Electronics, не аффилирован с ней и не одобрен компанией.
+            «Samsung» и «Galaxy» — товарные знаки Samsung Electronics и используются исключительно
+            в справочных целях. Сайт носит информационный характер.
           </p>
         </div>
       </div>
       <div className="border-t border-gray-100 dark:border-gray-800 py-4 text-center text-xs text-gray-400 dark:text-gray-600">
-        © {new Date().getFullYear()} {SITE_NAME}
+        © {new Date().getFullYear()} {SITE_NAME} · Неофициальный справочный ресурс · <Link href="/disclaimer" className="hover:text-blue-600 dark:hover:text-blue-400 underline">Правовая информация</Link>
       </div>
     </footer>
   );

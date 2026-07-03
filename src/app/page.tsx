@@ -16,6 +16,10 @@ export default function HomePage() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800" />
         <div className="relative max-w-6xl mx-auto px-4 py-20 text-center text-white">
+          <p className="inline-flex items-center gap-2 text-sm font-bold bg-amber-400 text-amber-950 rounded-full px-4 py-1.5 mb-5 shadow-lg">
+            ⚠️ Не официальный сайт Samsung
+          </p>
+          <br />
           <p className="inline-block text-xs font-semibold uppercase tracking-widest bg-white/15 rounded-full px-3 py-1 backdrop-blur">
             {firstYear} — {lastYear} · {total} моделей
           </p>

@@ -26,7 +26,7 @@ export default async function PhonesPage({
       <header className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Каталог моделей</h1>
         <p className="text-gray-500 dark:text-gray-400 mt-1">
-          {phones.length} официальных смартфонов Samsung Galaxy. Ищите по названию, процессору или году.
+          {phones.length} официально выпущенных моделей Samsung Galaxy. Ищите по названию, процессору или году.
         </p>
       </header>
 
