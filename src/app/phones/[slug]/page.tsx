@@ -8,6 +8,7 @@ import {
   seriesMeta,
 } from "@/lib/phones";
 import PhoneVisual from "@/components/PhoneVisual";
+import PhotoViewer from "@/components/PhotoViewer";
 import PhoneCard from "@/components/PhoneCard";
 import SpecTable from "@/components/SpecTable";
 import AdSlot from "@/components/AdSlot";
@@ -47,6 +48,7 @@ export default async function PhonePage({
 
   const s = seriesMeta(phone.series);
   const related = relatedPhones(phone);
+  const gallery = [phone.image, ...(phone.images ?? [])].filter(Boolean) as string[];
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -82,7 +84,9 @@ export default async function PhonePage({
       {/* Герой */}
       <div className="grid md:grid-cols-2 gap-8 items-center">
         <div className="h-72 sm:h-96 rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-800">
-          <PhoneVisual phone={phone} />
+          <PhotoViewer images={gallery} name={phone.name}>
+            <PhoneVisual phone={phone} />
+          </PhotoViewer>
         </div>
         <div>
           <span className={`text-sm font-semibold ${s.accent}`}>{s.label}</span>

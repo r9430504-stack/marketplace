@@ -42,6 +42,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-note-3",
+    image: "/models/galaxy-note-3.jpg",
     name: "Galaxy Note 3",
     series: "Galaxy Note",
     releaseYear: 2013,
@@ -98,6 +99,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-note-4",
+    image: "/models/galaxy-note-4.jpg",
     name: "Galaxy Note 4",
     series: "Galaxy Note",
     releaseYear: 2014,
@@ -153,6 +155,7 @@ export const PHONES: Phone[] = [
   {
     slug: "galaxy-s6-edge",
     image: "/models/galaxy-s6-edge.jpg",
+    images: ["/models/galaxy-s6-edge-2.jpg"],
     name: "Galaxy S6 Edge",
     series: "Galaxy S",
     releaseYear: 2015,
@@ -180,6 +183,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-note-5",
+    image: "/models/galaxy-note-5.jpg",
     name: "Galaxy Note 5",
     series: "Galaxy Note",
     releaseYear: 2015,
@@ -719,6 +723,7 @@ export const PHONES: Phone[] = [
   {
     slug: "galaxy-s22-ultra",
     image: "/models/galaxy-s22-ultra.jpg",
+    images: ["/models/galaxy-s22-ultra-2.jpg"],
     name: "Galaxy S22 Ultra",
     series: "Galaxy S",
     releaseYear: 2022,
@@ -980,6 +985,7 @@ export const PHONES: Phone[] = [
   {
     slug: "galaxy-s25-ultra",
     image: "/models/galaxy-s25-ultra.jpg",
+    images: ["/models/galaxy-s25-ultra-2.jpg"],
     name: "Galaxy S25 Ultra",
     series: "Galaxy S",
     releaseYear: 2025,
@@ -2141,6 +2147,7 @@ export const PHONES: Phone[] = [
   // ═══════════════ Дополнение: Note, A, M, J, складные ═══════════════
   {
     slug: "galaxy-note-2",
+    image: "/models/galaxy-note-2.jpg",
     name: "Galaxy Note II",
     series: "Galaxy Note",
     releaseYear: 2012,
@@ -2737,6 +2744,7 @@ export const PHONES: Phone[] = [
   // ═══════════════ Изогнутые и особые версии ═══════════════
   {
     slug: "galaxy-note-edge",
+    image: "/models/galaxy-note-edge.jpg",
     name: "Galaxy Note Edge",
     series: "Galaxy Note",
     releaseYear: 2014,
