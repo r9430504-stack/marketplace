@@ -44,14 +44,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ea580c" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b0f17" },
-  ],
+  themeColor: "#0a0a0a",
 };
-
-// Ставит тему до отрисовки страницы, чтобы не было вспышки светлого фона.
-const themeScript = `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark');}}catch(e){}})();`;
 
 export default function RootLayout({
   children,
@@ -59,9 +53,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={`${geistSans.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang="ru" className={`${geistSans.variable} dark h-full antialiased`}>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         {ADSENSE_CLIENT && (
           <script
             async
@@ -70,7 +63,7 @@ export default function RootLayout({
           />
         )}
       </head>
-      <body className="min-h-full flex flex-col bg-white dark:bg-[#0b0f17]">
+      <body className="min-h-full flex flex-col bg-black">
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
