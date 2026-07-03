@@ -7,7 +7,7 @@ export const SITE_URL = (
 export const SITE_NAME = "Galaxy Archive";
 export const SITE_TITLE = "Galaxy Archive — история телефонов Samsung Galaxy";
 export const SITE_DESCRIPTION =
-  "Полная история смартфонов Samsung Galaxy с 2013 года: флагманы S, Note, складные Z Fold и Z Flip. Точные характеристики, даты выхода и поиск по моделям.";
+  "Неофициальный архив истории смартфонов Samsung Galaxy: флагманы S, Note, складные Z Fold и Z Flip, а также A, M и другие линейки. Характеристики, даты выхода и поиск по моделям. Сайт не связан с Samsung.";
 
 // Google AdSense: клиентский ID вида "ca-pub-XXXXXXXXXXXXXXXX".
 // Задаётся переменной окружения NEXT_PUBLIC_ADSENSE_CLIENT в Railway.
