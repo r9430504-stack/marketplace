@@ -59,7 +59,15 @@ export type SeriesId =
   | "Galaxy Fold"
   | "Galaxy A"
   | "Galaxy M"
-  | "Galaxy J";
+  | "Galaxy J"
+  | "Galaxy F"
+  | "Galaxy Xcover"
+  | "Galaxy Mega"
+  | "Galaxy Grand"
+  | "Galaxy Ace"
+  | "Galaxy Alpha"
+  | "Galaxy Round"
+  | "Galaxy Beam";
 
 export type SeriesMeta = {
   id: SeriesId;
@@ -135,6 +143,70 @@ export const SERIES: SeriesMeta[] = [
     to: "to-green-800",
     accent: "text-lime-600 dark:text-lime-500",
     blurb: "Ранняя бюджетная линейка — массовые доступные смартфоны 2015–2017.",
+  },
+  {
+    id: "Galaxy F",
+    label: "Galaxy F",
+    from: "from-orange-500",
+    to: "to-red-700",
+    accent: "text-orange-600 dark:text-orange-400",
+    blurb: "Онлайн-серия для развивающихся рынков с крупными аккумуляторами.",
+  },
+  {
+    id: "Galaxy Xcover",
+    label: "Galaxy Xcover",
+    from: "from-yellow-600",
+    to: "to-stone-700",
+    accent: "text-yellow-700 dark:text-yellow-500",
+    blurb: "Защищённые смартфоны по стандарту MIL-STD для тяжёлых условий.",
+  },
+  {
+    id: "Galaxy Mega",
+    label: "Galaxy Mega",
+    from: "from-sky-500",
+    to: "to-blue-800",
+    accent: "text-sky-600 dark:text-sky-400",
+    blurb: "Ранние «планшетофоны» с огромными по меркам времени экранами.",
+  },
+  {
+    id: "Galaxy Grand",
+    label: "Galaxy Grand",
+    from: "from-violet-500",
+    to: "to-indigo-800",
+    accent: "text-violet-600 dark:text-violet-400",
+    blurb: "Массовая доступная линейка среднего размера первой половины 2010-х.",
+  },
+  {
+    id: "Galaxy Ace",
+    label: "Galaxy Ace",
+    from: "from-teal-500",
+    to: "to-cyan-800",
+    accent: "text-teal-600 dark:text-teal-400",
+    blurb: "Культовые компактные бюджетники начала 2010-х.",
+  },
+  {
+    id: "Galaxy Alpha",
+    label: "Galaxy Alpha",
+    from: "from-zinc-500",
+    to: "to-neutral-800",
+    accent: "text-zinc-600 dark:text-zinc-300",
+    blurb: "Первый Galaxy с металлической рамкой — предвестник дизайна S6.",
+  },
+  {
+    id: "Galaxy Round",
+    label: "Galaxy Round",
+    from: "from-pink-500",
+    to: "to-rose-800",
+    accent: "text-pink-600 dark:text-pink-400",
+    blurb: "Первый в мире смартфон с изогнутым экраном (2013).",
+  },
+  {
+    id: "Galaxy Beam",
+    label: "Galaxy Beam",
+    from: "from-amber-400",
+    to: "to-yellow-700",
+    accent: "text-amber-600 dark:text-amber-400",
+    blurb: "Смартфон со встроенным пико-проектором.",
   },
 ];
 
