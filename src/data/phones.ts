@@ -979,6 +979,7 @@ export const PHONES: Phone[] = [
   // ───────────────────────── 2025 ─────────────────────────
   {
     slug: "galaxy-s25-ultra",
+    image: "/models/galaxy-s25-ultra.jpg",
     name: "Galaxy S25 Ultra",
     series: "Galaxy S",
     releaseYear: 2025,
@@ -1348,6 +1349,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s25",
+    image: "/models/galaxy-s25.jpg",
     name: "Galaxy S25",
     series: "Galaxy S",
     releaseYear: 2025,
@@ -2079,6 +2081,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s24-fe",
+    image: "/models/galaxy-s24-fe.jpg",
     name: "Galaxy S24 FE",
     series: "Galaxy S",
     releaseYear: 2024,
