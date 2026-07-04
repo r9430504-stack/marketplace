@@ -645,6 +645,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-z-fold-3",
+    image: "/models/galaxy-z-fold-3.jpg",
     name: "Galaxy Z Fold 3",
     series: "Galaxy Z Fold",
     releaseYear: 2021,
@@ -761,6 +762,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-z-fold-4",
+    image: "/models/galaxy-z-fold-4.jpg",
     name: "Galaxy Z Fold 4",
     series: "Galaxy Z Fold",
     releaseYear: 2022,
@@ -848,6 +850,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-z-fold-5",
+    image: "/models/galaxy-z-fold-5.jpg",
     name: "Galaxy Z Fold 5",
     series: "Galaxy Z Fold",
     releaseYear: 2023,
@@ -935,6 +938,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-z-fold-6",
+    image: "/models/galaxy-z-fold-6.jpg",
     name: "Galaxy Z Fold 6",
     series: "Galaxy Z Fold",
     releaseYear: 2024,
@@ -1023,6 +1027,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-z-fold-7",
+    image: "/models/galaxy-z-fold-7.jpg",
     name: "Galaxy Z Fold 7",
     series: "Galaxy Z Fold",
     releaseYear: 2025,
