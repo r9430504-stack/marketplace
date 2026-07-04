@@ -2669,6 +2669,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-beam",
+    image: "/models/galaxy-beam.jpg",
     name: "Galaxy Beam",
     series: "Galaxy Beam",
     releaseYear: 2012,
