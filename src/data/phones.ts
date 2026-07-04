@@ -1582,6 +1582,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-a54-5g",
+    image: "/models/galaxy-a54-5g.jpg",
     name: "Galaxy A54 5G",
     series: "Galaxy A",
     releaseYear: 2023,
@@ -1610,6 +1611,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-a55-5g",
+    image: "/models/galaxy-a55-5g.jpg",
     name: "Galaxy A55 5G",
     series: "Galaxy A",
     releaseYear: 2024,
@@ -2320,6 +2322,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-a34-5g",
+    image: "/models/galaxy-a34-5g.jpg",
     name: "Galaxy A34 5G",
     series: "Galaxy A",
     releaseYear: 2023,
@@ -2348,6 +2351,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-a35-5g",
+    image: "/models/galaxy-a35-5g.jpg",
     name: "Galaxy A35 5G",
     series: "Galaxy A",
     releaseYear: 2024,
@@ -2376,6 +2380,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-a15",
+    image: "/models/galaxy-a15.jpg",
     name: "Galaxy A15",
     series: "Galaxy A",
     releaseYear: 2024,
