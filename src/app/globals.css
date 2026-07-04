@@ -104,6 +104,15 @@ body {
   color: #ffffff;
 }
 
+/*
+ * Skip rendering/layout for off-screen cards until they scroll near the
+ * viewport. Huge win for long grids (the 100+ model catalog) on weak devices.
+ */
+.cv-card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 480px;
+}
+
 /* Samsung navy helpers */
 .text-samsung {
   color: var(--samsung);

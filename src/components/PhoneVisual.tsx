@@ -21,7 +21,10 @@ export default function PhoneVisual({
         src={phone.image}
         alt={`${phone.name} — ${phone.releaseDate}`}
         className={`w-full h-full object-contain bg-white ${className}`}
+        width={900}
+        height={1125}
         loading="lazy"
+        decoding="async"
       />
     );
   }

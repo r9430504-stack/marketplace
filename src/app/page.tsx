@@ -82,7 +82,11 @@ export default function HomePage() {
                     src={p.image}
                     alt={p.name}
                     className="h-full w-full object-contain bg-white group-hover:scale-[1.03] transition-transform duration-300"
+                    width={900}
+                    height={1125}
                     loading="eager"
+                    decoding="async"
+                    fetchPriority={i === 0 ? "high" : "auto"}
                   />
                   <span className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/55 to-transparent p-3 text-white text-sm font-semibold">
                     {p.name}
