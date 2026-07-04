@@ -26,11 +26,6 @@ export default function SiteFooter() {
                   r9430504@icloud.com
                 </a>
               </li>
-              <li>
-                <a href="tel:+998990013025" className="text-[#1428a0] hover:underline">
-                  +998 99 001-30-25
-                </a>
-              </li>
             </ul>
           </div>
         </div>
