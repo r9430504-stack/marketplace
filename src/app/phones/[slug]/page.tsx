@@ -83,7 +83,7 @@ export default async function PhonePage({
 
       {/* Герой */}
       <div className="grid md:grid-cols-2 gap-8 items-center">
-        <div className="h-72 sm:h-96 rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-800">
+        <div className="h-72 sm:h-96 rounded-3xl overflow-hidden glass">
           <PhotoViewer images={gallery} name={phone.name}>
             <PhoneVisual phone={phone} />
           </PhotoViewer>
@@ -100,7 +100,7 @@ export default async function PhonePage({
             {phone.keyFeatures.map((f) => (
               <span
                 key={f}
-                className="text-xs font-medium px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-900"
+                className="text-xs font-medium px-3 py-1.5 rounded-full bg-white/55 backdrop-blur-md text-blue-700 border border-white/60"
               >
                 {f}
               </span>
@@ -154,7 +154,7 @@ export default async function PhonePage({
 
 function QuickFact({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 px-3 py-2">
+    <div className="glass rounded-xl px-3 py-2">
       <dt className="text-[11px] uppercase tracking-wide text-gray-400 dark:text-gray-500">{label}</dt>
       <dd className="text-sm font-semibold text-gray-900 dark:text-gray-100 mt-0.5">{value}</dd>
     </div>

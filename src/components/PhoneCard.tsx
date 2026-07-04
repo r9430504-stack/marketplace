@@ -7,7 +7,7 @@ export default function PhoneCard({ phone }: { phone: Phone }) {
   return (
     <Link
       href={`/phones/${phone.slug}`}
-      className="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all overflow-hidden flex flex-col"
+      className="group glass rounded-2xl hover:shadow-lg hover:-translate-y-0.5 transition-all overflow-hidden flex flex-col"
     >
       <div className="h-44 overflow-hidden">
         <PhoneVisual phone={phone} className="group-hover:scale-[1.03] transition-transform duration-300" />
@@ -30,7 +30,7 @@ export default function PhoneCard({ phone }: { phone: Phone }) {
 
 function Spec({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300">
+    <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/55 border border-white/60 text-gray-600">
       {children}
     </span>
   );

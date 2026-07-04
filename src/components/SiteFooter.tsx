@@ -3,7 +3,7 @@ import { SITE_NAME } from "@/lib/site";
 
 export default function SiteFooter() {
   return (
-    <footer className="mt-16 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950">
+    <footer className="mt-16 border-t border-white/50 bg-white/45 backdrop-blur-xl saturate-150">
       <div className="max-w-6xl mx-auto px-4 py-10 grid gap-8 sm:grid-cols-3 text-sm">
         <div>
           <p className="font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
@@ -32,7 +32,7 @@ export default function SiteFooter() {
           </p>
         </div>
       </div>
-      <div className="border-t border-gray-100 dark:border-gray-800 py-4 text-center text-xs text-gray-400 dark:text-gray-600">
+      <div className="border-t border-white/50 py-4 text-center text-xs text-gray-500">
         © {new Date().getFullYear()} {SITE_NAME} · Неофициальный справочный ресурс · <Link href="/disclaimer" className="hover:text-blue-600 dark:hover:text-blue-400 underline">Правовая информация</Link>
       </div>
     </footer>

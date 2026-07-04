@@ -60,7 +60,7 @@ export default function HomePage() {
               </Link>
               <Link
                 href="/history"
-                className="inline-flex items-center gap-2 bg-white text-gray-800 px-6 py-3 rounded-xl font-semibold text-base border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors"
+                className="inline-flex items-center gap-2 glass text-gray-800 px-6 py-3 rounded-xl font-semibold text-base hover:bg-white/70 transition-colors"
               >
                 Хронология по годам →
               </Link>
@@ -82,7 +82,7 @@ export default function HomePage() {
                 <Link
                   key={p.slug}
                   href={`/phones/${p.slug}`}
-                  className={`group relative rounded-2xl overflow-hidden border border-gray-100 bg-gray-50 shadow-sm hover:shadow-md transition-shadow aspect-[3/4] ${
+                  className={`group relative rounded-2xl overflow-hidden glass hover:shadow-md transition-shadow aspect-[3/4] ${
                     i % 2 === 1 ? "translate-y-6" : ""
                   }`}
                 >
@@ -174,7 +174,7 @@ export default function HomePage() {
       <section className="max-w-6xl mx-auto px-4 pb-16">
         <Link
           href="/history"
-          className="block rounded-2xl border border-gray-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-8 hover:border-blue-300 transition-colors"
+          className="block glass rounded-2xl p-8 hover:shadow-lg transition-all"
         >
           <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">Хронология</p>
           <h2 className="mt-2 text-2xl font-bold text-gray-900">
