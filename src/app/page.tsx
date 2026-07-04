@@ -34,12 +34,10 @@ export default function HomePage() {
     <div>
       {/* ───────── Hero ───────── */}
       <section className="relative overflow-hidden border-b border-gray-100">
-        {/* мягкое свечение фона */}
         <div className="pointer-events-none absolute -top-40 -right-40 h-96 w-96 rounded-full bg-blue-100 blur-3xl opacity-70" />
         <div className="pointer-events-none absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-indigo-100 blur-3xl opacity-60" />
 
         <div className="relative max-w-6xl mx-auto px-4 py-14 sm:py-20 grid md:grid-cols-2 gap-10 lg:gap-14 items-center">
-          {/* Текст */}
           <div>
             <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-blue-700 bg-blue-50 rounded-full px-3 py-1">
               ◆ Неофициальный архив · {firstYear}–{lastYear}
@@ -68,7 +66,6 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Статистика */}
             <dl className="mt-10 flex gap-8">
               {stats.map((s) => (
                 <div key={s.l}>
@@ -79,7 +76,6 @@ export default function HomePage() {
             </dl>
           </div>
 
-          {/* Витрина фото */}
           {showcase.length > 0 && (
             <div className="grid grid-cols-2 gap-4">
               {showcase.map((p, i) => (
@@ -107,7 +103,52 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ───────── Последние модели с фото ───────── */}
+      {/* ───────── Линейки (liquid glass) ───────── */}
+      <section className="relative overflow-hidden border-b border-gray-100 bg-gray-50/40">
+        {/* цветное свечение за стеклом */}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-10 left-[8%] h-64 w-64 rounded-full bg-blue-300/40 blur-3xl" />
+          <div className="absolute top-1/2 right-[10%] h-72 w-72 rounded-full bg-indigo-300/40 blur-3xl" />
+          <div className="absolute bottom-0 left-1/3 h-56 w-56 rounded-full bg-sky-200/50 blur-3xl" />
+        </div>
+
+        <div className="relative max-w-6xl mx-auto px-4 py-14">
+          <div className="flex items-end justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Линейки Galaxy</h2>
+              <p className="text-sm text-gray-500 mt-0.5">Выберите семейство устройств</p>
+            </div>
+            <Link href="/phones" className="text-sm font-semibold text-blue-700 hover:underline shrink-0">
+              Все модели →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {SERIES.map((s) => {
+              const count = phones.filter((p) => p.series === s.id).length;
+              if (count === 0) return null;
+              return (
+                <Link
+                  key={s.id}
+                  href={`/phones?series=${encodeURIComponent(s.id)}`}
+                  className="group relative overflow-hidden rounded-2xl border border-white/70 bg-white/45 p-5 min-h-[124px] flex flex-col justify-between shadow-[0_8px_30px_rgba(15,23,42,0.08)] ring-1 ring-black/5 backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:bg-white/65"
+                >
+                  {/* блик сверху — «стекло» */}
+                  <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/70 to-transparent" />
+                  <span className="pointer-events-none absolute -right-6 -top-8 h-20 w-20 rounded-full bg-white/40 blur-xl" />
+                  <div className="relative">
+                    <p className="font-bold text-[15px] text-gray-900">{s.label}</p>
+                    <p className="text-gray-500 text-xs mt-1 leading-snug line-clamp-2">{s.blurb}</p>
+                  </div>
+                  <p className="relative text-blue-700 text-sm font-semibold mt-3">{count} моделей →</p>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ───────── Флагманы ───────── */}
       <section className="max-w-6xl mx-auto px-4 py-14">
         <div className="flex items-end justify-between mb-6">
           <div>
@@ -128,30 +169,6 @@ export default function HomePage() {
       <div className="max-w-6xl mx-auto px-4">
         <AdSlot />
       </div>
-
-      {/* ───────── Линейки ───────── */}
-      <section className="max-w-6xl mx-auto px-4 py-14">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Линейки Galaxy</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {SERIES.map((s) => {
-            const count = phones.filter((p) => p.series === s.id).length;
-            if (count === 0) return null;
-            return (
-              <Link
-                key={s.id}
-                href={`/phones?series=${encodeURIComponent(s.id)}`}
-                className={`rounded-2xl p-5 text-white bg-gradient-to-br ${s.from} ${s.to} shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-between min-h-[120px]`}
-              >
-                <div>
-                  <p className="font-bold text-lg">{s.label}</p>
-                  <p className="text-white/80 text-xs mt-1 leading-snug line-clamp-2">{s.blurb}</p>
-                </div>
-                <p className="text-white/90 text-sm font-medium mt-3">{count} моделей →</p>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
 
       {/* ───────── Хронология-тизер ───────── */}
       <section className="max-w-6xl mx-auto px-4 pb-16">
