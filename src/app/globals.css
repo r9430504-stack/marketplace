@@ -13,9 +13,9 @@
   --foreground: #ededed;
 }
 
-/* Оранжевое выделение текста — фирменный акцент */
+/* Синее выделение текста — фирменный акцент */
 ::selection {
-  background: #ea580c;
+  background: #1d4ed8;
   color: #ffffff;
 }
 
