@@ -1700,6 +1700,7 @@ export const PHONES: Phone[] = [
   // ═════════════════════ Galaxy J (early budget) ═════════════════════
   {
     slug: "galaxy-j5-2015",
+    image: "/models/galaxy-j5-2015.jpg",
     name: "Galaxy J5 (2015)",
     series: "Galaxy J",
     releaseYear: 2015,
@@ -1726,6 +1727,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-j7-2016",
+    image: "/models/galaxy-j7-2016.jpg",
     name: "Galaxy J7 (2016)",
     series: "Galaxy J",
     releaseYear: 2016,
@@ -2494,6 +2496,8 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-j3-2016",
+    image: "/models/galaxy-j3-2016.jpg",
+    images: ["/models/galaxy-j3-2016-2.jpg"],
     name: "Galaxy J3 (2016)",
     series: "Galaxy J",
     releaseYear: 2016,
@@ -2550,6 +2554,7 @@ export const PHONES: Phone[] = [
   // ═══════════════ Galaxy F (online series) ═══════════════
   {
     slug: "galaxy-f41",
+    image: "/models/galaxy-f41.jpg",
     name: "Galaxy F41",
     series: "Galaxy F",
     releaseYear: 2020,
