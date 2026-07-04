@@ -502,6 +502,7 @@ export const PHONES: Phone[] = [
   // ───────────────────────── 2020 ─────────────────────────
   {
     slug: "galaxy-z-flip",
+    image: "/models/galaxy-z-flip.jpg",
     name: "Galaxy Z Flip",
     series: "Galaxy Z Flip",
     releaseYear: 2020,
@@ -674,6 +675,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-z-flip-3",
+    image: "/models/galaxy-z-flip-3.jpg",
     name: "Galaxy Z Flip 3",
     series: "Galaxy Z Flip",
     releaseYear: 2021,
@@ -791,6 +793,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-z-flip-4",
+    image: "/models/galaxy-z-flip-4.jpg",
     name: "Galaxy Z Flip 4",
     series: "Galaxy Z Flip",
     releaseYear: 2022,
@@ -879,6 +882,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-z-flip-5",
+    image: "/models/galaxy-z-flip-5.jpg",
     name: "Galaxy Z Flip 5",
     series: "Galaxy Z Flip",
     releaseYear: 2023,
@@ -2494,6 +2498,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-z-flip-5g",
+    image: "/models/galaxy-z-flip-5g.jpg",
     name: "Galaxy Z Flip 5G",
     series: "Galaxy Z Flip",
     releaseYear: 2020,
