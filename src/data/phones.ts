@@ -2129,6 +2129,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s25-plus",
+    image: "/models/galaxy-s25-plus.jpg",
     name: "Galaxy S25+",
     series: "Galaxy S",
     releaseYear: 2025,
