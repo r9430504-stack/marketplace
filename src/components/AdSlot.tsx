@@ -51,7 +51,7 @@ export default function AdSlot({ slot, format = "auto", className = "", label = 
           data-full-width-responsive="true"
         />
       ) : (
-        <div className="flex items-center justify-center h-24 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 text-xs text-gray-400 dark:text-gray-600 bg-gray-50 dark:bg-gray-900/40">
+        <div className="flex items-center justify-center h-24 rounded-xl border border-dashed border-white/70 text-xs text-gray-500 bg-white/35 backdrop-blur-md">
           Место для рекламы AdSense
         </div>
       )}

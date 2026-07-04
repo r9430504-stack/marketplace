@@ -37,9 +37,9 @@ export default function HistoryPage() {
                     <Link
                       key={p.slug}
                       href={`/phones/${p.slug}`}
-                      className="flex items-start gap-3 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-3 hover:border-blue-300 dark:hover:border-blue-800 hover:shadow-sm transition-all"
+                      className="flex items-start gap-3 rounded-xl glass px-4 py-3 hover:shadow-md hover:-translate-y-0.5 transition-all"
                     >
-                      <span className={`mt-1 shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 ${s.accent}`}>
+                      <span className={`mt-1 shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/60 border border-white/60 ${s.accent}`}>
                         {s.label}
                       </span>
                       <span>

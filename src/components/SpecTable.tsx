@@ -24,7 +24,7 @@ const ROWS: { key: keyof Specs; label: string }[] = [
 
 export default function SpecTable({ specs }: { specs: Specs }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-100 dark:border-gray-800">
+    <div className="glass overflow-hidden rounded-2xl">
       <table className="w-full text-sm">
         <tbody>
           {ROWS.map(({ key, label }) => {
@@ -33,7 +33,7 @@ export default function SpecTable({ specs }: { specs: Specs }) {
             return (
               <tr
                 key={key}
-                className="border-b border-gray-100 dark:border-gray-800 last:border-0 even:bg-gray-50/60 dark:even:bg-gray-900/40"
+                className="border-b border-white/40 last:border-0 even:bg-white/25"
               >
                 <th className="text-left align-top font-medium text-gray-500 dark:text-gray-400 py-3 px-4 w-2/5">
                   {label}

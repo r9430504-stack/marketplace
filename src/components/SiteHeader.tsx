@@ -3,7 +3,7 @@ import { SITE_NAME } from "@/lib/site";
 
 export default function SiteHeader() {
   return (
-    <nav className="bg-white/80 dark:bg-gray-950/80 backdrop-blur border-b border-gray-100 dark:border-gray-800 sticky top-0 z-20">
+    <nav className="bg-white/55 backdrop-blur-xl saturate-150 border-b border-white/50 sticky top-0 z-20">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-2">
           <span className="text-blue-700 dark:text-blue-400 text-lg">◆</span>
