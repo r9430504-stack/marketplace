@@ -123,6 +123,7 @@ export default function PhotoViewer({
               src={images[idx]}
               alt={`${name} — photo ${idx + 1}`}
               className="max-h-full max-w-full rounded-lg object-contain"
+              decoding="async"
             />
             {many && (
               <button
@@ -153,7 +154,7 @@ export default function PhotoViewer({
                   }`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={src} alt="" className="h-full w-full object-cover" />
+                  <img src={src} alt="" className="h-full w-full object-cover" width={56} height={56} loading="lazy" decoding="async" />
                 </button>
               ))}
             </div>

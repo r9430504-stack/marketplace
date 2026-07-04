@@ -8,7 +8,8 @@ import RevealInit from "@/components/RevealInit";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
-  subsets: ["latin", "cyrillic"],
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -61,11 +62,16 @@ export default function RootLayout({
           <style>{`.reveal{opacity:1 !important;transform:none !important}`}</style>
         </noscript>
         {ADSENSE_CLIENT && (
-          <script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
-            crossOrigin="anonymous"
-          />
+          <>
+            {/* Warm up the ad host early so the async script resolves faster */}
+            <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+            <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+            <script
+              async
+              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+              crossOrigin="anonymous"
+            />
+          </>
         )}
       </head>
       <body className="min-h-full flex flex-col bg-white">
