@@ -2582,6 +2582,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-f62",
+    image: "/models/galaxy-f62.jpg",
     name: "Galaxy F62",
     series: "Galaxy F",
     releaseYear: 2021,
@@ -2611,6 +2612,7 @@ export const PHONES: Phone[] = [
   // ═══════════════ Galaxy Xcover (rugged) ═══════════════
   {
     slug: "galaxy-xcover-6-pro",
+    image: "/models/galaxy-xcover-6-pro.jpg",
     name: "Galaxy Xcover6 Pro",
     series: "Galaxy Xcover",
     releaseYear: 2022,
@@ -2641,6 +2643,7 @@ export const PHONES: Phone[] = [
   // ═══════════════ Classic lines and milestones ═══════════════
   {
     slug: "galaxy-ace",
+    image: "/models/galaxy-ace.jpg",
     name: "Galaxy Ace",
     series: "Galaxy Ace",
     releaseYear: 2011,
@@ -3105,6 +3108,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-xcover-5",
+    image: "/models/galaxy-xcover-5.jpg",
     name: "Galaxy Xcover 5",
     series: "Galaxy Xcover",
     releaseYear: 2021,
