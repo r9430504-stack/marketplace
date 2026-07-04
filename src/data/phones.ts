@@ -554,6 +554,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-note-20-ultra",
+    image: "/models/galaxy-note-20-ultra.jpg",
     name: "Galaxy Note 20 Ultra",
     series: "Galaxy Note",
     releaseYear: 2020,
@@ -1417,6 +1418,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-note-10",
+    image: "/models/galaxy-note-10.jpg",
     name: "Galaxy Note 10",
     series: "Galaxy Note",
     releaseYear: 2019,
@@ -2178,6 +2180,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-note-20",
+    image: "/models/galaxy-note-20.jpg",
     name: "Galaxy Note 20",
     series: "Galaxy Note",
     releaseYear: 2020,
