@@ -7,6 +7,13 @@ type Market = {
   url: (q: string) => string;
 };
 
+// Официальный магазин Samsung — отдельной кнопкой.
+const OFFICIAL: Market = {
+  name: "Samsung (официальный)",
+  emoji: "◆",
+  url: (q) => `https://www.samsung.com/us/search/?searchvalue=${q}`,
+};
+
 const MARKETS: Market[] = [
   { name: "eBay", emoji: "🛒", url: (q) => `https://www.ebay.com/sch/i.html?_nkw=${q}` },
   { name: "Amazon", emoji: "📦", url: (q) => `https://www.amazon.com/s?k=${q}` },
@@ -24,6 +31,16 @@ export default function BuyLinks({ name }: { name: string }) {
         Ссылки ведут на поиск модели по маркетплейсам — цены и наличие на их стороне. Сайт не продаёт устройства.
       </p>
       <div className="flex flex-wrap gap-2.5">
+        <a
+          href={OFFICIAL.url(q)}
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+          className="rounded-xl px-4 py-2.5 text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 transition-colors inline-flex items-center gap-2 shadow-sm shadow-blue-200"
+        >
+          <span aria-hidden>{OFFICIAL.emoji}</span>
+          {OFFICIAL.name}
+          <span className="text-blue-200" aria-hidden>↗</span>
+        </a>
         {MARKETS.map((m) => (
           <a
             key={m.name}
