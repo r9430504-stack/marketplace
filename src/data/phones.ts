@@ -128,6 +128,7 @@ export const PHONES: Phone[] = [
   // ───────────────────────── 2015 ─────────────────────────
   {
     slug: "galaxy-a5-2015",
+    image: "/models/galaxy-a5-2015.jpg",
     name: "Galaxy A5 (2015)",
     series: "Galaxy A",
     releaseYear: 2015,
@@ -971,6 +972,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-z-flip-6",
+    image: "/models/galaxy-z-flip-6.jpg",
     name: "Galaxy Z Flip 6",
     series: "Galaxy Z Flip",
     releaseYear: 2024,
@@ -1060,6 +1062,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-z-flip-7",
+    image: "/models/galaxy-z-flip-7.jpg",
     name: "Galaxy Z Flip 7",
     series: "Galaxy Z Flip",
     releaseYear: 2025,
@@ -2228,6 +2231,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-a3-2015",
+    image: "/models/galaxy-a3-2015.jpg",
     name: "Galaxy A3 (2015)",
     series: "Galaxy A",
     releaseYear: 2015,
@@ -2254,6 +2258,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-a7-2018",
+    image: "/models/galaxy-a7-2018.jpg",
     name: "Galaxy A7 (2018)",
     series: "Galaxy A",
     releaseYear: 2018,
