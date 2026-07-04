@@ -81,7 +81,7 @@ export default function HomePage() {
                   <img
                     src={p.image}
                     alt={p.name}
-                    className="h-full w-full object-contain bg-white group-hover:scale-[1.03] transition-transform duration-300"
+                    className="img-fade h-full w-full object-contain bg-white group-hover:scale-[1.03] transition-transform duration-300"
                     width={900}
                     height={1125}
                     loading="eager"
