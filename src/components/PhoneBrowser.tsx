@@ -31,23 +31,23 @@ export default function PhoneBrowser({
 
   return (
     <div>
-      {/* Поиск */}
+      {/* Search */}
       <div className="relative">
         <input
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Поиск: модель, процессор, год…"
+          placeholder="Search: model, chipset, year…"
           className="w-full rounded-xl border border-white/60 bg-white/55 backdrop-blur-md pl-11 pr-4 py-3 text-base outline-none focus:ring-2 focus:ring-blue-500"
-          aria-label="Поиск по моделям"
+          aria-label="Search models"
         />
         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
       </div>
 
-      {/* Фильтр по линейке */}
+      {/* Series filter */}
       <div className="mt-4 flex flex-wrap gap-2">
         <button className={chip(series === "all")} onClick={() => setSeries("all")}>
-          Все линейки
+          All lines
         </button>
         {SERIES.map((s) => (
           <button key={s.id} className={chip(series === s.id)} onClick={() => setSeries(s.id)}>
@@ -56,10 +56,10 @@ export default function PhoneBrowser({
         ))}
       </div>
 
-      {/* Фильтр по году */}
+      {/* Year filter */}
       <div className="mt-3 flex flex-wrap gap-2">
         <button className={chip(year === "all")} onClick={() => setYear("all")}>
-          Все годы
+          All years
         </button>
         {years.map((y) => (
           <button key={y} className={chip(year === y)} onClick={() => setYear(y)}>
@@ -68,15 +68,15 @@ export default function PhoneBrowser({
         ))}
       </div>
 
-      {/* Результаты */}
+      {/* Results */}
       <p className="mt-6 text-sm text-gray-500 dark:text-gray-400">
-        Найдено моделей: <strong className="text-gray-900 dark:text-gray-100">{results.length}</strong>
+        Models found: <strong className="text-gray-900 dark:text-gray-100">{results.length}</strong>
       </p>
 
       {results.length === 0 ? (
         <div className="text-center py-16 text-gray-400 dark:text-gray-600">
           <p className="text-4xl">🤔</p>
-          <p className="mt-3">Ничего не найдено. Попробуйте другой запрос или сбросьте фильтры.</p>
+          <p className="mt-3">Nothing found. Try a different query or reset the filters.</p>
         </div>
       ) : (
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

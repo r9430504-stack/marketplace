@@ -4,9 +4,9 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 /**
- * Плавно проявляет элементы с классом .reveal по мере прокрутки
- * (выезд справа). Один общий IntersectionObserver; переинициализируется
- * при смене страницы. Уважает prefers-reduced-motion.
+ * Smoothly reveals elements with the .reveal class as you scroll
+ * (sliding in from the right). One shared IntersectionObserver;
+ * re-initialised on page change. Respects prefers-reduced-motion.
  */
 export default function RevealInit() {
   const pathname = usePathname();

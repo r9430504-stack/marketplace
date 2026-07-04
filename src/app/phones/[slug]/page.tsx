@@ -26,10 +26,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const phone = getPhoneBySlug(slug);
-  if (!phone) return { title: "Модель не найдена" };
+  if (!phone) return { title: "Model not found" };
 
-  const title = `${phone.name} — характеристики и история`;
-  const description = `${phone.name} (${phone.releaseDate}): ${phone.tagline} Экран ${phone.specs.display}, ${phone.specs.chipset}, камера ${phone.specs.mainCamera}, аккумулятор ${phone.specs.battery}.`;
+  const title = `${phone.name} — specifications and history`;
+  const description = `${phone.name} (${phone.releaseDate}): ${phone.tagline} ${phone.specs.display} display, ${phone.specs.chipset}, ${phone.specs.mainCamera} camera, ${phone.specs.battery} battery.`;
   return {
     title,
     description,
@@ -66,11 +66,11 @@ export default async function PhonePage({
     <div className="max-w-5xl mx-auto px-4 py-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      {/* Хлебные крошки */}
+      {/* Breadcrumbs */}
       <nav className="text-sm text-gray-500 dark:text-gray-400 mb-6 flex flex-wrap gap-1">
-        <Link href="/" className="hover:text-blue-600 dark:hover:text-blue-400">Главная</Link>
+        <Link href="/" className="hover:text-blue-600 dark:hover:text-blue-400">Home</Link>
         <span>/</span>
-        <Link href="/phones" className="hover:text-blue-600 dark:hover:text-blue-400">Каталог</Link>
+        <Link href="/phones" className="hover:text-blue-600 dark:hover:text-blue-400">Catalog</Link>
         <span>/</span>
         <Link
           href={`/phones?series=${encodeURIComponent(phone.series)}`}
@@ -82,7 +82,7 @@ export default async function PhonePage({
         <span className="text-gray-700 dark:text-gray-300">{phone.name}</span>
       </nav>
 
-      {/* Герой */}
+      {/* Hero */}
       <div className="grid md:grid-cols-2 gap-8 items-center">
         <div className="h-72 sm:h-96 rounded-3xl overflow-hidden glass">
           <PhotoViewer images={gallery} name={phone.name}>
@@ -108,12 +108,12 @@ export default async function PhonePage({
             ))}
           </div>
 
-          {/* Быстрые факты */}
+          {/* Quick facts */}
           <dl className="mt-6 grid grid-cols-2 gap-3">
-            <QuickFact label="Экран" value={phone.specs.display.split(",")[0]} />
-            <QuickFact label="Процессор" value={phone.specs.chipset.split("/")[0].trim()} />
-            <QuickFact label="Камера" value={phone.specs.mainCamera.split(",")[0]} />
-            <QuickFact label="Батарея" value={phone.specs.battery.split(",")[0]} />
+            <QuickFact label="Display" value={phone.specs.display.split(",")[0]} />
+            <QuickFact label="Chipset" value={phone.specs.chipset.split("/")[0].trim()} />
+            <QuickFact label="Camera" value={phone.specs.mainCamera.split(",")[0]} />
+            <QuickFact label="Battery" value={phone.specs.battery.split(",")[0]} />
           </dl>
         </div>
       </div>
@@ -122,9 +122,9 @@ export default async function PhonePage({
 
       <AdSlot />
 
-      {/* История */}
+      {/* History */}
       <section className="mt-4">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">История модели</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Model history</h2>
         <div className="prose-none text-gray-700 dark:text-gray-300 leading-relaxed space-y-4">
           {phone.history.split("\n\n").map((para, i) => (
             <p key={i}>{para}</p>
@@ -132,17 +132,17 @@ export default async function PhonePage({
         </div>
       </section>
 
-      {/* Характеристики */}
+      {/* Specifications */}
       <section className="mt-10">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Полные характеристики</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Full specifications</h2>
         <SpecTable specs={phone.specs} />
       </section>
 
-      {/* Похожие */}
+      {/* Related */}
       {related.length > 0 && (
         <section className="mt-12">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-            Другие {s.label}
+            More {s.label}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {related.map((p) => (

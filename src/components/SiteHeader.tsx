@@ -10,16 +10,16 @@ export default function SiteHeader() {
           <span className="leading-tight">
             <span className="block font-bold text-lg text-gray-900 dark:text-gray-100">{SITE_NAME}</span>
             <span className="block text-[10px] font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
-              Не официальный сайт Samsung
+              Not the official Samsung site
             </span>
           </span>
         </Link>
         <div className="flex items-center gap-4 text-sm">
           <Link href="/phones" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium">
-            Каталог
+            Catalog
           </Link>
           <Link href="/history" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium">
-            История
+            History
           </Link>
         </div>
       </div>

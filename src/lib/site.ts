@@ -1,16 +1,16 @@
-// Базовый адрес сайта. Меняется через переменную NEXT_PUBLIC_SITE_URL в Railway,
-// когда подключишь свой домен. По умолчанию — текущий адрес на Railway.
+// Base site URL. Overridden via the NEXT_PUBLIC_SITE_URL variable in Railway
+// when you connect your own domain. Defaults to the current Railway address.
 export const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL || "https://marketplace-production-c8d6.up.railway.app"
 ).replace(/\/$/, "");
 
 export const SITE_NAME = "Galaxy Archive";
-export const SITE_TITLE = "Galaxy Archive — история телефонов Samsung Galaxy";
+export const SITE_TITLE = "Galaxy Archive — the history of Samsung Galaxy phones";
 export const SITE_DESCRIPTION =
-  "Неофициальный архив истории смартфонов Samsung Galaxy: флагманы S, Note, складные Z Fold и Z Flip, а также A, M и другие линейки. Характеристики, даты выхода и поиск по моделям. Сайт не связан с Samsung.";
+  "An unofficial archive of Samsung Galaxy smartphone history: the S, Note, foldable Z Fold and Z Flip flagships, plus the A, M and other lines. Specifications, release dates and model search. This site is not affiliated with Samsung.";
 
-// Google AdSense: клиентский ID вида "ca-pub-XXXXXXXXXXXXXXXX" (публичный, не секрет).
-// По умолчанию — ID этого проекта; можно переопределить переменной NEXT_PUBLIC_ADSENSE_CLIENT.
-// Пусто — на страницах показываются плейсхолдеры рекламных блоков.
+// Google AdSense: a client ID like "ca-pub-XXXXXXXXXXXXXXXX" (public, not a secret).
+// Defaults to this project's ID; can be overridden with NEXT_PUBLIC_ADSENSE_CLIENT.
+// If empty, ad-block placeholders are shown on the pages.
 export const ADSENSE_CLIENT =
   process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-5985897167482706";

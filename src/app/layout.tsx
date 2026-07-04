@@ -19,14 +19,14 @@ export const metadata: Metadata = {
   },
   description: SITE_DESCRIPTION,
   keywords: [
-    "Samsung Galaxy история",
-    "характеристики Samsung",
+    "Samsung Galaxy history",
+    "Samsung specifications",
     "Galaxy S",
     "Galaxy Note",
     "Galaxy Z Fold",
     "Galaxy Z Flip",
-    "все телефоны Samsung",
-    "модели Samsung по годам",
+    "all Samsung phones",
+    "Samsung models by year",
   ],
   alternates: { canonical: SITE_URL },
   openGraph: {
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     url: SITE_URL,
     siteName: SITE_NAME,
     type: "website",
-    locale: "ru_RU",
+    locale: "en_US",
   },
   robots: { index: true, follow: true },
   verification: {
@@ -54,9 +54,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={`${geistSans.variable} h-full antialiased`}>
+    <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
       <head>
-        {/* Без JS — показываем контент сразу, без анимации появления */}
+        {/* No JS — show content immediately, without the reveal animation */}
         <noscript>
           <style>{`.reveal{opacity:1 !important;transform:none !important}`}</style>
         </noscript>
