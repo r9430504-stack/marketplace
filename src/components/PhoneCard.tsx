@@ -7,7 +7,7 @@ export default function PhoneCard({ phone }: { phone: Phone }) {
   return (
     <Link
       href={`/phones/${phone.slug}`}
-      className="reveal cv-card group glass rounded-2xl hover:shadow-lg hover:-translate-y-0.5 transition-all overflow-hidden flex flex-col"
+      className="reveal group glass rounded-2xl hover:shadow-lg hover:-translate-y-0.5 transition-all overflow-hidden flex flex-col"
     >
       <div className="aspect-[4/5] overflow-hidden bg-white">
         <PhoneVisual phone={phone} className="group-hover:scale-[1.03] transition-transform duration-300" />

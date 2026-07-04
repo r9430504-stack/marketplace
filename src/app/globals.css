@@ -104,13 +104,20 @@ body {
   color: #ffffff;
 }
 
-/*
- * Skip rendering/layout for off-screen cards until they scroll near the
- * viewport. Huge win for long grids (the 100+ model catalog) on weak devices.
- */
-.cv-card {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 480px;
+/* Soft image fade-in — set to loaded by RevealInit once the image finishes
+ * loading, so photos appear gently instead of popping in. */
+.img-fade {
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+.img-fade.loaded {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .img-fade {
+    opacity: 1 !important;
+    transition: none !important;
+  }
 }
 
 /* Samsung navy helpers */

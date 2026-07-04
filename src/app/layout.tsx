@@ -57,9 +57,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
       <head>
-        {/* No JS — show content immediately, without the reveal animation */}
+        {/* No JS — show content immediately, without the reveal/fade animations */}
         <noscript>
-          <style>{`.reveal{opacity:1 !important;transform:none !important}`}</style>
+          <style>{`.reveal{opacity:1 !important;transform:none !important}.img-fade{opacity:1 !important}`}</style>
         </noscript>
         {ADSENSE_CLIENT && (
           <>
