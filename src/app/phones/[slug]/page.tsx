@@ -12,6 +12,7 @@ import PhotoViewer from "@/components/PhotoViewer";
 import PhoneCard from "@/components/PhoneCard";
 import SpecTable from "@/components/SpecTable";
 import BuyLinks from "@/components/BuyLinks";
+import BackButton from "@/components/BackButton";
 import AdSlot from "@/components/AdSlot";
 import { SITE_URL } from "@/lib/site";
 
@@ -65,6 +66,10 @@ export default async function PhonePage({
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
+      <div className="mb-4">
+        <BackButton fallback="/phones" label="Back" />
+      </div>
 
       {/* Breadcrumbs */}
       <nav className="text-sm text-gray-500 dark:text-gray-400 mb-6 flex flex-wrap gap-1">

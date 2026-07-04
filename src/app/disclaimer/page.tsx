@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SITE_NAME } from "@/lib/site";
+import BackButton from "@/components/BackButton";
 
 export const metadata: Metadata = {
   title: "Legal information",
@@ -11,6 +12,9 @@ export const metadata: Metadata = {
 export default function DisclaimerPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
+      <div className="mb-4">
+        <BackButton fallback="/" label="Back" />
+      </div>
       <div className="rounded-2xl border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30 p-5 mb-8">
         <p className="font-bold text-amber-900 dark:text-amber-200">
           ⚠️ This is not the official Samsung site.
