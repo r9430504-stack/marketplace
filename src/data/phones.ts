@@ -2696,6 +2696,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-mega-6-3",
+    image: "/models/galaxy-mega-6-3.jpg",
     name: "Galaxy Mega 6.3",
     series: "Galaxy Mega",
     releaseYear: 2013,
@@ -2722,6 +2723,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-round",
+    image: "/models/galaxy-round.jpg",
     name: "Galaxy Round",
     series: "Galaxy Round",
     releaseYear: 2013,
@@ -2748,6 +2750,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-grand-prime",
+    image: "/models/galaxy-grand-prime.jpg",
     name: "Galaxy Grand Prime",
     series: "Galaxy Grand",
     releaseYear: 2014,
@@ -2774,6 +2777,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-alpha",
+    image: "/models/galaxy-alpha.jpg",
     name: "Galaxy Alpha",
     series: "Galaxy Alpha",
     releaseYear: 2014,
