@@ -4,6 +4,7 @@ import "./globals.css";
 import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION, ADSENSE_CLIENT } from "@/lib/site";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import RevealInit from "@/components/RevealInit";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -55,6 +56,10 @@ export default function RootLayout({
   return (
     <html lang="ru" className={`${geistSans.variable} h-full antialiased`}>
       <head>
+        {/* Без JS — показываем контент сразу, без анимации появления */}
+        <noscript>
+          <style>{`.reveal{opacity:1 !important;transform:none !important}`}</style>
+        </noscript>
         {ADSENSE_CLIENT && (
           <script
             async
@@ -67,6 +72,7 @@ export default function RootLayout({
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
+        <RevealInit />
       </body>
     </html>
   );

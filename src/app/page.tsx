@@ -131,7 +131,7 @@ export default function HomePage() {
                 <Link
                   key={s.id}
                   href={`/phones?series=${encodeURIComponent(s.id)}`}
-                  className="group relative overflow-hidden rounded-2xl border border-white/70 bg-white/45 p-5 min-h-[124px] flex flex-col justify-between shadow-[0_8px_30px_rgba(15,23,42,0.08)] ring-1 ring-black/5 backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:bg-white/65"
+                  className="reveal group relative overflow-hidden rounded-2xl border border-white/70 bg-white/45 p-5 min-h-[124px] flex flex-col justify-between shadow-[0_8px_30px_rgba(15,23,42,0.08)] ring-1 ring-black/5 backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:bg-white/65"
                 >
                   {/* блик сверху — «стекло» */}
                   <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/70 to-transparent" />
@@ -174,7 +174,7 @@ export default function HomePage() {
       <section className="max-w-6xl mx-auto px-4 pb-16">
         <Link
           href="/history"
-          className="block glass rounded-2xl p-8 hover:shadow-lg transition-all"
+          className="reveal block glass rounded-2xl p-8 hover:shadow-lg transition-all"
         >
           <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">Хронология</p>
           <h2 className="mt-2 text-2xl font-bold text-gray-900">
