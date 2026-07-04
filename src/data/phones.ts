@@ -388,6 +388,8 @@ export const PHONES: Phone[] = [
   // ───────────────────────── 2019 ─────────────────────────
   {
     slug: "galaxy-a50",
+    image: "/models/galaxy-a50.jpg",
+    images: ["/models/galaxy-a50-2.jpg"],
     name: "Galaxy A50",
     series: "Galaxy A",
     releaseYear: 2019,
@@ -1494,6 +1496,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-a51",
+    image: "/models/galaxy-a51.jpg",
     name: "Galaxy A51",
     series: "Galaxy A",
     releaseYear: 2020,
@@ -2889,6 +2892,7 @@ export const PHONES: Phone[] = [
   // ═══════════════ Mass-market budget A / M ═══════════════
   {
     slug: "galaxy-a10",
+    image: "/models/galaxy-a10.jpg",
     name: "Galaxy A10",
     series: "Galaxy A",
     releaseYear: 2019,
