@@ -11,6 +11,7 @@ import PhoneVisual from "@/components/PhoneVisual";
 import PhotoViewer from "@/components/PhotoViewer";
 import PhoneCard from "@/components/PhoneCard";
 import SpecTable from "@/components/SpecTable";
+import BuyLinks from "@/components/BuyLinks";
 import AdSlot from "@/components/AdSlot";
 import { SITE_URL } from "@/lib/site";
 
@@ -116,6 +117,8 @@ export default async function PhonePage({
           </dl>
         </div>
       </div>
+
+      <BuyLinks name={phone.name} />
 
       <AdSlot />
 
