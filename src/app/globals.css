@@ -1,11 +1,13 @@
 @import "tailwindcss";
 
-/* Тёмный режим через класс .dark на <html> (а не авто по системе) */
+/* Dark mode via a .dark class on <html> (not auto by system) */
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #111111;
+  /* Samsung's signature navy blue — used for links and accents */
+  --samsung: #1428a0;
 }
 
 .dark {
@@ -13,13 +15,13 @@
   --foreground: #ededed;
 }
 
-/* Синее выделение текста — фирменный акцент */
+/* Samsung-navy text selection */
 ::selection {
-  background: #1d4ed8;
+  background: var(--samsung);
   color: #ffffff;
 }
 
-/* Плавное появление при прокрутке — выезд справа */
+/* Smooth reveal on scroll — slides in from the right */
 .reveal {
   opacity: 0;
   transform: translateX(44px);
@@ -48,51 +50,69 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), "Segoe UI", Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Мягкий цветной «аврора»-фон под всем сайтом — чтобы стекло преломляло цвет */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background:
-    radial-gradient(48rem 48rem at 10% 4%, rgba(59, 130, 246, 0.34), transparent 60%),
-    radial-gradient(44rem 44rem at 92% 12%, rgba(129, 90, 245, 0.30), transparent 60%),
-    radial-gradient(50rem 50rem at 80% 94%, rgba(45, 212, 191, 0.24), transparent 60%),
-    radial-gradient(44rem 44rem at 16% 100%, rgba(236, 72, 153, 0.20), transparent 58%),
-    linear-gradient(180deg, #eef3fb, #e3e9f5);
-}
-
-/* Liquid Glass — матовое стекло с глянцем и «кромкой» */
+/*
+ * Clean, flat "card" surface in the official Samsung style — a plain white
+ * panel with a thin light border and a very subtle shadow. Replaces the old
+ * "Liquid Glass" look. The .glass class name is kept so components don't need
+ * to change; only its appearance does.
+ */
 .glass {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.62),
-    rgba(255, 255, 255, 0.34)
-  );
-  backdrop-filter: blur(22px) saturate(1.9);
-  -webkit-backdrop-filter: blur(22px) saturate(1.9);
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow:
-    0 12px 40px rgba(15, 23, 42, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -1px 1px rgba(255, 255, 255, 0.35);
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 .glass-soft {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.48),
-    rgba(255, 255, 255, 0.26)
-  );
-  backdrop-filter: blur(16px) saturate(1.6);
-  -webkit-backdrop-filter: blur(16px) saturate(1.6);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  background: #f5f5f7;
+  border: 1px solid #ececec;
 }
 
-/* Поля ввода: читаемый текст в обеих темах */
+/* Samsung-style primary CTA: solid black pill */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #000000;
+  color: #ffffff;
+  border-radius: 9999px;
+  font-weight: 600;
+  transition: background-color 0.15s ease;
+}
+.btn-primary:hover {
+  background: #333333;
+}
+
+/* Samsung-style secondary CTA: outlined black pill */
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: #111111;
+  border: 1px solid #111111;
+  border-radius: 9999px;
+  font-weight: 600;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.btn-outline:hover {
+  background: #111111;
+  color: #ffffff;
+}
+
+/* Samsung navy helpers */
+.text-samsung {
+  color: var(--samsung);
+}
+.bg-samsung {
+  background: var(--samsung);
+}
+
+/* Inputs: readable text in both themes */
 input,
 textarea,
 select {

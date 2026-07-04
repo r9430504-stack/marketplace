@@ -11,16 +11,10 @@ export default function NotFound() {
         This page doesn’t exist, or the phone hasn’t been added to the archive yet.
       </p>
       <div className="mt-8 flex flex-wrap gap-3 justify-center">
-        <Link
-          href="/phones"
-          className="bg-blue-600 text-white px-6 py-3 rounded-2xl font-semibold hover:bg-blue-700 transition-colors"
-        >
+        <Link href="/phones" className="btn-primary px-6 py-3">
           Open the catalog
         </Link>
-        <Link
-          href="/"
-          className="border border-gray-200 dark:border-gray-700 px-6 py-3 rounded-2xl font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-        >
+        <Link href="/" className="btn-outline px-6 py-3">
           Go home
         </Link>
       </div>

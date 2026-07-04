@@ -30,7 +30,7 @@ export default function PhoneCard({ phone }: { phone: Phone }) {
 
 function Spec({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/55 border border-white/60 text-gray-600">
+    <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 border border-gray-200 text-gray-600">
       {children}
     </span>
   );

@@ -17,7 +17,7 @@ export default function HistoryPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
       <header className="mb-10">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Galaxy timeline</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-black dark:text-gray-100">Galaxy timeline</h1>
         <p className="text-gray-500 dark:text-gray-400 mt-1">
           The evolution of Samsung phones year by year — from {years[years.length - 1]} to {years[0]}.
         </p>
@@ -28,7 +28,7 @@ export default function HistoryPage() {
           const yearPhones = phones.filter((p) => p.releaseYear === year);
           return (
             <div key={year} className="relative pl-8 pb-10">
-              <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-blue-600 ring-4 ring-white dark:ring-[#0b0f17]" />
+              <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-black ring-4 ring-white dark:ring-[#0b0f17]" />
               <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{year}</h2>
               <div className="mt-3 space-y-2">
                 {yearPhones.map((p) => {
@@ -39,7 +39,7 @@ export default function HistoryPage() {
                       href={`/phones/${p.slug}`}
                       className="reveal flex items-start gap-3 rounded-xl glass px-4 py-3 hover:shadow-md hover:-translate-y-0.5 transition-all"
                     >
-                      <span className={`mt-1 shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/60 border border-white/60 ${s.accent}`}>
+                      <span className={`mt-1 shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-gray-100 border border-gray-200 ${s.accent}`}>
                         {s.label}
                       </span>
                       <span>

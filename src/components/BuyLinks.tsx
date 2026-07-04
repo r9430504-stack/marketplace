@@ -35,11 +35,11 @@ export default function BuyLinks({ name }: { name: string }) {
           href={OFFICIAL.url(q)}
           target="_blank"
           rel="noopener noreferrer nofollow"
-          className="rounded-xl px-4 py-2.5 text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 transition-colors inline-flex items-center gap-2 shadow-sm shadow-blue-200"
+          className="btn-primary px-4 py-2.5 text-sm"
         >
           <span aria-hidden>{OFFICIAL.emoji}</span>
           {OFFICIAL.name}
-          <span className="text-blue-200" aria-hidden>↗</span>
+          <span className="text-white/70" aria-hidden>↗</span>
         </a>
         {MARKETS.map((m) => (
           <a
@@ -47,7 +47,7 @@ export default function BuyLinks({ name }: { name: string }) {
             href={m.url(q)}
             target="_blank"
             rel="noopener noreferrer nofollow sponsored"
-            className="glass rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-800 dark:text-gray-100 hover:bg-white/70 transition-colors inline-flex items-center gap-2"
+            className="rounded-full border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-800 dark:text-gray-100 hover:border-black transition-colors inline-flex items-center gap-2"
           >
             <span aria-hidden>{m.emoji}</span>
             {m.name}
