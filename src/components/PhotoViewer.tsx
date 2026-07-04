@@ -149,7 +149,7 @@ export default function PhotoViewer({
                   onClick={() => setIdx(i)}
                   aria-label={`Фото ${i + 1}`}
                   className={`h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 transition-colors ${
-                    i === idx ? "border-orange-500" : "border-transparent opacity-60 hover:opacity-100"
+                    i === idx ? "border-blue-500" : "border-transparent opacity-60 hover:opacity-100"
                   }`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}

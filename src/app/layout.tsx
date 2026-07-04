@@ -44,7 +44,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a0a0a",
+  themeColor: "#1e3a8a",
 };
 
 export default function RootLayout({
@@ -53,7 +53,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={`${geistSans.variable} dark h-full antialiased`}>
+    <html lang="ru" className={`${geistSans.variable} h-full antialiased`}>
       <head>
         {ADSENSE_CLIENT && (
           <script
@@ -63,7 +63,7 @@ export default function RootLayout({
           />
         )}
       </head>
-      <body className="min-h-full flex flex-col bg-black">
+      <body className="min-h-full flex flex-col bg-white">
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />

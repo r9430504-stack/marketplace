@@ -25,7 +25,7 @@ export default function PhoneBrowser({
   const chip = (active: boolean) =>
     `px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
       active
-        ? "bg-orange-600 text-white"
+        ? "bg-blue-600 text-white"
         : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
     }`;
 
@@ -38,7 +38,7 @@ export default function PhoneBrowser({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Поиск: модель, процессор, год…"
-          className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 pl-11 pr-4 py-3 text-base outline-none focus:ring-2 focus:ring-orange-500"
+          className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 pl-11 pr-4 py-3 text-base outline-none focus:ring-2 focus:ring-blue-500"
           aria-label="Поиск по моделям"
         />
         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>

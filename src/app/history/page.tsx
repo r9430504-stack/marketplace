@@ -28,7 +28,7 @@ export default function HistoryPage() {
           const yearPhones = phones.filter((p) => p.releaseYear === year);
           return (
             <div key={year} className="relative pl-8 pb-10">
-              <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-orange-600 ring-4 ring-white dark:ring-[#0b0f17]" />
+              <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-blue-600 ring-4 ring-white dark:ring-[#0b0f17]" />
               <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{year}</h2>
               <div className="mt-3 space-y-2">
                 {yearPhones.map((p) => {
@@ -37,7 +37,7 @@ export default function HistoryPage() {
                     <Link
                       key={p.slug}
                       href={`/phones/${p.slug}`}
-                      className="flex items-start gap-3 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-3 hover:border-orange-300 dark:hover:border-orange-800 hover:shadow-sm transition-all"
+                      className="flex items-start gap-3 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-3 hover:border-blue-300 dark:hover:border-blue-800 hover:shadow-sm transition-all"
                     >
                       <span className={`mt-1 shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 ${s.accent}`}>
                         {s.label}

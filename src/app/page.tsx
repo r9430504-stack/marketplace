@@ -14,9 +14,9 @@ export default function HomePage() {
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-500 via-orange-600 to-amber-700" />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-700 via-blue-800 to-blue-950" />
         <div className="relative max-w-6xl mx-auto px-4 py-20 text-center text-white">
-          <p className="inline-flex items-center gap-2 text-sm font-bold bg-white text-orange-700 rounded-full px-4 py-1.5 mb-5 shadow-lg ring-1 ring-black/5">
+          <p className="inline-flex items-center gap-2 text-sm font-bold bg-white text-blue-700 rounded-full px-4 py-1.5 mb-5 shadow-lg ring-1 ring-black/5">
             ⚠️ Не официальный сайт Samsung
           </p>
           <br />
@@ -28,14 +28,14 @@ export default function HomePage() {
             <br />
             Samsung Galaxy
           </h1>
-          <p className="mt-4 text-lg text-orange-100 max-w-2xl mx-auto">
+          <p className="mt-4 text-lg text-blue-100 max-w-2xl mx-auto">
             Точные характеристики, даты выхода и история создания флагманов Samsung —
             от Galaxy S4 до последних складных Z Fold и Z Flip.
           </p>
           <div className="mt-8 flex flex-wrap gap-3 justify-center">
             <Link
               href="/phones"
-              className="bg-white text-orange-700 px-7 py-3 rounded-2xl font-semibold text-lg hover:bg-orange-50 transition-colors shadow-lg"
+              className="bg-white text-blue-700 px-7 py-3 rounded-2xl font-semibold text-lg hover:bg-blue-50 transition-colors shadow-lg"
             >
               🔍 Поиск по моделям
             </Link>
@@ -81,7 +81,7 @@ export default function HomePage() {
       <section className="max-w-6xl mx-auto px-4 py-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Последние флагманы</h2>
-          <Link href="/phones" className="text-sm font-medium text-orange-600 dark:text-orange-400 hover:underline">
+          <Link href="/phones" className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">
             Весь каталог →
           </Link>
         </div>
