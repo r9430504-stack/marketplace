@@ -13,6 +13,12 @@ export default function SiteFooter() {
           <p className="text-gray-500 dark:text-gray-400 mt-2 max-w-xs">
             Независимый неофициальный архив истории смартфонов Samsung Galaxy. Характеристики собраны из открытых источников.
           </p>
+          <p className="text-gray-500 dark:text-gray-400 mt-3">
+            Связь:{" "}
+            <a href="mailto:r9430504@gmail.com" className="text-blue-700 hover:underline">
+              r9430504@gmail.com
+            </a>
+          </p>
         </div>
         <div>
           <p className="font-semibold text-gray-700 dark:text-gray-200 mb-2">Разделы</p>
