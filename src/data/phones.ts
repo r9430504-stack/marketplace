@@ -2013,6 +2013,7 @@ export const PHONES: Phone[] = [
   {
     slug: "galaxy-s23",
     image: "/models/galaxy-s23.jpg",
+    images: ["/models/galaxy-s23-2.jpg"],
     name: "Galaxy S23",
     series: "Galaxy S",
     releaseYear: 2023,
