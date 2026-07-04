@@ -82,7 +82,7 @@ export default function HomePage() {
                 <Link
                   key={p.slug}
                   href={`/phones/${p.slug}`}
-                  className={`group relative rounded-2xl overflow-hidden glass hover:shadow-md transition-shadow aspect-[3/4] ${
+                  className={`group relative rounded-2xl overflow-hidden glass hover:shadow-md transition-shadow aspect-[4/5] ${
                     i % 2 === 1 ? "translate-y-6" : ""
                   }`}
                 >
@@ -90,7 +90,7 @@ export default function HomePage() {
                   <img
                     src={p.image}
                     alt={p.name}
-                    className="h-full w-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
+                    className="h-full w-full object-contain bg-white group-hover:scale-[1.03] transition-transform duration-300"
                     loading="eager"
                   />
                   <span className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/55 to-transparent p-3 text-white text-sm font-semibold">

@@ -9,7 +9,7 @@ export default function PhoneCard({ phone }: { phone: Phone }) {
       href={`/phones/${phone.slug}`}
       className="group glass rounded-2xl hover:shadow-lg hover:-translate-y-0.5 transition-all overflow-hidden flex flex-col"
     >
-      <div className="h-44 overflow-hidden">
+      <div className="aspect-[4/5] overflow-hidden bg-white">
         <PhoneVisual phone={phone} className="group-hover:scale-[1.03] transition-transform duration-300" />
       </div>
       <div className="p-4 flex flex-col gap-1 flex-1">

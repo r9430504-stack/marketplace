@@ -20,7 +20,7 @@ export default function PhoneVisual({
       <img
         src={phone.image}
         alt={`${phone.name} — ${phone.releaseDate}`}
-        className={`w-full h-full object-cover ${className}`}
+        className={`w-full h-full object-contain bg-white ${className}`}
         loading="lazy"
       />
     );
