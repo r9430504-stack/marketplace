@@ -4,12 +4,14 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 /**
- * Two gentle enhancements, both JS-optional (see the <noscript> fallback):
- *  1. Elements with .reveal slide in from the right as they approach the
- *     viewport. Triggered a bit BEFORE they enter so it never snaps at the edge.
- *  2. Images with .img-fade fade in softly once they finish loading, instead
- *     of popping in abruptly. A single capture-phase load listener covers every
- *     image, including ones added later by the catalog filter.
+ * Gentle motion, all JS-optional (see the <noscript> fallback):
+ *  1. On first paint, elements with .reveal slide in from the right as they
+ *     approach the viewport (scroll reveal).
+ *  2. Content added AFTER first paint — e.g. the catalog filter, which swaps
+ *     the whole card grid — is revealed IMMEDIATELY, so filtered results never
+ *     stay invisible waiting for a scroll that the user doesn't expect to need.
+ *  3. Images with .img-fade fade in softly once loaded instead of popping.
+ *
  * Respects prefers-reduced-motion.
  */
 export default function RevealInit() {
@@ -17,55 +19,81 @@ export default function RevealInit() {
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const supportsIO = "IntersectionObserver" in window;
 
-    // --- Smooth image fade-in (one global listener for all current + future imgs) ---
-    const markLoaded = (img: HTMLImageElement) => img.classList.add("loaded");
+    // --- Images: mark already-decoded ones + catch every future load globally ---
     const onLoadCapture = (e: Event) => {
       const t = e.target;
       if (t instanceof HTMLImageElement && t.classList.contains("img-fade")) {
-        markLoaded(t);
+        t.classList.add("loaded");
       }
     };
     document.addEventListener("load", onLoadCapture, true);
     document.addEventListener("error", onLoadCapture, true);
-    // images already decoded (cache/back-forward) won't fire load — mark them now
-    document
-      .querySelectorAll<HTMLImageElement>("img.img-fade")
-      .forEach((img) => {
-        if (img.complete && img.naturalWidth > 0) markLoaded(img);
-      });
+    const markCompleteImages = () => {
+      document
+        .querySelectorAll<HTMLImageElement>("img.img-fade:not(.loaded)")
+        .forEach((img) => {
+          if (img.complete && img.naturalWidth > 0) img.classList.add("loaded");
+        });
+    };
 
-    // --- Scroll reveal ---
-    let cleanup = () => {};
+    // --- Scroll reveal (first paint only) ---
+    let idx = 0;
+    const io =
+      supportsIO && !reduce
+        ? new IntersectionObserver(
+            (entries, obs) => {
+              entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                const el = entry.target as HTMLElement;
+                el.style.transitionDelay = `${Math.min(idx++ % 8, 6) * 40}ms`;
+                el.classList.add("in");
+                obs.unobserve(el);
+              });
+            },
+            // start ~18% below the fold so cards settle before you reach them
+            { rootMargin: "0px 0px 18% 0px", threshold: 0.01 }
+          )
+        : null;
+
+    // Reveal everything on screen right now (no scroll required).
+    const revealNow = () => {
+      document
+        .querySelectorAll<HTMLElement>(".reveal:not(.in)")
+        .forEach((el) => el.classList.add("in"));
+    };
+
+    let mo: MutationObserver | null = null;
     const t = window.setTimeout(() => {
-      const els = Array.from(
-        document.querySelectorAll<HTMLElement>(".reveal:not(.in)")
-      );
-      if (reduce || !("IntersectionObserver" in window)) {
-        els.forEach((el) => el.classList.add("in"));
-        return;
+      // First pass: scroll-reveal the initial cards (or show all if no IO).
+      if (io) {
+        document
+          .querySelectorAll<HTMLElement>(".reveal:not(.in)")
+          .forEach((el) => io.observe(el));
+      } else {
+        revealNow();
       }
-      const io = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
-            const el = entry.target as HTMLElement;
-            const i = els.indexOf(el);
-            el.style.transitionDelay = `${Math.min(Math.max(i, 0), 6) * 40}ms`;
-            el.classList.add("in");
-            io.unobserve(el);
-          });
-        },
-        // start ~18% below the fold so cards are settling before you reach them
-        { rootMargin: "0px 0px 18% 0px", threshold: 0.01 }
-      );
-      els.forEach((el) => io.observe(el));
-      cleanup = () => io.disconnect();
-    }, 40);
+      markCompleteImages();
+
+      // From now on, anything added to the DOM (filter results, etc.) is
+      // revealed immediately — it still animates via the CSS transition.
+      let raf = 0;
+      mo = new MutationObserver(() => {
+        if (raf) return;
+        raf = window.requestAnimationFrame(() => {
+          raf = 0;
+          revealNow();
+          markCompleteImages();
+        });
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+    }, 60);
 
     return () => {
       window.clearTimeout(t);
-      cleanup();
+      mo?.disconnect();
+      io?.disconnect();
       document.removeEventListener("load", onLoadCapture, true);
       document.removeEventListener("error", onLoadCapture, true);
     };
