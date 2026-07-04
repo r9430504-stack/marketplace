@@ -213,6 +213,7 @@ export const PHONES: Phone[] = [
   {
     slug: "galaxy-s7-edge",
     image: "/models/galaxy-s7-edge.jpg",
+    images: ["/models/galaxy-s7-edge-2.jpg"],
     name: "Galaxy S7 Edge",
     series: "Galaxy S",
     releaseYear: 2016,
@@ -1077,6 +1078,7 @@ export const PHONES: Phone[] = [
   // ═════════════ Base and Edge/FE versions of the S line ═════════════
   {
     slug: "galaxy-s6",
+    image: "/models/galaxy-s6.jpg",
     name: "Galaxy S6",
     series: "Galaxy S",
     releaseYear: 2015,
