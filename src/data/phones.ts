@@ -478,7 +478,7 @@ export const PHONES: Phone[] = [
     image: "/models/galaxy-fold.jpg",
     images: ["/models/galaxy-fold-2.jpg"],
     name: "Galaxy Fold",
-    series: "Galaxy Fold",
+    series: "Galaxy Z Fold",
     releaseYear: 2019,
     releaseDate: "September 2019",
     tagline: "Samsung's first foldable — a tablet in your pocket.",
