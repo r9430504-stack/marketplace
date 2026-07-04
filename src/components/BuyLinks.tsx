@@ -1,5 +1,5 @@
-// Блок «Где купить»: ссылки на поиск модели по маркетплейсам.
-// Мы ничего не продаём — это переходы на поиск по названию телефона.
+// "Where to buy" block: links to marketplace searches for the model.
+// We don't sell anything — these open a search for the phone's name.
 
 type Market = {
   name: string;
@@ -7,9 +7,9 @@ type Market = {
   url: (q: string) => string;
 };
 
-// Официальный магазин Samsung — отдельной кнопкой.
+// The official Samsung store — as a separate button.
 const OFFICIAL: Market = {
-  name: "Samsung (официальный)",
+  name: "Samsung (official)",
   emoji: "◆",
   url: (q) => `https://www.samsung.com/us/search/?searchvalue=${q}`,
 };
@@ -17,7 +17,7 @@ const OFFICIAL: Market = {
 const MARKETS: Market[] = [
   { name: "eBay", emoji: "🛒", url: (q) => `https://www.ebay.com/sch/i.html?_nkw=${q}` },
   { name: "Amazon", emoji: "📦", url: (q) => `https://www.amazon.com/s?k=${q}` },
-  { name: "Яндекс Маркет", emoji: "🟡", url: (q) => `https://market.yandex.ru/search?text=${q}` },
+  { name: "Yandex Market", emoji: "🟡", url: (q) => `https://market.yandex.ru/search?text=${q}` },
   { name: "Ozon", emoji: "🔵", url: (q) => `https://www.ozon.ru/search/?text=${q}` },
   { name: "Wildberries", emoji: "🟣", url: (q) => `https://www.wildberries.ru/catalog/0/search.aspx?search=${q}` },
 ];
@@ -26,9 +26,9 @@ export default function BuyLinks({ name }: { name: string }) {
   const q = encodeURIComponent(`Samsung ${name}`);
   return (
     <section className="mt-10">
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">Где купить</h2>
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">Where to buy</h2>
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-        Ссылки ведут на поиск модели по маркетплейсам — цены и наличие на их стороне. Сайт не продаёт устройства.
+        These links open a search for the model on each marketplace — prices and availability are on their side. This site does not sell devices.
       </p>
       <div className="flex flex-wrap gap-2.5">
         <a

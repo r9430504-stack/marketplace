@@ -11,10 +11,10 @@ export default function SiteFooter() {
             {SITE_NAME}
           </p>
           <p className="text-gray-500 dark:text-gray-400 mt-2 max-w-xs">
-            Независимый неофициальный архив истории смартфонов Samsung Galaxy. Характеристики собраны из открытых источников.
+            An independent, unofficial archive of Samsung Galaxy smartphone history. Specifications are compiled from open sources.
           </p>
           <div className="text-gray-500 dark:text-gray-400 mt-3">
-            <p className="font-medium text-gray-700 dark:text-gray-200">Связь</p>
+            <p className="font-medium text-gray-700 dark:text-gray-200">Contact</p>
             <ul className="mt-1 space-y-0.5">
               <li>
                 <a href="mailto:r9430504@gmail.com" className="text-blue-700 hover:underline">
@@ -35,25 +35,25 @@ export default function SiteFooter() {
           </div>
         </div>
         <div>
-          <p className="font-semibold text-gray-700 dark:text-gray-200 mb-2">Разделы</p>
+          <p className="font-semibold text-gray-700 dark:text-gray-200 mb-2">Sections</p>
           <ul className="space-y-1 text-gray-500 dark:text-gray-400">
-            <li><Link href="/phones" className="hover:text-blue-600 dark:hover:text-blue-400">Каталог моделей</Link></li>
-            <li><Link href="/history" className="hover:text-blue-600 dark:hover:text-blue-400">Хронология</Link></li>
-            <li><Link href="/disclaimer" className="hover:text-blue-600 dark:hover:text-blue-400">Правовая информация</Link></li>
+            <li><Link href="/phones" className="hover:text-blue-600 dark:hover:text-blue-400">Model catalog</Link></li>
+            <li><Link href="/history" className="hover:text-blue-600 dark:hover:text-blue-400">Timeline</Link></li>
+            <li><Link href="/disclaimer" className="hover:text-blue-600 dark:hover:text-blue-400">Legal information</Link></li>
           </ul>
         </div>
         <div>
-          <p className="font-semibold text-gray-700 dark:text-gray-200 mb-2">О проекте</p>
+          <p className="font-semibold text-gray-700 dark:text-gray-200 mb-2">About</p>
           <p className="text-gray-500 dark:text-gray-400">
-            <strong className="text-gray-700 dark:text-gray-200">Это не официальный сайт Samsung.</strong>{" "}
-            Проект не связан с Samsung Electronics, не аффилирован с ней и не одобрен компанией.
-            «Samsung» и «Galaxy» — товарные знаки Samsung Electronics и используются исключительно
-            в справочных целях. Сайт носит информационный характер.
+            <strong className="text-gray-700 dark:text-gray-200">This is not the official Samsung site.</strong>{" "}
+            This project is not connected with, affiliated with, or endorsed by Samsung Electronics.
+            “Samsung” and “Galaxy” are trademarks of Samsung Electronics and are used purely
+            for reference purposes. The site is informational in nature.
           </p>
         </div>
       </div>
       <div className="border-t border-white/50 py-4 text-center text-xs text-gray-500">
-        © {new Date().getFullYear()} {SITE_NAME} · Неофициальный справочный ресурс · <Link href="/disclaimer" className="hover:text-blue-600 dark:hover:text-blue-400 underline">Правовая информация</Link>
+        © {new Date().getFullYear()} {SITE_NAME} · Unofficial reference resource · <Link href="/disclaimer" className="hover:text-blue-600 dark:hover:text-blue-400 underline">Legal information</Link>
       </div>
     </footer>
   );

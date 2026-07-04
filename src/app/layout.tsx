@@ -4,6 +4,7 @@ import "./globals.css";
 import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION, ADSENSE_CLIENT } from "@/lib/site";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import RevealInit from "@/components/RevealInit";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,14 +19,14 @@ export const metadata: Metadata = {
   },
   description: SITE_DESCRIPTION,
   keywords: [
-    "Samsung Galaxy история",
-    "характеристики Samsung",
+    "Samsung Galaxy history",
+    "Samsung specifications",
     "Galaxy S",
     "Galaxy Note",
     "Galaxy Z Fold",
     "Galaxy Z Flip",
-    "все телефоны Samsung",
-    "модели Samsung по годам",
+    "all Samsung phones",
+    "Samsung models by year",
   ],
   alternates: { canonical: SITE_URL },
   openGraph: {
@@ -34,7 +35,7 @@ export const metadata: Metadata = {
     url: SITE_URL,
     siteName: SITE_NAME,
     type: "website",
-    locale: "ru_RU",
+    locale: "en_US",
   },
   robots: { index: true, follow: true },
   verification: {
@@ -53,8 +54,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={`${geistSans.variable} h-full antialiased`}>
+    <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
       <head>
+        {/* No JS — show content immediately, without the reveal animation */}
+        <noscript>
+          <style>{`.reveal{opacity:1 !important;transform:none !important}`}</style>
+        </noscript>
         {ADSENSE_CLIENT && (
           <script
             async
@@ -67,6 +72,7 @@ export default function RootLayout({
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
+        <RevealInit />
       </body>
     </html>
   );

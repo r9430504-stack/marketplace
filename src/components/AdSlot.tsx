@@ -10,21 +10,21 @@ declare global {
 }
 
 type Props = {
-  /** ID рекламного блока из AdSense (data-ad-slot). */
+  /** AdSense ad-unit ID (data-ad-slot). */
   slot?: string;
-  /** Формат блока. "auto" — адаптивный. */
+  /** Unit format. "auto" is responsive. */
   format?: string;
   className?: string;
-  /** Подпись над блоком (по требованиям AdSense реклама помечается). */
+  /** Label above the unit (AdSense requires ads to be marked). */
   label?: string;
 };
 
 /**
- * Рекламный блок Google AdSense.
- * Если NEXT_PUBLIC_ADSENSE_CLIENT не задан — показывает плейсхолдер,
- * чтобы вёрстка не «прыгала» и место под рекламу было видно при разработке.
+ * A Google AdSense ad unit.
+ * If NEXT_PUBLIC_ADSENSE_CLIENT is not set, shows a placeholder so the
+ * layout doesn't shift and the ad space is visible during development.
  */
-export default function AdSlot({ slot, format = "auto", className = "", label = "Реклама" }: Props) {
+export default function AdSlot({ slot, format = "auto", className = "", label = "Advertisement" }: Props) {
   const enabled = Boolean(ADSENSE_CLIENT && slot);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function AdSlot({ slot, format = "auto", className = "", label = 
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch {
-      // AdSense-скрипт ещё не загрузился — блок отрисуется при следующей загрузке.
+      // The AdSense script hasn't loaded yet — the unit renders on the next load.
     }
   }, [enabled]);
 
@@ -52,7 +52,7 @@ export default function AdSlot({ slot, format = "auto", className = "", label = 
         />
       ) : (
         <div className="flex items-center justify-center h-24 rounded-xl border border-dashed border-white/70 text-xs text-gray-500 bg-white/35 backdrop-blur-md">
-          Место для рекламы AdSense
+          AdSense ad space
         </div>
       )}
     </div>

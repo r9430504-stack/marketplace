@@ -3,9 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
- * Оборачивает визуал модели. Если есть реальные фото — по клику открывает
- * полноэкранный просмотрщик (лайтбокс) с листанием всех снимков. Если фото
- * нет — просто показывает переданный плейсхолдер, без клика.
+ * Wraps the model visual. If real photos exist, clicking opens a full-screen
+ * viewer (lightbox) that cycles through all shots. If there are no photos,
+ * it just shows the given placeholder, with no click.
  */
 export default function PhotoViewer({
   images,
@@ -58,11 +58,11 @@ export default function PhotoViewer({
           setOpen(true);
         }}
         className="group relative block h-full w-full cursor-zoom-in"
-        aria-label={`Открыть фото: ${name}`}
+        aria-label={`Open photos: ${name}`}
       >
         {children}
         <span className="absolute bottom-2 right-2 rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-medium text-white opacity-90 backdrop-blur transition-opacity group-hover:opacity-100">
-          🔍 {many ? `${images.length} фото` : "Смотреть"}
+          🔍 {many ? `${images.length} photos` : "View"}
         </span>
       </button>
 
@@ -72,9 +72,9 @@ export default function PhotoViewer({
           onClick={close}
           role="dialog"
           aria-modal="true"
-          aria-label={`Фотографии: ${name}`}
+          aria-label={`Photos: ${name}`}
         >
-          {/* Верхняя панель */}
+          {/* Top bar */}
           <div className="flex items-center justify-between px-4 py-3 text-white">
             <span className="text-sm font-medium">
               {name}
@@ -87,14 +87,14 @@ export default function PhotoViewer({
             <button
               type="button"
               onClick={close}
-              aria-label="Закрыть"
+              aria-label="Close"
               className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-2xl hover:bg-white/20"
             >
               ✕
             </button>
           </div>
 
-          {/* Изображение */}
+          {/* Image */}
           <div
             className="relative flex flex-1 items-center justify-center overflow-hidden px-4"
             onClick={(e) => e.stopPropagation()}
@@ -112,7 +112,7 @@ export default function PhotoViewer({
               <button
                 type="button"
                 onClick={prev}
-                aria-label="Предыдущее фото"
+                aria-label="Previous photo"
                 className="absolute left-2 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-2xl text-white hover:bg-white/20"
               >
                 ‹
@@ -121,14 +121,14 @@ export default function PhotoViewer({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={images[idx]}
-              alt={`${name} — фото ${idx + 1}`}
+              alt={`${name} — photo ${idx + 1}`}
               className="max-h-full max-w-full rounded-lg object-contain"
             />
             {many && (
               <button
                 type="button"
                 onClick={next}
-                aria-label="Следующее фото"
+                aria-label="Next photo"
                 className="absolute right-2 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-2xl text-white hover:bg-white/20"
               >
                 ›
@@ -136,7 +136,7 @@ export default function PhotoViewer({
             )}
           </div>
 
-          {/* Миниатюры */}
+          {/* Thumbnails */}
           {many && (
             <div
               className="flex justify-center gap-2 overflow-x-auto px-4 py-4"
@@ -147,7 +147,7 @@ export default function PhotoViewer({
                   key={src}
                   type="button"
                   onClick={() => setIdx(i)}
-                  aria-label={`Фото ${i + 1}`}
+                  aria-label={`Photo ${i + 1}`}
                   className={`h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 transition-colors ${
                     i === idx ? "border-blue-500" : "border-transparent opacity-60 hover:opacity-100"
                   }`}

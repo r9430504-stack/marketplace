@@ -4,9 +4,9 @@ import PhoneBrowser from "@/components/PhoneBrowser";
 import AdSlot from "@/components/AdSlot";
 
 export const metadata: Metadata = {
-  title: "Каталог телефонов Samsung Galaxy",
+  title: "Samsung Galaxy phone catalog",
   description:
-    "Полный каталог смартфонов Samsung Galaxy с поиском по названию, процессору и году. Флагманы S, Note, складные Z Fold и Z Flip с точными характеристиками.",
+    "The full catalog of Samsung Galaxy phones with search by name, chipset and year. The S, Note, foldable Z Fold and Z Flip flagships with exact specifications.",
   alternates: { canonical: "/phones" },
 };
 
@@ -24,9 +24,9 @@ export default async function PhonesPage({
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Каталог моделей</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Model catalog</h1>
         <p className="text-gray-500 dark:text-gray-400 mt-1">
-          {phones.length} официально выпущенных моделей Samsung Galaxy. Ищите по названию, процессору или году.
+          {phones.length} officially released Samsung Galaxy models. Search by name, chipset or year.
         </p>
       </header>
 
