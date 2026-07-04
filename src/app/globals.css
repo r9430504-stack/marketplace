@@ -38,26 +38,38 @@ body::before {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(45rem 45rem at 12% 6%, rgba(59, 130, 246, 0.22), transparent 60%),
-    radial-gradient(42rem 42rem at 90% 14%, rgba(99, 102, 241, 0.20), transparent 60%),
-    radial-gradient(46rem 46rem at 78% 92%, rgba(56, 189, 248, 0.16), transparent 60%),
-    radial-gradient(40rem 40rem at 20% 100%, rgba(236, 72, 153, 0.12), transparent 55%),
-    linear-gradient(180deg, #f3f6fc, #e9eef7);
+    radial-gradient(48rem 48rem at 10% 4%, rgba(59, 130, 246, 0.34), transparent 60%),
+    radial-gradient(44rem 44rem at 92% 12%, rgba(129, 90, 245, 0.30), transparent 60%),
+    radial-gradient(50rem 50rem at 80% 94%, rgba(45, 212, 191, 0.24), transparent 60%),
+    radial-gradient(44rem 44rem at 16% 100%, rgba(236, 72, 153, 0.20), transparent 58%),
+    linear-gradient(180deg, #eef3fb, #e3e9f5);
 }
 
-/* Liquid Glass — матовое стекло */
+/* Liquid Glass — матовое стекло с глянцем и «кромкой» */
 .glass {
-  background: rgba(255, 255, 255, 0.55);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.62),
+    rgba(255, 255, 255, 0.34)
+  );
+  backdrop-filter: blur(22px) saturate(1.9);
+  -webkit-backdrop-filter: blur(22px) saturate(1.9);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    0 12px 40px rgba(15, 23, 42, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.35);
+}
+.glass-soft {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.48),
+    rgba(255, 255, 255, 0.26)
+  );
   backdrop-filter: blur(16px) saturate(1.6);
   -webkit-backdrop-filter: blur(16px) saturate(1.6);
   border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
-}
-.glass-soft {
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(12px) saturate(1.4);
-  -webkit-backdrop-filter: blur(12px) saturate(1.4);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
 }
 
 /* Поля ввода: читаемый текст в обеих темах */
