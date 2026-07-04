@@ -1470,6 +1470,7 @@ export const PHONES: Phone[] = [
   // ═════════════════════ Galaxy A (mid-range) ═════════════════════
   {
     slug: "galaxy-a70",
+    image: "/models/galaxy-a70.jpg",
     name: "Galaxy A70",
     series: "Galaxy A",
     releaseYear: 2019,
@@ -2011,6 +2012,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s22-plus",
+    image: "/models/galaxy-s22-plus.jpg",
     name: "Galaxy S22+",
     series: "Galaxy S",
     releaseYear: 2022,
@@ -3086,6 +3088,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-m12",
+    image: "/models/galaxy-m12.jpg",
     name: "Galaxy M12",
     series: "Galaxy M",
     releaseYear: 2021,
