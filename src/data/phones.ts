@@ -1642,6 +1642,7 @@ export const PHONES: Phone[] = [
   // ═════════════════════ Galaxy M (online series) ═════════════════════
   {
     slug: "galaxy-m31",
+    image: "/models/galaxy-m31.jpg",
     name: "Galaxy M31",
     series: "Galaxy M",
     releaseYear: 2020,
@@ -1669,6 +1670,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-m51",
+    image: "/models/galaxy-m51.jpg",
     name: "Galaxy M51",
     series: "Galaxy M",
     releaseYear: 2020,
@@ -2436,6 +2438,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-m21",
+    image: "/models/galaxy-m21.jpg",
     name: "Galaxy M21",
     series: "Galaxy M",
     releaseYear: 2020,
@@ -2463,6 +2466,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-m32",
+    image: "/models/galaxy-m32.jpg",
     name: "Galaxy M32",
     series: "Galaxy M",
     releaseYear: 2021,
