@@ -709,6 +709,7 @@ export const PHONES: Phone[] = [
   // ───────────────────────── 2022 ─────────────────────────
   {
     slug: "galaxy-a52",
+    image: "/models/galaxy-a52.jpg",
     name: "Galaxy A52 / A52s 5G",
     series: "Galaxy A",
     releaseYear: 2021,
@@ -1524,6 +1525,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-a71",
+    image: "/models/galaxy-a71.jpg",
     name: "Galaxy A71",
     series: "Galaxy A",
     releaseYear: 2020,
@@ -2919,6 +2921,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-a12",
+    image: "/models/galaxy-a12.jpg",
     name: "Galaxy A12",
     series: "Galaxy A",
     releaseYear: 2020,
@@ -2973,6 +2976,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-a21s",
+    image: "/models/galaxy-a21s.jpg",
     name: "Galaxy A21s",
     series: "Galaxy A",
     releaseYear: 2020,
@@ -3027,6 +3031,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-a32",
+    image: "/models/galaxy-a32.jpg",
     name: "Galaxy A32",
     series: "Galaxy A",
     releaseYear: 2021,
