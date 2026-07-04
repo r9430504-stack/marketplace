@@ -1134,6 +1134,7 @@ export const PHONES: Phone[] = [
   {
     slug: "galaxy-s8",
     image: "/models/galaxy-s8.jpg",
+    images: ["/models/galaxy-s8-2.jpg"],
     name: "Galaxy S8",
     series: "Galaxy S",
     releaseYear: 2017,
