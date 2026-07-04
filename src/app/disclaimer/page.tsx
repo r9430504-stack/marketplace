@@ -65,7 +65,7 @@ export default function DisclaimerPage() {
           <p>
             The site does not host Samsung’s official marketing photos without the appropriate rights.
             If you believe any material infringes copyright, let us know at{" "}
-            <a href="mailto:r9430504@gmail.com" className="text-blue-700 hover:underline">
+            <a href="mailto:r9430504@gmail.com" className="text-[#1428a0] hover:underline">
               r9430504@gmail.com
             </a>{" "}
             — we will remove it promptly.

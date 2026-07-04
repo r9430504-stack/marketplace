@@ -68,13 +68,13 @@ export default async function PhonePage({
 
       {/* Breadcrumbs */}
       <nav className="text-sm text-gray-500 dark:text-gray-400 mb-6 flex flex-wrap gap-1">
-        <Link href="/" className="hover:text-blue-600 dark:hover:text-blue-400">Home</Link>
+        <Link href="/" className="hover:text-[#1428a0] dark:hover:text-blue-400">Home</Link>
         <span>/</span>
-        <Link href="/phones" className="hover:text-blue-600 dark:hover:text-blue-400">Catalog</Link>
+        <Link href="/phones" className="hover:text-[#1428a0] dark:hover:text-blue-400">Catalog</Link>
         <span>/</span>
         <Link
           href={`/phones?series=${encodeURIComponent(phone.series)}`}
-          className="hover:text-blue-600 dark:hover:text-blue-400"
+          className="hover:text-[#1428a0] dark:hover:text-blue-400"
         >
           {s.label}
         </Link>
@@ -101,7 +101,7 @@ export default async function PhonePage({
             {phone.keyFeatures.map((f) => (
               <span
                 key={f}
-                className="text-xs font-medium px-3 py-1.5 rounded-full bg-white/55 backdrop-blur-md text-blue-700 border border-white/60"
+                className="text-xs font-medium px-3 py-1.5 rounded-full bg-[#eef1fb] text-[#1428a0] border border-[#dbe1f6]"
               >
                 {f}
               </span>

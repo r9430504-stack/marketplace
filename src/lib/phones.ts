@@ -87,7 +87,7 @@ export const SERIES: SeriesMeta[] = [
     label: "Galaxy S",
     from: "from-blue-600",
     to: "to-indigo-800",
-    accent: "text-blue-600 dark:text-blue-400",
+    accent: "text-[#1428a0] dark:text-blue-400",
     blurb: "Samsung's main flagship line — the annual Android benchmark.",
   },
   {

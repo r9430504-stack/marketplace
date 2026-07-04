@@ -25,8 +25,8 @@ export default function PhoneBrowser({
   const chip = (active: boolean) =>
     `px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
       active
-        ? "bg-blue-600 text-white shadow-sm shadow-blue-200"
-        : "bg-white/55 border border-white/60 backdrop-blur-md text-gray-700 hover:bg-white/80"
+        ? "bg-black text-white"
+        : "bg-white border border-gray-300 text-gray-700 hover:border-black hover:text-black"
     }`;
 
   return (
@@ -38,7 +38,7 @@ export default function PhoneBrowser({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search: model, chipset, year…"
-          className="w-full rounded-xl border border-white/60 bg-white/55 backdrop-blur-md pl-11 pr-4 py-3 text-base outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full rounded-full border border-gray-300 bg-white pl-11 pr-4 py-3 text-base outline-none focus:border-[#1428a0] focus:ring-1 focus:ring-[#1428a0]"
           aria-label="Search models"
         />
         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>

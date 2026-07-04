@@ -33,16 +33,13 @@ export default function HomePage() {
   return (
     <div>
       {/* ───────── Hero ───────── */}
-      <section className="relative overflow-hidden border-b border-gray-100">
-        <div className="pointer-events-none absolute -top-40 -right-40 h-96 w-96 rounded-full bg-blue-100 blur-3xl opacity-70" />
-        <div className="pointer-events-none absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-indigo-100 blur-3xl opacity-60" />
-
+      <section className="relative overflow-hidden border-b border-gray-200 bg-white">
         <div className="relative max-w-6xl mx-auto px-4 py-14 sm:py-20 grid md:grid-cols-2 gap-10 lg:gap-14 items-center">
           <div>
-            <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-blue-700 bg-blue-50 rounded-full px-3 py-1">
+            <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-[#1428a0] bg-[#eef1fb] rounded-full px-3 py-1">
               ◆ Unofficial archive · {firstYear}–{lastYear}
             </p>
-            <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 leading-[1.05] text-balance">
+            <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-black leading-[1.05] text-balance">
               The complete history of Samsung Galaxy phones
             </h1>
             <p className="mt-5 text-lg text-gray-600 max-w-xl">
@@ -52,16 +49,10 @@ export default function HomePage() {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href="/phones"
-                className="inline-flex items-center gap-2 bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold text-base hover:bg-blue-800 transition-colors shadow-sm shadow-blue-200"
-              >
-                🔍 Search models
+              <Link href="/phones" className="btn-primary px-6 py-3 text-base">
+                Search models
               </Link>
-              <Link
-                href="/history"
-                className="inline-flex items-center gap-2 glass text-gray-800 px-6 py-3 rounded-xl font-semibold text-base hover:bg-white/70 transition-colors"
-              >
+              <Link href="/history" className="btn-outline px-6 py-3 text-base">
                 Timeline by year →
               </Link>
             </div>
@@ -103,22 +94,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ───────── Lines (liquid glass) ───────── */}
-      <section className="relative overflow-hidden border-b border-gray-100 bg-gray-50/40">
-        {/* colored glow behind the glass */}
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-10 left-[8%] h-64 w-64 rounded-full bg-blue-300/40 blur-3xl" />
-          <div className="absolute top-1/2 right-[10%] h-72 w-72 rounded-full bg-indigo-300/40 blur-3xl" />
-          <div className="absolute bottom-0 left-1/3 h-56 w-56 rounded-full bg-sky-200/50 blur-3xl" />
-        </div>
-
-        <div className="relative max-w-6xl mx-auto px-4 py-14">
+      {/* ───────── Lines ───────── */}
+      <section className="border-b border-gray-200 bg-[#f5f5f7]">
+        <div className="max-w-6xl mx-auto px-4 py-14">
           <div className="flex items-end justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Galaxy lines</h2>
+              <h2 className="text-2xl font-bold tracking-tight text-black">Galaxy lines</h2>
               <p className="text-sm text-gray-500 mt-0.5">Choose a device family</p>
             </div>
-            <Link href="/phones" className="text-sm font-semibold text-blue-700 hover:underline shrink-0">
+            <Link href="/phones" className="text-sm font-semibold text-[#1428a0] hover:underline shrink-0">
               All models →
             </Link>
           </div>
@@ -131,16 +115,13 @@ export default function HomePage() {
                 <Link
                   key={s.id}
                   href={`/phones?series=${encodeURIComponent(s.id)}`}
-                  className="reveal group relative overflow-hidden rounded-2xl border border-white/70 bg-white/45 p-5 min-h-[124px] flex flex-col justify-between shadow-[0_8px_30px_rgba(15,23,42,0.08)] ring-1 ring-black/5 backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:bg-white/65"
+                  className="reveal group rounded-2xl border border-gray-200 bg-white p-5 min-h-[124px] flex flex-col justify-between transition-colors hover:border-black"
                 >
-                  {/* top highlight — "glass" */}
-                  <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/70 to-transparent" />
-                  <span className="pointer-events-none absolute -right-6 -top-8 h-20 w-20 rounded-full bg-white/40 blur-xl" />
-                  <div className="relative">
-                    <p className="font-bold text-[15px] text-gray-900">{s.label}</p>
+                  <div>
+                    <p className="font-bold text-[15px] text-black">{s.label}</p>
                     <p className="text-gray-500 text-xs mt-1 leading-snug line-clamp-2">{s.blurb}</p>
                   </div>
-                  <p className="relative text-blue-700 text-sm font-semibold mt-3">{count} models →</p>
+                  <p className="text-[#1428a0] text-sm font-semibold mt-3">{count} models →</p>
                 </Link>
               );
             })}
@@ -152,10 +133,10 @@ export default function HomePage() {
       <section className="max-w-6xl mx-auto px-4 py-14">
         <div className="flex items-end justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Flagships</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-black">Flagships</h2>
             <p className="text-sm text-gray-500 mt-0.5">Recent and landmark models with photos</p>
           </div>
-          <Link href="/phones" className="text-sm font-semibold text-blue-700 hover:underline shrink-0">
+          <Link href="/phones" className="text-sm font-semibold text-[#1428a0] hover:underline shrink-0">
             Full catalog →
           </Link>
         </div>
@@ -174,17 +155,17 @@ export default function HomePage() {
       <section className="max-w-6xl mx-auto px-4 pb-16">
         <Link
           href="/history"
-          className="reveal block glass rounded-2xl p-8 hover:shadow-lg transition-all"
+          className="reveal block rounded-2xl border border-gray-200 bg-[#f5f5f7] p-8 transition-colors hover:border-black"
         >
-          <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">Timeline</p>
-          <h2 className="mt-2 text-2xl font-bold text-gray-900">
+          <p className="text-sm font-semibold uppercase tracking-wide text-[#1428a0]">Timeline</p>
+          <h2 className="mt-2 text-2xl font-bold tracking-tight text-black">
             From the Galaxy S to the Galaxy S25 — year by year
           </h2>
           <p className="mt-2 text-gray-600 max-w-2xl">
             The evolution of Samsung phones from {firstYear} to {lastYear}: key models,
             foldables and the major milestones in one timeline.
           </p>
-          <span className="mt-4 inline-block text-blue-700 font-semibold">Open the timeline →</span>
+          <span className="mt-4 inline-block text-[#1428a0] font-semibold">Open the timeline →</span>
         </Link>
       </section>
     </div>
