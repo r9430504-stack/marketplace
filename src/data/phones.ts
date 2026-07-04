@@ -240,6 +240,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-note-7",
+    image: "/models/galaxy-note-7.jpg",
     name: "Galaxy Note 7",
     series: "Galaxy Note",
     releaseYear: 2016,
@@ -297,6 +298,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-note-8",
+    image: "/models/galaxy-note-8.jpg",
     name: "Galaxy Note 8",
     series: "Galaxy Note",
     releaseYear: 2017,
@@ -354,6 +356,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-note-9",
+    image: "/models/galaxy-note-9.jpg",
     name: "Galaxy Note 9",
     series: "Galaxy Note",
     releaseYear: 2018,
@@ -439,6 +442,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-note-10-plus",
+    image: "/models/galaxy-note-10-plus.jpg",
     name: "Galaxy Note 10+",
     series: "Galaxy Note",
     releaseYear: 2019,
@@ -2827,6 +2831,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-note-fe",
+    image: "/models/galaxy-note-fe.jpg",
     name: "Galaxy Note FE",
     series: "Galaxy Note",
     releaseYear: 2017,
