@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getAllPhones, getYears, SERIES, type SeriesId } from "@/lib/phones";
 import PhoneBrowser from "@/components/PhoneBrowser";
 import AdSlot from "@/components/AdSlot";
+import BackButton from "@/components/BackButton";
 
 export const metadata: Metadata = {
   title: "Samsung Galaxy phone catalog",
@@ -23,6 +24,9 @@ export default async function PhonesPage({
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
+      <div className="mb-4">
+        <BackButton fallback="/" label="Back" />
+      </div>
       <header className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight text-black dark:text-gray-100">Model catalog</h1>
         <p className="text-gray-500 dark:text-gray-400 mt-1">

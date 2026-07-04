@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllPhones, getYears, seriesMeta } from "@/lib/phones";
 import AdSlot from "@/components/AdSlot";
+import BackButton from "@/components/BackButton";
 
 export const metadata: Metadata = {
   title: "Samsung Galaxy timeline by year",
@@ -16,6 +17,9 @@ export default function HistoryPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
+      <div className="mb-4">
+        <BackButton fallback="/" label="Back" />
+      </div>
       <header className="mb-10">
         <h1 className="text-3xl font-bold tracking-tight text-black dark:text-gray-100">Galaxy timeline</h1>
         <p className="text-gray-500 dark:text-gray-400 mt-1">
