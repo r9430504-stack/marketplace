@@ -472,6 +472,8 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-fold",
+    image: "/models/galaxy-fold.jpg",
+    images: ["/models/galaxy-fold-2.jpg"],
     name: "Galaxy Fold",
     series: "Galaxy Fold",
     releaseYear: 2019,
