@@ -1955,6 +1955,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-s21-plus",
+    image: "/models/galaxy-s21-plus.jpg",
     name: "Galaxy S21+",
     series: "Galaxy S",
     releaseYear: 2021,
