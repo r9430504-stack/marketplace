@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getAllPhones, getPhoneBySlug, SERIES } from "@/lib/phones";
 import PhoneCard from "@/components/PhoneCard";
 import HeroShowcase from "@/components/HeroShowcase";
+import HeroBackdrop from "@/components/HeroBackdrop";
 import CountUp from "@/components/CountUp";
 import AdSlot from "@/components/AdSlot";
 
@@ -36,6 +37,7 @@ export default function HomePage() {
     <div>
       {/* ───────── Hero ───────── */}
       <section className="relative overflow-hidden border-b border-gray-200 bg-white">
+        <HeroBackdrop />
         <div className="relative max-w-6xl mx-auto px-4 py-14 sm:py-20 grid md:grid-cols-2 gap-10 lg:gap-14 items-center">
           <div>
             <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-[#1428a0] bg-[#eef1fb] rounded-full px-3 py-1">
