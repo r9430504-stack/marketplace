@@ -57,11 +57,26 @@ export default function RevealInit() {
           )
         : null;
 
-    // Reveal everything on screen right now (no scroll required).
-    const revealNow = () => {
+    // Reveal all currently-pending elements right now (used only when there is
+    // no IntersectionObserver, so nothing ever stays stuck at opacity 0).
+    const revealAllNow = () => {
       document
         .querySelectorAll<HTMLElement>(".reveal:not(.in)")
         .forEach((el) => el.classList.add("in"));
+    };
+
+    // Decide how to reveal a single element: cards already in/near the viewport
+    // appear straight away; cards further down are handed to the IO so they
+    // still slide in from the right as you scroll to them.
+    const handle = (el: HTMLElement) => {
+      if (el.classList.contains("in")) return;
+      if (!io) {
+        el.classList.add("in");
+        return;
+      }
+      const top = el.getBoundingClientRect().top;
+      if (top < window.innerHeight * 1.05) el.classList.add("in");
+      else io.observe(el);
     };
 
     let mo: MutationObserver | null = null;
@@ -72,20 +87,34 @@ export default function RevealInit() {
           .querySelectorAll<HTMLElement>(".reveal:not(.in)")
           .forEach((el) => io.observe(el));
       } else {
-        revealNow();
+        revealAllNow();
       }
       markCompleteImages();
 
-      // From now on, anything added to the DOM (filter results, etc.) is
-      // revealed immediately — it still animates via the CSS transition.
+      // From now on, only content ADDED after first paint (e.g. the catalog
+      // filter swapping the whole card grid) is handled here — so filtered
+      // results never stay invisible, while the initial scroll reveal above is
+      // left untouched.
+      const pending = new Set<HTMLElement>();
       let raf = 0;
-      mo = new MutationObserver(() => {
-        if (raf) return;
-        raf = window.requestAnimationFrame(() => {
-          raf = 0;
-          revealNow();
-          markCompleteImages();
-        });
+      const flush = () => {
+        raf = 0;
+        pending.forEach(handle);
+        pending.clear();
+        markCompleteImages();
+      };
+      mo = new MutationObserver((mutations) => {
+        for (const m of mutations) {
+          m.addedNodes.forEach((node) => {
+            if (!(node instanceof HTMLElement)) return;
+            if (node.matches(".reveal:not(.in)")) pending.add(node);
+            node
+              .querySelectorAll<HTMLElement>(".reveal:not(.in)")
+              .forEach((el) => pending.add(el));
+          });
+        }
+        if (!pending.size || raf) return;
+        raf = window.requestAnimationFrame(flush);
       });
       mo.observe(document.body, { childList: true, subtree: true });
     }, 60);
