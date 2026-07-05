@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { getAllPhones, getPhoneBySlug, SERIES } from "@/lib/phones";
 import PhoneCard from "@/components/PhoneCard";
+import HeroShowcase from "@/components/HeroShowcase";
+import CountUp from "@/components/CountUp";
 import AdSlot from "@/components/AdSlot";
 
 // Iconic models for the hero showcase (only those that have a photo).
@@ -60,7 +62,9 @@ export default function HomePage() {
             <dl className="mt-10 flex gap-8">
               {stats.map((s) => (
                 <div key={s.l}>
-                  <dt className="text-2xl sm:text-3xl font-extrabold text-gray-900 tabular-nums">{s.n}</dt>
+                  <dt className="text-2xl sm:text-3xl font-extrabold text-gray-900 tabular-nums">
+                    {typeof s.n === "number" ? <CountUp value={s.n} /> : s.n}
+                  </dt>
                   <dd className="text-xs uppercase tracking-wide text-gray-500 mt-0.5">{s.l}</dd>
                 </div>
               ))}
@@ -68,32 +72,13 @@ export default function HomePage() {
           </div>
 
           {showcase.length > 0 && (
-            <div className="grid grid-cols-2 gap-4">
-              {showcase.map((p, i) => (
-                <Link
-                  key={p.slug}
-                  href={`/phones/${p.slug}`}
-                  className={`group relative rounded-2xl overflow-hidden glass hover:shadow-md transition-shadow aspect-[4/5] ${
-                    i % 2 === 1 ? "translate-y-6" : ""
-                  }`}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={p.image}
-                    alt={p.name}
-                    className="img-fade h-full w-full object-contain bg-white group-hover:scale-[1.03] transition-transform duration-300"
-                    width={900}
-                    height={1125}
-                    loading="eager"
-                    decoding="async"
-                    fetchPriority={i === 0 ? "high" : "auto"}
-                  />
-                  <span className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/55 to-transparent p-3 text-white text-sm font-semibold">
-                    {p.name}
-                  </span>
-                </Link>
-              ))}
-            </div>
+            <HeroShowcase
+              items={showcase.map((p) => ({
+                slug: p.slug,
+                name: p.name,
+                image: p.image as string,
+              }))}
+            />
           )}
         </div>
       </section>
