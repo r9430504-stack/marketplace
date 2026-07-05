@@ -21,11 +21,12 @@
   color: #ffffff;
 }
 
-/* Smooth reveal on scroll — rises up from below (vertical only, so it never
- * pushes content past the viewport edge and causes sideways scrolling) */
+/* Smooth reveal on scroll — slides in from the right with a soft settle.
+ * The rightward start (translateX) is clipped by overflow-x: clip on
+ * html/body below, so it animates in without ever causing sideways scroll. */
 .reveal {
   opacity: 0;
-  transform: translateY(30px) scale(0.985);
+  transform: translateX(48px) translateY(8px) scale(0.985);
   transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
@@ -79,13 +80,19 @@
   --font-sans: var(--font-geist-sans);
 }
 
+/* Never scroll sideways — only up and down. `clip` prevents horizontal
+ * scrolling without creating a scroll container (keeps sticky working), and
+ * clips the reveal animation's rightward start so it can slide in from the
+ * right without ever adding a horizontal scrollbar. */
+html {
+  overflow-x: clip;
+}
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), "Segoe UI", Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
-  /* Never scroll sideways — only up and down */
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /*
