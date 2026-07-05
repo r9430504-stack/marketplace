@@ -21,10 +21,11 @@
   color: #ffffff;
 }
 
-/* Smooth reveal on scroll — slides in from the right with a soft settle */
+/* Smooth reveal on scroll — rises up from below (vertical only, so it never
+ * pushes content past the viewport edge and causes sideways scrolling) */
 .reveal {
   opacity: 0;
-  transform: translateX(46px) translateY(10px) scale(0.975);
+  transform: translateY(30px) scale(0.985);
   transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
@@ -83,6 +84,8 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), "Segoe UI", Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
+  /* Never scroll sideways — only up and down */
+  overflow-x: hidden;
 }
 
 /*
