@@ -21,12 +21,12 @@
   color: #ffffff;
 }
 
-/* Smooth reveal on scroll — slides in from the right */
+/* Smooth reveal on scroll — slides in from the right with a soft settle */
 .reveal {
   opacity: 0;
-  transform: translateX(44px);
-  transition: opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
-    transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transform: translateX(46px) translateY(10px) scale(0.975);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
 .reveal.in {
@@ -38,6 +38,37 @@
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
+  }
+}
+
+/* Gentle continuous float for hero product tiles */
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-11px);
+  }
+}
+.floaty {
+  animation: floaty 6s ease-in-out infinite;
+}
+
+/* Cursor-driven 3D tilt for the hero product cluster */
+.hero-parallax {
+  transform: rotateX(calc(var(--py, 0) * -5deg))
+    rotateY(calc(var(--px, 0) * 7deg));
+  transition: transform 0.35s ease-out;
+  transform-style: preserve-3d;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floaty {
+    animation: none !important;
+  }
+  .hero-parallax {
+    transform: none !important;
   }
 }
 
