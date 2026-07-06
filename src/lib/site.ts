@@ -14,3 +14,7 @@ export const SITE_DESCRIPTION =
 // If empty, ad-block placeholders are shown on the pages.
 export const ADSENSE_CLIENT =
   process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-5985897167482706";
+
+// Default AdSense ad-unit (data-ad-slot). Overridable via NEXT_PUBLIC_ADSENSE_SLOT.
+export const ADSENSE_SLOT =
+  process.env.NEXT_PUBLIC_ADSENSE_SLOT || "6245052133";
