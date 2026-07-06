@@ -6,6 +6,7 @@ import {
   getComparisonBySlug,
   comparisonSlug,
   seriesMeta,
+  type Phone,
 } from "@/lib/phones";
 import PhoneVisual from "@/components/PhoneVisual";
 import CompareTable from "@/components/CompareTable";
@@ -15,6 +16,42 @@ import { SITE_URL } from "@/lib/site";
 
 export function generateStaticParams() {
   return getComparisonPairs().map(({ a, b }) => ({ pair: comparisonSlug(a, b) }));
+}
+
+// ── Readable, data-driven "what's different" bullets (unique per pair) ──
+function num(re: RegExp, s?: string): number {
+  const m = s?.match(re);
+  return m ? parseFloat(m[1].replace(/,/g, "")) : 0;
+}
+const mah = (p: { specs: { battery: string } }) => num(/(\d[\d,]*)\s*mAh/i, p.specs.battery);
+const grams = (p: { specs: { weight?: string } }) => num(/(\d+(?:\.\d+)?)\s*g/, p.specs.weight);
+const maxRam = (p: { specs: { ram: string } }) =>
+  Math.max(0, ...[...p.specs.ram.matchAll(/(\d+)\s*GB/gi)].map((m) => parseInt(m[1], 10)));
+
+function keyDifferences(a: Phone, b: Phone): string[] {
+  const out: string[] = [];
+  if (a.specs.chipset !== b.specs.chipset)
+    out.push(`Processor: the ${b.name} runs the ${b.specs.chipset}, while the ${a.name} uses the ${a.specs.chipset}.`);
+  const ra = maxRam(a), rb = maxRam(b);
+  if (ra && rb && ra !== rb)
+    out.push(`Memory: the ${(rb > ra ? b : a).name} offers more RAM — up to ${Math.max(ra, rb)} GB vs ${Math.min(ra, rb)} GB.`);
+  const ba = mah(a), bb = mah(b);
+  if (ba && bb && ba !== bb)
+    out.push(`Battery: the ${(bb > ba ? b : a).name} has the larger battery, ${Math.max(ba, bb).toLocaleString()} mAh vs ${Math.min(ba, bb).toLocaleString()} mAh.`);
+  if (a.specs.display !== b.specs.display)
+    out.push(`Display: ${a.name} — ${a.specs.display}; ${b.name} — ${b.specs.display}.`);
+  if (a.specs.mainCamera !== b.specs.mainCamera)
+    out.push(`Main camera: ${a.name} — ${a.specs.mainCamera}; ${b.name} — ${b.specs.mainCamera}.`);
+  if (a.specs.charging && b.specs.charging && a.specs.charging !== b.specs.charging)
+    out.push(`Charging: ${a.name} — ${a.specs.charging}; ${b.name} — ${b.specs.charging}.`);
+  const ga = grams(a), gb = grams(b);
+  if (ga && gb && ga !== gb)
+    out.push(`Weight: the ${(gb < ga ? b : a).name} is lighter at ${Math.min(ga, gb)} g (vs ${Math.max(ga, gb)} g).`);
+  if (a.specs.os !== b.specs.os)
+    out.push(`Software: ${a.name} shipped with ${a.specs.os}; ${b.name} with ${b.specs.os}.`);
+  if (a.specs.launchPrice && b.specs.launchPrice && a.specs.launchPrice !== b.specs.launchPrice)
+    out.push(`Launch price: ${a.name} — ${a.specs.launchPrice}; ${b.name} — ${b.specs.launchPrice}.`);
+  return out;
 }
 
 export async function generateMetadata({
@@ -44,6 +81,8 @@ export default async function ComparePage({
   const cmp = getComparisonBySlug(pair);
   if (!cmp) notFound();
   const { a, b } = cmp;
+  const diffs = keyDifferences(a, b);
+  const sameYear = a.releaseYear === b.releaseYear;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -106,6 +145,41 @@ export default async function ComparePage({
           </Link>
         ))}
       </div>
+
+      {/* Key differences — unique, readable summary per pair */}
+      <section className="mt-8">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
+          {a.name} vs {b.name}: the key differences
+        </h2>
+        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+          {sameYear ? (
+            <>
+              The {a.name} and {b.name} launched in the same year ({a.releaseYear}) as part of the
+              same generation, so they share a great deal — but they are aimed at different buyers.
+            </>
+          ) : (
+            <>
+              The {b.name} arrived in {b.releaseYear}, {b.releaseYear - a.releaseYear}{" "}
+              {b.releaseYear - a.releaseYear === 1 ? "year" : "years"} after the {a.name} (
+              {a.releaseYear}), and moves the line forward in several areas.
+            </>
+          )}
+        </p>
+        {diffs.length > 0 ? (
+          <ul className="mt-4 space-y-2">
+            {diffs.map((d, i) => (
+              <li key={i} className="flex gap-2 text-gray-700 dark:text-gray-300 leading-relaxed">
+                <span className="text-[#1428a0] mt-0.5">◆</span>
+                <span>{d}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-3 text-gray-600 dark:text-gray-400">
+            On paper these two are very close — the full table below shows where they line up.
+          </p>
+        )}
+      </section>
 
       <AdSlot />
 
