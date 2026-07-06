@@ -8,12 +8,14 @@ export default function PhoneBrowser({
   phones,
   years,
   initialSeries = "all",
+  initialQuery = "",
 }: {
   phones: Phone[];
   years: number[];
   initialSeries?: SeriesId | "all";
+  initialQuery?: string;
 }) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const [series, setSeries] = useState<SeriesId | "all">(initialSeries);
   const [year, setYear] = useState<number | "all">("all");
 

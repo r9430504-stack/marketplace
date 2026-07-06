@@ -14,9 +14,9 @@ export const metadata: Metadata = {
 export default async function PhonesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ series?: string }>;
+  searchParams: Promise<{ series?: string; q?: string }>;
 }) {
-  const { series } = await searchParams;
+  const { series, q } = await searchParams;
   const phones = getAllPhones();
   const years = getYears();
 
@@ -34,7 +34,12 @@ export default async function PhonesPage({
         </p>
       </header>
 
-      <PhoneBrowser phones={phones} years={years} initialSeries={validSeries ?? "all"} />
+      <PhoneBrowser
+        phones={phones}
+        years={years}
+        initialSeries={validSeries ?? "all"}
+        initialQuery={q ?? ""}
+      />
 
       <AdSlot />
     </div>
