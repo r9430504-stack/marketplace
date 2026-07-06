@@ -207,6 +207,15 @@ export function seriesMeta(id: SeriesId): SeriesMeta {
   return SERIES.find((s) => s.id === id) ?? SERIES[0];
 }
 
+/** URL-safe slug for a line, e.g. "Galaxy Z Fold" → "galaxy-z-fold". */
+export function seriesSlug(id: SeriesId): string {
+  return id.toLowerCase().replace(/\s+/g, "-");
+}
+
+export function seriesFromSlug(slug: string): SeriesMeta | undefined {
+  return SERIES.find((s) => seriesSlug(s.id) === slug);
+}
+
 // ─── Data access (in-memory, from src/data/phones.ts) ───
 
 import { PHONES } from "@/data/phones";
@@ -230,6 +239,17 @@ export function relatedPhones(phone: Phone, limit = 4): Phone[] {
   return getAllPhones()
     .filter((p) => p.slug !== phone.slug && p.series === phone.series)
     .slice(0, limit);
+}
+
+/** Previous/next model in the same line, ordered by release year (for internal
+ * linking and easier crawling). */
+export function seriesNeighbours(phone: Phone): { prev?: Phone; next?: Phone } {
+  const line = getAllPhones()
+    .filter((p) => p.series === phone.series)
+    .sort((a, b) => a.releaseYear - b.releaseYear || a.name.localeCompare(b.name));
+  const i = line.findIndex((p) => p.slug === phone.slug);
+  if (i === -1) return {};
+  return { prev: line[i - 1], next: line[i + 1] };
 }
 
 // ─── Comparisons ("X vs Y") ───
