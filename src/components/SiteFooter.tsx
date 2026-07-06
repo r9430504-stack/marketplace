@@ -34,6 +34,8 @@ export default function SiteFooter() {
           <ul className="space-y-1 text-gray-500 dark:text-gray-400">
             <li><Link href="/phones" className="hover:text-[#1428a0] dark:hover:text-blue-400">Model catalog</Link></li>
             <li><Link href="/history" className="hover:text-[#1428a0] dark:hover:text-blue-400">Timeline</Link></li>
+            <li><Link href="/privacy" className="hover:text-[#1428a0] dark:hover:text-blue-400">Privacy Policy</Link></li>
+            <li><Link href="/terms" className="hover:text-[#1428a0] dark:hover:text-blue-400">Terms of Use</Link></li>
             <li><Link href="/disclaimer" className="hover:text-[#1428a0] dark:hover:text-blue-400">Legal information</Link></li>
           </ul>
         </div>
