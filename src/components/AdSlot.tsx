@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { ADSENSE_CLIENT } from "@/lib/site";
+import { ADSENSE_CLIENT, ADSENSE_SLOT } from "@/lib/site";
 
 declare global {
   interface Window {
@@ -24,7 +24,12 @@ type Props = {
  * If NEXT_PUBLIC_ADSENSE_CLIENT is not set, shows a placeholder so the
  * layout doesn't shift and the ad space is visible during development.
  */
-export default function AdSlot({ slot, format = "auto", className = "", label = "Advertisement" }: Props) {
+export default function AdSlot({
+  slot = ADSENSE_SLOT,
+  format = "auto",
+  className = "",
+  label = "Advertisement",
+}: Props) {
   const enabled = Boolean(ADSENSE_CLIENT && slot);
 
   useEffect(() => {
