@@ -232,6 +232,103 @@ export function relatedPhones(phone: Phone, limit = 4): Phone[] {
     .slice(0, limit);
 }
 
+// ─── Comparisons ("X vs Y") ───
+
+/** Rough tier of a model, from its name, for pairing like-with-like. */
+function tierOf(name: string): string {
+  const n = name.toLowerCase();
+  if (n.includes("ultra")) return "ultra";
+  if (n.includes("plus") || n.includes("+")) return "plus";
+  if (/\bfe\b/.test(n)) return "fe";
+  if (n.includes("edge")) return "edge";
+  return "base";
+}
+
+/** Deterministic pair ordering: older model first, then by name. */
+function orderPair(a: Phone, b: Phone): [Phone, Phone] {
+  if (a.releaseYear !== b.releaseYear) return a.releaseYear < b.releaseYear ? [a, b] : [b, a];
+  return a.name.localeCompare(b.name) <= 0 ? [a, b] : [b, a];
+}
+
+export function comparisonSlug(a: Phone, b: Phone): string {
+  const [x, y] = orderPair(a, b);
+  return `${x.slug}-vs-${y.slug}`;
+}
+
+/**
+ * Curated, high-intent comparison pairs — the "X vs Y" queries people search:
+ *  - successors: the same tier one generation apart (S24 vs S25, Z Fold 5 vs 6)
+ *  - siblings: same generation, different tier (S24 vs S24 Ultra)
+ * Limited to the flagship lines to keep the set meaningful.
+ */
+export function getComparisonPairs(): { a: Phone; b: Phone }[] {
+  const flagshipSeries: SeriesId[] = [
+    "Galaxy S",
+    "Galaxy Note",
+    "Galaxy Z Fold",
+    "Galaxy Z Flip",
+  ];
+  const seen = new Set<string>();
+  const pairs: { a: Phone; b: Phone }[] = [];
+  const add = (a: Phone, b: Phone) => {
+    const [x, y] = orderPair(a, b);
+    const key = `${x.slug}-vs-${y.slug}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    pairs.push({ a: x, b: y });
+  };
+
+  for (const s of flagshipSeries) {
+    const list = getAllPhones().filter((p) => p.series === s);
+
+    // Successors: same tier, consecutive by year.
+    const tiers = new Map<string, Phone[]>();
+    for (const p of list) {
+      const t = tierOf(p.name);
+      (tiers.get(t) ?? tiers.set(t, []).get(t)!).push(p);
+    }
+    for (const group of tiers.values()) {
+      const sorted = [...group].sort((a, b) => a.releaseYear - b.releaseYear);
+      for (let i = 0; i + 1 < sorted.length; i++) add(sorted[i], sorted[i + 1]);
+    }
+
+    // Siblings: same year, different tier.
+    const years = new Map<number, Phone[]>();
+    for (const p of list) {
+      (years.get(p.releaseYear) ?? years.set(p.releaseYear, []).get(p.releaseYear)!).push(p);
+    }
+    for (const group of years.values()) {
+      for (let i = 0; i < group.length; i++) {
+        for (let j = i + 1; j < group.length; j++) add(group[i], group[j]);
+      }
+    }
+  }
+
+  return pairs;
+}
+
+/** Look up a comparison by its "a-vs-b" slug (order-independent). */
+export function getComparisonBySlug(
+  pairSlug: string
+): { a: Phone; b: Phone } | undefined {
+  const idx = pairSlug.indexOf("-vs-");
+  if (idx === -1) return undefined;
+  const aSlug = pairSlug.slice(0, idx);
+  const bSlug = pairSlug.slice(idx + 4);
+  const a = getPhoneBySlug(aSlug);
+  const b = getPhoneBySlug(bSlug);
+  if (!a || !b || a.slug === b.slug) return undefined;
+  const [x, y] = orderPair(a, b);
+  return { a: x, b: y };
+}
+
+/** Comparisons that involve a given phone (for "Compare" links on its page). */
+export function comparisonsFor(phone: Phone, limit = 6): { a: Phone; b: Phone }[] {
+  return getComparisonPairs()
+    .filter((p) => p.a.slug === phone.slug || p.b.slug === phone.slug)
+    .slice(0, limit);
+}
+
 export type PhoneFilter = {
   query?: string;
   series?: SeriesId | "all";

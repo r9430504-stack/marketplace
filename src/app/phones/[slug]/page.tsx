@@ -5,6 +5,8 @@ import {
   getAllPhones,
   getPhoneBySlug,
   relatedPhones,
+  comparisonsFor,
+  comparisonSlug,
   seriesMeta,
 } from "@/lib/phones";
 import PhoneVisual from "@/components/PhoneVisual";
@@ -50,6 +52,7 @@ export default async function PhonePage({
 
   const s = seriesMeta(phone.series);
   const related = relatedPhones(phone);
+  const comparisons = comparisonsFor(phone);
   const gallery = [phone.image, ...(phone.images ?? [])].filter(Boolean) as string[];
 
   const jsonLd = {
@@ -60,12 +63,76 @@ export default async function PhonePage({
     category: s.label,
     releaseDate: String(phone.releaseYear),
     description: phone.tagline,
+    image: phone.image ? `${SITE_URL}${phone.image}` : undefined,
     url: `${SITE_URL}/phones/${phone.slug}`,
+  };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Catalog", item: `${SITE_URL}/phones` },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: phone.name,
+        item: `${SITE_URL}/phones/${phone.slug}`,
+      },
+    ],
+  };
+
+  // Build a few Q&A from the phone's own data — indexable, and eligible for
+  // FAQ rich results in Google.
+  const faqs: { q: string; a: string }[] = [
+    { q: `When was the ${phone.name} released?`, a: `The ${phone.name} was released in ${phone.releaseDate}.` },
+    {
+      q: `What are the ${phone.name}'s display specifications?`,
+      a: `The ${phone.name} has a ${phone.specs.display}${
+        phone.specs.refreshRate ? ` with a ${phone.specs.refreshRate} refresh rate` : ""
+      }.`,
+    },
+    {
+      q: `What chipset does the ${phone.name} use?`,
+      a: `The ${phone.name} is powered by the ${phone.specs.chipset}, with ${phone.specs.ram} of RAM and ${phone.specs.storage} of storage.`,
+    },
+    {
+      q: `What camera does the ${phone.name} have?`,
+      a: `The ${phone.name}'s main camera is ${phone.specs.mainCamera}${
+        phone.specs.frontCamera ? `, with a ${phone.specs.frontCamera} front camera` : ""
+      }.`,
+    },
+    {
+      q: `What is the battery capacity of the ${phone.name}?`,
+      a: `The ${phone.name} has a ${phone.specs.battery} battery${
+        phone.specs.charging ? ` and supports ${phone.specs.charging}` : ""
+      }.`,
+    },
+    ...(phone.specs.waterResistance
+      ? [
+          {
+            q: `Is the ${phone.name} water resistant?`,
+            a: `The ${phone.name} has a ${phone.specs.waterResistance} rating.`,
+          },
+        ]
+      : []),
+  ];
+
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
   };
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
 
       <div className="mb-4">
         <BackButton fallback="/phones" label="Back" />
@@ -141,6 +208,52 @@ export default async function PhonePage({
       <section className="mt-10">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Full specifications</h2>
         <SpecTable specs={phone.specs} />
+      </section>
+
+      {/* Compare */}
+      {comparisons.length > 0 && (
+        <section className="mt-12">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+            Compare the {phone.name}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {comparisons.map((c) => {
+              const other = c.a.slug === phone.slug ? c.b : c.a;
+              return (
+                <Link
+                  key={comparisonSlug(c.a, c.b)}
+                  href={`/compare/${comparisonSlug(c.a, c.b)}`}
+                  className="glass rounded-xl px-4 py-3 hover:shadow-md hover:-translate-y-0.5 transition-all"
+                >
+                  <span className="font-semibold text-gray-900 dark:text-gray-100">
+                    {phone.name} <span className="text-gray-400 font-normal">vs</span> {other.name}
+                  </span>
+                  <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                    Side-by-side specifications →
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* FAQ */}
+      <section className="mt-12">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+          {phone.name} — frequently asked questions
+        </h2>
+        <div className="space-y-3">
+          {faqs.map((f) => (
+            <details key={f.q} className="glass rounded-xl px-4 py-3 group">
+              <summary className="font-semibold text-gray-900 dark:text-gray-100 cursor-pointer list-none flex items-center justify-between gap-2">
+                {f.q}
+                <span className="text-gray-400 group-open:rotate-45 transition-transform">+</span>
+              </summary>
+              <p className="text-gray-600 dark:text-gray-300 mt-2 text-sm leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
       </section>
 
       {/* Related */}

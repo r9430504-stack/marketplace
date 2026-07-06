@@ -5,6 +5,7 @@ import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION, ADSENSE_CLIENT } fro
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import RevealInit from "@/components/RevealInit";
+import SiteJsonLd from "@/components/SiteJsonLd";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -75,6 +76,7 @@ export default function RootLayout({
         )}
       </head>
       <body className="min-h-full flex flex-col bg-white">
+        <SiteJsonLd />
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
