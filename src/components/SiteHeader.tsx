@@ -21,6 +21,9 @@ export default function SiteHeader() {
           <Link href="/compare" className="text-gray-600 dark:text-gray-300 hover:text-[#1428a0] dark:hover:text-blue-400 font-medium">
             Compare
           </Link>
+          <Link href="/best" className="hidden sm:inline text-gray-600 dark:text-gray-300 hover:text-[#1428a0] dark:hover:text-blue-400 font-medium">
+            Guides
+          </Link>
           <Link href="/history" className="text-gray-600 dark:text-gray-300 hover:text-[#1428a0] dark:hover:text-blue-400 font-medium">
             History
           </Link>

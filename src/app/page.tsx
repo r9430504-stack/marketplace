@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { getAllPhones, getPhoneBySlug, SERIES } from "@/lib/phones";
+import { getAllPhones, getPhoneBySlug, SERIES, seriesSlug } from "@/lib/phones";
+import { getCollections } from "@/lib/collections";
 import PhoneCard from "@/components/PhoneCard";
 import HeroShowcase from "@/components/HeroShowcase";
 import HeroBackdrop from "@/components/HeroBackdrop";
@@ -105,7 +106,7 @@ export default function HomePage() {
               return (
                 <Link
                   key={s.id}
-                  href={`/phones?series=${encodeURIComponent(s.id)}`}
+                  href={`/series/${seriesSlug(s.id)}`}
                   className="reveal group rounded-2xl border border-gray-200 bg-white p-5 min-h-[124px] flex flex-col justify-between transition-colors hover:border-black"
                 >
                   <div>
@@ -141,6 +142,33 @@ export default function HomePage() {
       <div className="max-w-6xl mx-auto px-4">
         <AdSlot />
       </div>
+
+      {/* ───────── Collections ───────── */}
+      <section className="border-y border-gray-200 bg-[#f5f5f7]">
+        <div className="max-w-6xl mx-auto px-4 py-14">
+          <div className="flex items-end justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight text-black">Guides &amp; collections</h2>
+              <p className="text-sm text-gray-500 mt-0.5">Explore the range by what matters to you</p>
+            </div>
+            <Link href="/best" className="text-sm font-semibold text-[#1428a0] hover:underline shrink-0">
+              All guides →
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {getCollections().map((c) => (
+              <Link
+                key={c.slug}
+                href={`/best/${c.slug}`}
+                className="reveal group rounded-2xl border border-gray-200 bg-white p-5 min-h-[110px] flex flex-col justify-between transition-colors hover:border-black"
+              >
+                <p className="font-bold text-[15px] text-black leading-snug">{c.title}</p>
+                <p className="text-[#1428a0] text-sm font-semibold mt-3">Explore →</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ───────── Timeline teaser ───────── */}
       <section className="max-w-6xl mx-auto px-4 pb-16">

@@ -7,6 +7,8 @@ import {
   relatedPhones,
   comparisonsFor,
   comparisonSlug,
+  seriesNeighbours,
+  seriesSlug,
   seriesMeta,
 } from "@/lib/phones";
 import PhoneVisual from "@/components/PhoneVisual";
@@ -53,6 +55,7 @@ export default async function PhonePage({
   const s = seriesMeta(phone.series);
   const related = relatedPhones(phone);
   const comparisons = comparisonsFor(phone);
+  const { prev, next } = seriesNeighbours(phone);
   const gallery = [phone.image, ...(phone.images ?? [])].filter(Boolean) as string[];
 
   const jsonLd = {
@@ -145,7 +148,7 @@ export default async function PhonePage({
         <Link href="/phones" className="hover:text-[#1428a0] dark:hover:text-blue-400">Catalog</Link>
         <span>/</span>
         <Link
-          href={`/phones?series=${encodeURIComponent(phone.series)}`}
+          href={`/series/${seriesSlug(phone.series)}`}
           className="hover:text-[#1428a0] dark:hover:text-blue-400"
         >
           {s.label}
@@ -268,6 +271,38 @@ export default async function PhonePage({
             ))}
           </div>
         </section>
+      )}
+
+      {/* Prev / next in the line */}
+      {(prev || next) && (
+        <nav className="mt-12 grid grid-cols-2 gap-3">
+          {prev ? (
+            <Link
+              href={`/phones/${prev.slug}`}
+              className="glass rounded-xl px-4 py-3 hover:shadow-md transition-all"
+            >
+              <span className="block text-[11px] uppercase tracking-wide text-gray-400">
+                ← Previous {s.label}
+              </span>
+              <span className="font-semibold text-gray-900 dark:text-gray-100">{prev.name}</span>
+            </Link>
+          ) : (
+            <span />
+          )}
+          {next ? (
+            <Link
+              href={`/phones/${next.slug}`}
+              className="glass rounded-xl px-4 py-3 text-right hover:shadow-md transition-all"
+            >
+              <span className="block text-[11px] uppercase tracking-wide text-gray-400">
+                Next {s.label} →
+              </span>
+              <span className="font-semibold text-gray-900 dark:text-gray-100">{next.name}</span>
+            </Link>
+          ) : (
+            <span />
+          )}
+        </nav>
       )}
     </div>
   );
