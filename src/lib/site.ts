@@ -1,7 +1,7 @@
-// Base site URL. Overridden via the NEXT_PUBLIC_SITE_URL variable in Railway
-// when you connect your own domain. Defaults to the current Railway address.
+// Base site URL. Can be overridden via the NEXT_PUBLIC_SITE_URL variable in
+// Railway; defaults to the site's own custom domain.
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL || "https://marketplace-production-c8d6.up.railway.app"
+  process.env.NEXT_PUBLIC_SITE_URL || "https://galaxyarchive.org"
 ).replace(/\/$/, "");
 
 export const SITE_NAME = "Galaxy Archive";
