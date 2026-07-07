@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SITE_NAME } from "@/lib/site";
+import LanguageSwitch from "./LanguageSwitch";
 
 export default function SiteHeader() {
   return (
@@ -27,6 +28,7 @@ export default function SiteHeader() {
           <Link href="/history" className="text-gray-600 dark:text-gray-300 hover:text-[#1428a0] dark:hover:text-blue-400 font-medium">
             History
           </Link>
+          <LanguageSwitch />
         </div>
       </div>
     </nav>
