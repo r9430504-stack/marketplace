@@ -8,22 +8,29 @@ import { seriesMeta, type Phone } from "@/lib/phones";
 export default function PhoneVisual({
   phone,
   className = "",
+  thumb = false,
+  eager = false,
 }: {
   phone: Phone;
   className?: string;
+  /** Use the lightweight ~480px WebP preview (for grids/cards/lists). */
+  thumb?: boolean;
+  /** Load immediately instead of lazily (for above-the-fold images). */
+  eager?: boolean;
 }) {
   const s = seriesMeta(phone.series);
 
   if (phone.image) {
+    const src = thumb ? `/models/thumbs/${phone.slug}.webp` : phone.image;
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={phone.image}
+        src={src}
         alt={`${phone.name} — ${phone.releaseDate}`}
         className={`img-fade w-full h-full object-contain bg-white ${className}`}
-        width={900}
-        height={1125}
-        loading="lazy"
+        width={thumb ? 480 : 900}
+        height={thumb ? 600 : 1125}
+        loading={eager ? "eager" : "lazy"}
         decoding="async"
       />
     );

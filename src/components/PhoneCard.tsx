@@ -10,7 +10,7 @@ export default function PhoneCard({ phone }: { phone: Phone }) {
       className="reveal group glass rounded-2xl hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 ease-out overflow-hidden flex flex-col"
     >
       <div className="aspect-[4/5] overflow-hidden bg-white">
-        <PhoneVisual phone={phone} className="group-hover:scale-[1.06] transition-transform duration-500 ease-out" />
+        <PhoneVisual phone={phone} thumb className="group-hover:scale-[1.06] transition-transform duration-500 ease-out" />
       </div>
       <div className="p-4 flex flex-col gap-1 flex-1">
         <div className="flex items-center justify-between gap-2">

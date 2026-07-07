@@ -133,7 +133,7 @@ export default async function ComparePage({
             className="group rounded-2xl overflow-hidden glass hover:shadow-lg transition-shadow"
           >
             <div className="aspect-[4/5] bg-white">
-              <PhoneVisual phone={p} className="group-hover:scale-[1.04] transition-transform duration-500" />
+              <PhoneVisual phone={p} thumb className="group-hover:scale-[1.04] transition-transform duration-500" />
             </div>
             <div className="p-3">
               <span className={`text-[11px] font-semibold ${seriesMeta(p.series).accent}`}>
