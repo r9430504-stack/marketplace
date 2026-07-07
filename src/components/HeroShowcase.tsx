@@ -50,11 +50,11 @@ export default function HeroShowcase({ items }: { items: Item[] }) {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={p.image}
+                src={`/models/thumbs/${p.slug}.webp`}
                 alt={p.name}
                 className="img-fade h-full w-full object-contain bg-white"
-                width={900}
-                height={1125}
+                width={480}
+                height={600}
                 loading="eager"
                 decoding="async"
                 fetchPriority={i === 0 ? "high" : "auto"}
