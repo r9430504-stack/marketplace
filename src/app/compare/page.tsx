@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getComparisonPairs, comparisonSlug, seriesMeta } from "@/lib/phones";
+import { getAllPhones, getComparisonPairs, comparisonSlug, seriesMeta } from "@/lib/phones";
+import CompareBuilder from "@/components/CompareBuilder";
 import BackButton from "@/components/BackButton";
 import AdSlot from "@/components/AdSlot";
 
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
 
 export default function CompareIndexPage() {
   const pairs = getComparisonPairs();
+  const allPhones = getAllPhones();
 
   // Group by the (shared) series for a tidy list.
   const groups = new Map<string, typeof pairs>();
@@ -32,11 +34,20 @@ export default function CompareIndexPage() {
           Compare Galaxy phones
         </h1>
         <p className="text-gray-500 dark:text-gray-400 mt-1">
-          {pairs.length} side-by-side comparisons of Samsung Galaxy flagships — successors and
-          siblings across the S, Note, Z Fold and Z Flip lines.
+          {pairs.length} side-by-side comparisons of Samsung Galaxy flagships — or build your own
+          from any two models below.
         </p>
       </header>
 
+      {/* Interactive: pick any two */}
+      <section className="mb-10">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-3">
+          Build your own comparison
+        </h2>
+        <CompareBuilder phones={allPhones} />
+      </section>
+
+      <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-3">Popular comparisons</h2>
       <div className="space-y-8">
         {[...groups.entries()].map(([label, list]) => (
           <section key={label}>
