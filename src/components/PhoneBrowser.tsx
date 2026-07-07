@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { SERIES, filterPhones, type Phone, type SeriesId } from "@/lib/phones";
+import { SERIES, FEATURE_FILTERS, filterPhones, type Phone, type SeriesId } from "@/lib/phones";
 import PhoneCard from "./PhoneCard";
 
 export default function PhoneBrowser({
@@ -18,10 +18,14 @@ export default function PhoneBrowser({
   const [query, setQuery] = useState(initialQuery);
   const [series, setSeries] = useState<SeriesId | "all">(initialSeries);
   const [year, setYear] = useState<number | "all">("all");
+  const [features, setFeatures] = useState<string[]>([]);
+
+  const toggleFeature = (id: string) =>
+    setFeatures((f) => (f.includes(id) ? f.filter((x) => x !== id) : [...f, id]));
 
   const results = useMemo(
-    () => filterPhones(phones, { query, series, year }),
-    [phones, query, series, year]
+    () => filterPhones(phones, { query, series, year, features }),
+    [phones, query, series, year, features]
   );
 
   const chip = (active: boolean) =>
@@ -68,6 +72,34 @@ export default function PhoneBrowser({
             {y}
           </button>
         ))}
+      </div>
+
+      {/* Feature filters */}
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <span className="text-xs font-medium text-gray-400 dark:text-gray-500 mr-1">Features:</span>
+        {FEATURE_FILTERS.map((f) => (
+          <button
+            key={f.id}
+            className={chip(features.includes(f.id))}
+            onClick={() => toggleFeature(f.id)}
+            aria-pressed={features.includes(f.id)}
+          >
+            {f.label}
+          </button>
+        ))}
+        {(features.length > 0 || series !== "all" || year !== "all" || query) && (
+          <button
+            className="text-xs font-medium text-[#1428a0] hover:underline ml-1"
+            onClick={() => {
+              setFeatures([]);
+              setSeries("all");
+              setYear("all");
+              setQuery("");
+            }}
+          >
+            Reset all
+          </button>
+        )}
       </div>
 
       {/* Results */}

@@ -349,17 +349,54 @@ export function comparisonsFor(phone: Phone, limit = 6): { a: Phone; b: Phone }[
     .slice(0, limit);
 }
 
+/** Battery capacity in mAh parsed from the spec string (0 if unknown). */
+export function batteryMah(p: Phone): number {
+  const m = p.specs.battery.match(/(\d[\d,]*)\s*mAh/i);
+  return m ? parseInt(m[1].replace(/,/g, ""), 10) : 0;
+}
+
+/** Feature toggles for the catalog filter — each with a predicate. */
+export const FEATURE_FILTERS: { id: string; label: string; test: (p: Phone) => boolean }[] = [
+  {
+    id: "spen",
+    label: "S Pen",
+    test: (p) =>
+      p.series === "Galaxy Note" ||
+      (p.series === "Galaxy S" && /ultra/i.test(p.name) && p.releaseYear >= 2022),
+  },
+  {
+    id: "foldable",
+    label: "Foldable",
+    test: (p) => p.series === "Galaxy Z Fold" || p.series === "Galaxy Z Flip",
+  },
+  {
+    id: "water",
+    label: "Water-resistant",
+    test: (p) => Boolean(p.specs.waterResistance && /IP\d/i.test(p.specs.waterResistance)),
+  },
+  {
+    id: "bigbat",
+    label: "Big battery (5000 mAh+)",
+    test: (p) => batteryMah(p) >= 5000,
+  },
+];
+
 export type PhoneFilter = {
   query?: string;
   series?: SeriesId | "all";
   year?: number | "all";
+  features?: string[];
 };
 
 export function filterPhones(phones: Phone[], f: PhoneFilter): Phone[] {
   const q = (f.query ?? "").trim().toLowerCase();
+  const feats = (f.features ?? [])
+    .map((id) => FEATURE_FILTERS.find((x) => x.id === id))
+    .filter(Boolean) as typeof FEATURE_FILTERS;
   return phones.filter((p) => {
     if (f.series && f.series !== "all" && p.series !== f.series) return false;
     if (f.year && f.year !== "all" && p.releaseYear !== f.year) return false;
+    if (feats.length && !feats.every((ft) => ft.test(p))) return false;
     if (q) {
       const hay =
         `${p.name} ${p.series} ${p.specs.chipset} ${p.releaseYear}`.toLowerCase();
