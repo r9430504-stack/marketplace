@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SITE_NAME } from "@/lib/site";
 import LanguageSwitch from "./LanguageSwitch";
+import HeaderNav from "./HeaderNav";
 
 export default function SiteHeader() {
   return (
@@ -16,18 +17,7 @@ export default function SiteHeader() {
           </span>
         </Link>
         <div className="flex items-center gap-4 text-sm">
-          <Link href="/phones" className="text-gray-600 dark:text-gray-300 hover:text-[#1428a0] dark:hover:text-blue-400 font-medium">
-            Catalog
-          </Link>
-          <Link href="/compare" className="text-gray-600 dark:text-gray-300 hover:text-[#1428a0] dark:hover:text-blue-400 font-medium">
-            Compare
-          </Link>
-          <Link href="/best" className="hidden sm:inline text-gray-600 dark:text-gray-300 hover:text-[#1428a0] dark:hover:text-blue-400 font-medium">
-            Guides
-          </Link>
-          <Link href="/history" className="text-gray-600 dark:text-gray-300 hover:text-[#1428a0] dark:hover:text-blue-400 font-medium">
-            History
-          </Link>
+          <HeaderNav />
           <LanguageSwitch />
         </div>
       </div>

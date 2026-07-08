@@ -18,6 +18,19 @@ export function withLocale(path: string, locale: Locale): string {
 type Dict = {
   nav: { catalog: string; compare: string; guides: string; history: string };
   langName: string;
+  back: string;
+  catalog: {
+    title: string;
+    subtitle: (n: number) => string;
+    searchPh: string;
+    allLines: string;
+    allYears: string;
+    featuresLabel: string;
+    found: string;
+    foundNone: string;
+    resetAll: string;
+  };
+  features: { spen: string; foldable: string; water: string; bigbat: string };
   home: {
     badge: (a: number, b: number) => string;
     h1: string;
@@ -65,6 +78,24 @@ export const UI: Record<Locale, Dict> = {
   en: {
     nav: { catalog: "Catalog", compare: "Compare", guides: "Guides", history: "History" },
     langName: "English",
+    back: "Back",
+    catalog: {
+      title: "Model catalog",
+      subtitle: (n) => `${n} officially released Samsung Galaxy models. Search by name, chipset or year.`,
+      searchPh: "Search: model, chipset, year…",
+      allLines: "All lines",
+      allYears: "All years",
+      featuresLabel: "Features:",
+      found: "Models found:",
+      foundNone: "Nothing found. Try a different query or reset the filters.",
+      resetAll: "Reset all",
+    },
+    features: {
+      spen: "S Pen",
+      foldable: "Foldable",
+      water: "Water-resistant",
+      bigbat: "Big battery (5000 mAh+)",
+    },
     home: {
       badge: (a, b) => `◆ Unofficial archive · ${a}–${b}`,
       h1: "The complete history of Samsung Galaxy phones",
@@ -114,6 +145,24 @@ export const UI: Record<Locale, Dict> = {
   ru: {
     nav: { catalog: "Каталог", compare: "Сравнение", guides: "Подборки", history: "История" },
     langName: "Русский",
+    back: "Назад",
+    catalog: {
+      title: "Каталог моделей",
+      subtitle: (n) => `${n} официально вышедших моделей Samsung Galaxy. Поиск по названию, чипсету или году.`,
+      searchPh: "Поиск: модель, чипсет, год…",
+      allLines: "Все линейки",
+      allYears: "Все годы",
+      featuresLabel: "Функции:",
+      found: "Найдено моделей:",
+      foundNone: "Ничего не найдено. Измените запрос или сбросьте фильтры.",
+      resetAll: "Сбросить всё",
+    },
+    features: {
+      spen: "S Pen",
+      foldable: "Складные",
+      water: "Влагозащита",
+      bigbat: "Большая батарея (5000 мА·ч+)",
+    },
     home: {
       badge: (a, b) => `◆ Неофициальный архив · ${a}–${b}`,
       h1: "Полная история смартфонов Samsung Galaxy",

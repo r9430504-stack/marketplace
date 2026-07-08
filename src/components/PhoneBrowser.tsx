@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { SERIES, FEATURE_FILTERS, filterPhones, type Phone, type SeriesId } from "@/lib/phones";
+import { t, type Locale } from "@/lib/i18n";
 import PhoneCard from "./PhoneCard";
 
 export default function PhoneBrowser({
@@ -9,12 +10,16 @@ export default function PhoneBrowser({
   years,
   initialSeries = "all",
   initialQuery = "",
+  locale = "en",
 }: {
   phones: Phone[];
   years: number[];
   initialSeries?: SeriesId | "all";
   initialQuery?: string;
+  locale?: Locale;
 }) {
+  const T = t(locale).catalog;
+  const featLabels = t(locale).features as Record<string, string>;
   const [query, setQuery] = useState(initialQuery);
   const [series, setSeries] = useState<SeriesId | "all">(initialSeries);
   const [year, setYear] = useState<number | "all">("all");
@@ -43,9 +48,9 @@ export default function PhoneBrowser({
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search: model, chipset, year…"
+          placeholder={T.searchPh}
           className="w-full rounded-full border border-gray-300 bg-white pl-11 pr-4 py-3 text-base outline-none focus:border-[#1428a0] focus:ring-1 focus:ring-[#1428a0]"
-          aria-label="Search models"
+          aria-label={T.searchPh}
         />
         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
       </div>
@@ -53,7 +58,7 @@ export default function PhoneBrowser({
       {/* Series filter */}
       <div className="mt-4 flex flex-wrap gap-2">
         <button className={chip(series === "all")} onClick={() => setSeries("all")}>
-          All lines
+          {T.allLines}
         </button>
         {SERIES.map((s) => (
           <button key={s.id} className={chip(series === s.id)} onClick={() => setSeries(s.id)}>
@@ -65,7 +70,7 @@ export default function PhoneBrowser({
       {/* Year filter */}
       <div className="mt-3 flex flex-wrap gap-2">
         <button className={chip(year === "all")} onClick={() => setYear("all")}>
-          All years
+          {T.allYears}
         </button>
         {years.map((y) => (
           <button key={y} className={chip(year === y)} onClick={() => setYear(y)}>
@@ -76,7 +81,7 @@ export default function PhoneBrowser({
 
       {/* Feature filters */}
       <div className="mt-3 flex flex-wrap items-center gap-2">
-        <span className="text-xs font-medium text-gray-400 dark:text-gray-500 mr-1">Features:</span>
+        <span className="text-xs font-medium text-gray-400 dark:text-gray-500 mr-1">{T.featuresLabel}</span>
         {FEATURE_FILTERS.map((f) => (
           <button
             key={f.id}
@@ -84,7 +89,7 @@ export default function PhoneBrowser({
             onClick={() => toggleFeature(f.id)}
             aria-pressed={features.includes(f.id)}
           >
-            {f.label}
+            {featLabels[f.id] ?? f.label}
           </button>
         ))}
         {(features.length > 0 || series !== "all" || year !== "all" || query) && (
@@ -97,20 +102,20 @@ export default function PhoneBrowser({
               setQuery("");
             }}
           >
-            Reset all
+            {T.resetAll}
           </button>
         )}
       </div>
 
       {/* Results */}
       <p className="mt-6 text-sm text-gray-500 dark:text-gray-400">
-        Models found: <strong className="text-gray-900 dark:text-gray-100">{results.length}</strong>
+        {T.found} <strong className="text-gray-900 dark:text-gray-100">{results.length}</strong>
       </p>
 
       {results.length === 0 ? (
         <div className="text-center py-16 text-gray-400 dark:text-gray-600">
           <p className="text-4xl">🤔</p>
-          <p className="mt-3">Nothing found. Try a different query or reset the filters.</p>
+          <p className="mt-3">{T.foundNone}</p>
         </div>
       ) : (
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
