@@ -1,4 +1,5 @@
 import type { Specs } from "@/lib/phones";
+import type { Locale } from "@/lib/i18n";
 
 const ROWS: { key: keyof Specs; label: string }[] = [
   { key: "display", label: "Display" },
@@ -22,7 +23,29 @@ const ROWS: { key: keyof Specs; label: string }[] = [
   { key: "launchPrice", label: "Launch price" },
 ];
 
-export default function SpecTable({ specs }: { specs: Specs }) {
+const RU_LABELS: Record<keyof Specs, string> = {
+  display: "Экран",
+  resolution: "Разрешение",
+  displayType: "Тип матрицы",
+  refreshRate: "Частота обновления",
+  chipset: "Процессор",
+  cpu: "CPU",
+  ram: "Оперативная память",
+  storage: "Накопитель",
+  mainCamera: "Основная камера",
+  frontCamera: "Фронтальная камера",
+  battery: "Аккумулятор",
+  charging: "Зарядка",
+  os: "ОС",
+  dimensions: "Размеры",
+  weight: "Вес",
+  build: "Корпус",
+  waterResistance: "Защита",
+  colors: "Цвета",
+  launchPrice: "Цена на старте",
+};
+
+export default function SpecTable({ specs, locale = "en" }: { specs: Specs; locale?: Locale }) {
   return (
     <div className="glass overflow-hidden rounded-2xl">
       <table className="w-full text-sm">
@@ -36,7 +59,7 @@ export default function SpecTable({ specs }: { specs: Specs }) {
                 className="border-b border-white/40 last:border-0 even:bg-white/25"
               >
                 <th className="text-left align-top font-medium text-gray-500 dark:text-gray-400 py-3 px-4 w-2/5">
-                  {label}
+                  {locale === "ru" ? RU_LABELS[key] : label}
                 </th>
                 <td className="py-3 px-4 text-gray-900 dark:text-gray-100">{value}</td>
               </tr>
