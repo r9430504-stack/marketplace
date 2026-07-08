@@ -219,11 +219,35 @@ export function seriesFromSlug(slug: string): SeriesMeta | undefined {
 // ─── Data access (in-memory, from src/data/phones.ts) ───
 
 import { PHONES } from "@/data/phones";
+import { PHONES_RU } from "@/data/phonesRu";
 
 export function getAllPhones(): Phone[] {
   return [...PHONES].sort(
     (a, b) => b.releaseYear - a.releaseYear || a.name.localeCompare(b.name)
   );
+}
+
+/** Slugs that currently have a reviewed Russian translation. */
+export function ruTranslatedSlugs(): string[] {
+  return Object.keys(PHONES_RU).filter((slug) => PHONES.some((p) => p.slug === slug));
+}
+
+export function hasRuTranslation(slug: string): boolean {
+  return Boolean(PHONES_RU[slug]);
+}
+
+/** Merge Russian prose overrides onto a phone when the locale is "ru". */
+export function localizedPhone(phone: Phone, locale: "en" | "ru"): Phone {
+  if (locale !== "ru") return phone;
+  const ru = PHONES_RU[phone.slug];
+  if (!ru) return phone;
+  return {
+    ...phone,
+    tagline: ru.tagline,
+    history: ru.history,
+    keyFeatures: ru.keyFeatures,
+    releaseDate: ru.releaseDate ?? phone.releaseDate,
+  };
 }
 
 export function getPhoneBySlug(slug: string): Phone | undefined {

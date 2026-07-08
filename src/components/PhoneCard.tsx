@@ -1,12 +1,17 @@
 import Link from "next/link";
-import { seriesMeta, type Phone } from "@/lib/phones";
+import { seriesMeta, hasRuTranslation, type Phone } from "@/lib/phones";
+import type { Locale } from "@/lib/i18n";
 import PhoneVisual from "./PhoneVisual";
 
-export default function PhoneCard({ phone }: { phone: Phone }) {
+export default function PhoneCard({ phone, locale = "en" }: { phone: Phone; locale?: Locale }) {
   const s = seriesMeta(phone.series);
+  const href =
+    locale === "ru" && hasRuTranslation(phone.slug)
+      ? `/ru/phones/${phone.slug}`
+      : `/phones/${phone.slug}`;
   return (
     <Link
-      href={`/phones/${phone.slug}`}
+      href={href}
       className="reveal group glass rounded-2xl hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 ease-out overflow-hidden flex flex-col"
     >
       <div className="aspect-[4/5] overflow-hidden bg-white">

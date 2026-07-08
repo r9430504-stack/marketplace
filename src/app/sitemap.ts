@@ -3,6 +3,7 @@ import {
   getAllPhones,
   getComparisonPairs,
   comparisonSlug,
+  ruTranslatedSlugs,
   SERIES,
   seriesSlug,
 } from "@/lib/phones";
@@ -36,6 +37,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
+  const ruPhoneUrls: MetadataRoute.Sitemap = ruTranslatedSlugs().map((slug) => ({
+    url: `${SITE_URL}/ru/phones/${slug}`,
+    changeFrequency: "monthly",
+    priority: 0.6,
+  }));
+
   return [
     { url: SITE_URL, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
     { url: `${SITE_URL}/ru`, changeFrequency: "weekly", priority: 0.9 },
@@ -52,6 +59,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...seriesUrls,
     ...collectionUrls,
     ...phoneUrls,
+    ...ruPhoneUrls,
     ...compareUrls,
   ];
 }
