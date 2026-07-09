@@ -236,6 +236,30 @@ export function hasRuTranslation(slug: string): boolean {
   return Boolean(PHONES_RU[slug]);
 }
 
+const RU_MONTHS: Record<string, string> = {
+  January: "Январь",
+  February: "Февраль",
+  March: "Март",
+  April: "Апрель",
+  May: "Май",
+  June: "Июнь",
+  July: "Июль",
+  August: "Август",
+  September: "Сентябрь",
+  October: "Октябрь",
+  November: "Ноябрь",
+  December: "Декабрь",
+};
+
+/** Translate an English "Month Year" release date to Russian. */
+export function localizeDate(date: string, locale: "en" | "ru"): string {
+  if (locale !== "ru") return date;
+  return date.replace(
+    /\b(January|February|March|April|May|June|July|August|September|October|November|December)\b/g,
+    (m) => RU_MONTHS[m] ?? m
+  );
+}
+
 /** Merge Russian prose overrides onto a phone when the locale is "ru". */
 export function localizedPhone(phone: Phone, locale: "en" | "ru"): Phone {
   if (locale !== "ru") return phone;
@@ -246,7 +270,7 @@ export function localizedPhone(phone: Phone, locale: "en" | "ru"): Phone {
     tagline: ru.tagline,
     history: ru.history,
     keyFeatures: ru.keyFeatures,
-    releaseDate: ru.releaseDate ?? phone.releaseDate,
+    releaseDate: ru.releaseDate ?? localizeDate(phone.releaseDate, "ru"),
   };
 }
 
