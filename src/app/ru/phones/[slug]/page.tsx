@@ -16,6 +16,7 @@ import PhoneVisual from "@/components/PhoneVisual";
 import PhotoViewer from "@/components/PhotoViewer";
 import PhoneCard from "@/components/PhoneCard";
 import SpecTable from "@/components/SpecTable";
+import BuyLinks from "@/components/BuyLinks";
 import BackButton from "@/components/BackButton";
 import AdSlot from "@/components/AdSlot";
 import { SITE_URL } from "@/lib/site";
@@ -163,6 +164,8 @@ export default async function PhonePageRu({
           </dl>
         </div>
       </div>
+
+      <BuyLinks name={phone.name} locale="ru" />
 
       <AdSlot />
 
