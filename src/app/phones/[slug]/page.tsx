@@ -58,18 +58,6 @@ export default async function PhonePage({
   const { prev, next } = seriesNeighbours(phone);
   const gallery = [phone.image, ...(phone.images ?? [])].filter(Boolean) as string[];
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: phone.name,
-    brand: { "@type": "Brand", name: "Samsung" },
-    category: s.label,
-    releaseDate: String(phone.releaseYear),
-    description: phone.tagline,
-    image: phone.image ? `${SITE_URL}${phone.image}` : undefined,
-    url: `${SITE_URL}/phones/${phone.slug}`,
-  };
-
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -133,7 +121,6 @@ export default async function PhonePage({
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
 

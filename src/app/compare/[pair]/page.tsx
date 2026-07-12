@@ -55,12 +55,8 @@ export default async function ComparePage({
     itemListElement: [a, b].map((p, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      item: {
-        "@type": "Product",
-        name: p.name,
-        brand: { "@type": "Brand", name: "Samsung" },
-        url: `${SITE_URL}/phones/${p.slug}`,
-      },
+      name: p.name,
+      url: `${SITE_URL}/phones/${p.slug}`,
     })),
   };
 

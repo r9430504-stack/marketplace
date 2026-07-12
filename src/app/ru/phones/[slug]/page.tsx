@@ -90,17 +90,6 @@ export default async function PhonePageRu({
   const gallery = [phone.image, ...(phone.images ?? [])].filter(Boolean) as string[];
   const faqs = faqsRu(phone);
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: phone.name,
-    brand: { "@type": "Brand", name: "Samsung" },
-    category: s.label,
-    releaseDate: String(phone.releaseYear),
-    description: phone.tagline,
-    image: phone.image ? `${SITE_URL}${phone.image}` : undefined,
-    url: `${SITE_URL}/ru/phones/${phone.slug}`,
-  };
   const faqLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -116,7 +105,6 @@ export default async function PhonePageRu({
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
 
       <div className="mb-4">
