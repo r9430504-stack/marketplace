@@ -6,6 +6,8 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import RevealInit from "@/components/RevealInit";
 import SiteJsonLd from "@/components/SiteJsonLd";
+import Consultant from "@/components/Consultant";
+import { getConsultPhones } from "@/lib/consult";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -80,6 +82,7 @@ export default function RootLayout({
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
+        <Consultant phones={getConsultPhones()} />
         <RevealInit />
       </body>
     </html>
