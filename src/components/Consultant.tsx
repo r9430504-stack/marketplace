@@ -134,7 +134,7 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
         <div className="fixed bottom-24 right-5 z-[60] w-[min(16rem,calc(100vw-2.5rem))] animate-[fadeIn_.4s_ease]">
           <button
             onClick={toggleOpen}
-            className="block w-full text-left rounded-2xl bg-white shadow-2xl border border-gray-200 px-4 py-3 text-sm text-gray-800 hover:border-[#1428a0] transition-colors"
+            className="block w-full text-left rounded-2xl bg-white dark:bg-[#1a1a1a] shadow-2xl border border-gray-200 dark:border-gray-800 px-4 py-3 text-sm text-gray-800 dark:text-gray-100 hover:border-[#1428a0] transition-colors"
           >
             {t.bubble}
           </button>
@@ -158,7 +158,7 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
       </button>
 
       {open && (
-        <div className="fixed bottom-24 right-5 z-[60] w-[calc(100vw-2.5rem)] max-w-sm rounded-2xl bg-white shadow-2xl border border-gray-200 overflow-hidden flex flex-col h-[75vh] max-h-[560px]">
+        <div className="fixed bottom-24 right-5 z-[60] w-[calc(100vw-2.5rem)] max-w-sm rounded-2xl bg-white dark:bg-[#1a1a1a] shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden flex flex-col h-[75vh] max-h-[560px]">
           <div className="bg-[#1428a0] text-white px-4 py-3 flex items-center gap-2 shrink-0">
             <span className="h-8 w-8 rounded-full bg-white/15 flex items-center justify-center font-bold">G</span>
             <span className="font-semibold">{t.title}</span>
@@ -168,11 +168,11 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
             {msgs.length === 0 && (
               <>
                 <div className="text-left">
-                  <span className="inline-block rounded-2xl px-3 py-2 max-w-[90%] bg-gray-100 text-gray-800">{t.greeting}</span>
+                  <span className="inline-block rounded-2xl px-3 py-2 max-w-[90%] bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100">{t.greeting}</span>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {t.suggestions.map((s) => (
-                    <button key={s} onClick={() => send(s)} className="px-3 py-1.5 rounded-full text-xs border border-gray-300 text-gray-700 hover:border-black text-left">{s}</button>
+                    <button key={s} onClick={() => send(s)} className="px-3 py-1.5 rounded-full text-xs border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-black dark:hover:border-gray-400 text-left">{s}</button>
                   ))}
                 </div>
               </>
@@ -188,7 +188,7 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
               const { text, goto } = splitGoto(m.content);
               return (
                 <div key={i} className="text-left space-y-2">
-                  <span className="inline-block rounded-2xl px-3 py-2 max-w-[85%] bg-gray-100 text-gray-800 whitespace-pre-wrap">{renderRich(text)}</span>
+                  <span className="inline-block rounded-2xl px-3 py-2 max-w-[85%] bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100 whitespace-pre-wrap">{renderRich(text)}</span>
                   {goto && (
                     <div>
                       <button
@@ -202,10 +202,10 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
                 </div>
               );
             })}
-            {loading && <div className="text-left"><span className="inline-block rounded-2xl px-3 py-2 bg-gray-100 text-gray-500">{t.thinking}</span></div>}
+            {loading && <div className="text-left"><span className="inline-block rounded-2xl px-3 py-2 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400">{t.thinking}</span></div>}
           </div>
 
-          <form onSubmit={(e) => { e.preventDefault(); send(input); }} className="border-t border-gray-200 p-2 flex gap-2 shrink-0">
+          <form onSubmit={(e) => { e.preventDefault(); send(input); }} className="border-t border-gray-200 dark:border-gray-800 p-2 flex gap-2 shrink-0">
             <input value={input} onChange={(e) => setInput(e.target.value)} placeholder={t.placeholder} className="flex-1 rounded-full border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#1428a0]" />
             <button type="submit" disabled={loading || !input.trim()} className="btn-primary px-4 py-2 text-sm disabled:opacity-40">{t.send}</button>
           </form>

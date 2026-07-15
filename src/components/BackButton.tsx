@@ -25,7 +25,7 @@ export default function BackButton({
           router.push(fallback);
         }
       }}
-      className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:border-black hover:text-black transition-colors"
+      className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 dark:border-gray-700 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:border-black hover:text-black dark:hover:border-gray-400 dark:hover:text-white transition-colors"
       aria-label={label}
     >
       <span aria-hidden className="text-base leading-none">←</span>
