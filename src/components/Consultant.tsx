@@ -114,11 +114,12 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: next, locale }),
       });
+      const data = await r.json().catch(() => ({} as { reply?: string; detail?: string }));
       let reply: string;
       if (r.status === 503) reply = t.notReady;
       else if (r.status === 429) reply = t.rate;
-      else if (!r.ok) reply = t.error;
-      else reply = (await r.json()).reply || t.error;
+      else if (!r.ok) reply = data.detail ? `${t.error}\n\n⚠️ ${data.detail}` : t.error;
+      else reply = data.reply || t.error;
       setMsgs((m) => [...m, { role: "assistant", content: reply }]);
     } catch {
       setMsgs((m) => [...m, { role: "assistant", content: t.error }]);
@@ -187,7 +188,7 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
               const { text, goto } = splitGoto(m.content);
               return (
                 <div key={i} className="text-left space-y-2">
-                  <span className="inline-block rounded-2xl px-3 py-2 max-w-[85%] bg-gray-100 text-gray-800">{renderRich(text)}</span>
+                  <span className="inline-block rounded-2xl px-3 py-2 max-w-[85%] bg-gray-100 text-gray-800 whitespace-pre-wrap">{renderRich(text)}</span>
                   {goto && (
                     <div>
                       <button
