@@ -25,24 +25,37 @@ export default function WelcomeOverlay() {
     return () => window.clearTimeout(id);
   }, []);
 
-  if (!show) return null;
+  // Dismiss on the first interaction — but DON'T block it. The overlay is
+  // pointer-events-none, so a click/scroll/tap both operates the site and
+  // clears the invitation. So the user can use the site right away.
+  useEffect(() => {
+    if (!show) return;
+    const close = () => {
+      setShow(false);
+      try {
+        localStorage.setItem("welcome-seen", "1");
+      } catch {}
+    };
+    const events: (keyof WindowEventMap)[] = [
+      "pointerdown",
+      "keydown",
+      "wheel",
+      "touchstart",
+    ];
+    const opts: AddEventListenerOptions = { passive: true, capture: true, once: true };
+    events.forEach((e) => window.addEventListener(e, close, opts));
+    return () => events.forEach((e) => window.removeEventListener(e, close, opts));
+  }, [show]);
 
-  const close = () => {
-    setShow(false);
-    try {
-      localStorage.setItem("welcome-seen", "1");
-    } catch {}
-  };
+  if (!show) return null;
 
   return (
     <div
-      onClick={close}
-      className="fixed inset-0 z-50 flex items-center justify-center cursor-pointer"
-      role="button"
-      aria-label={title}
+      className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
+      aria-hidden
     >
-      <div className="absolute inset-0 bg-black/80" />
-      <div className="gemini-glow absolute inset-0 pointer-events-none" aria-hidden />
+      <div className="absolute inset-0 bg-black/70" />
+      <div className="gemini-glow absolute inset-0" />
       <p
         className="relative gemini-text text-3xl sm:text-5xl font-bold tracking-tight px-6 text-center"
         style={{ animation: "fadeIn .6s ease" }}
