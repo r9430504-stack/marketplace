@@ -42,6 +42,11 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
   robots: { index: true, follow: true },
   verification: {
     google: process.env.GOOGLE_SITE_VERIFICATION,
