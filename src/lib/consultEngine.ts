@@ -24,7 +24,10 @@ type Use =
   | "fiveg"
   | "foldable"
   | "spen"
-  | "water";
+  | "water"
+  | "longevity"
+  | "durable"
+  | "display";
 
 type Intent = {
   tier: Tier | null;
@@ -134,7 +137,19 @@ const USE_PATTERNS: { use: Use; re: RegExp }[] = [
   },
   {
     use: "fiveg",
-    re: /5g|5 g|5[- ]?джи|пят(ое|ого) поколени|хорош(ий|им|его) интернет|быстр(ый|ым|ого) интернет|мобильн(ый|ым) интернет|хорошая связь|хорошей связ|ловит сет|good internet|fast internet|connectivity|\bnetwork\b/,
+    re: /5g|5 g|5[- ]?джи|пят(ое|ого) поколени|хорош(ий|им|его|ая|ей) (интернет|связ|сет|при[её]м)|быстр(ый|ым|ого|ая|ой) (интернет|связ|сет)|мобильн(ый|ым) интернет|стабильн(ая|ой) связ|хорошо ловит|хороший при[её]м|качеств(о|енн) связ|сотов|good (internet|signal|reception|network)|fast internet|connectivity|reception|\bnetwork\b|\bsignal\b/,
+  },
+  {
+    use: "longevity",
+    re: /долгосроч|надолго|на (много|долгие|несколько) лет|жизненн(ый|ого) цикл|срок службы|прослужит|обновлен|поддержк|актуальн(ым|ость)|не устареет|запас на будущ|на будущее|годы вперед|годы вперёд|долго прослуж|долговечн|future[- ]?proof|longevity|long[- ]?term|software (updates?|support)|years of updates|last(s)? (for )?years|lifespan|lifecycle/,
+  },
+  {
+    use: "durable",
+    re: /прочн|надежн|надёжн|крепк|не сломает|не разобьет|не разобьёт|ударопрочн|защищ|бронирован|титан|горилл|стекл|броск|неубива|выносл|ремонтопригодн|durable|rugged|sturdy|tough|shockproof|drop[- ]?proof|gorilla|titanium|build quality|solid build/,
+  },
+  {
+    use: "display",
+    re: /плавн(ый|ая|ое) (экран|дисплей|скролл|прокрут)|герц|\bгц\b|частот(а|ой) обновлен|120|144|амолед|amoled|яркий экран|качеств(о|енн) экран|чёткий экран|четкий экран|hz\b|refresh rate|smooth (screen|display|scrolling)|bright (screen|display)|oled|display quality|nits/,
   },
   {
     use: "foldable",
@@ -263,6 +278,20 @@ function scoreFor(p: ConsultPhone, intent: Intent): number {
   if (uses.includes("foldable")) s += p.foldable ? 30 : 0;
   if (uses.includes("spen")) s += p.spen ? 30 : 0;
   if (uses.includes("water")) s += p.water ? 10 : 0;
+  if (uses.includes("longevity")) {
+    // Longer software support + more years of life left = newer flagships.
+    s += (p.year - 2010) * 8;
+    s += p.tier === "flagship" ? 26 : p.tier === "mid" ? 9 : 0;
+  }
+  if (uses.includes("durable")) {
+    s += p.water ? 12 : 0;
+    s += p.tier === "flagship" ? 12 : p.tier === "mid" ? 5 : 0;
+    s += (p.year - 2010) * 2;
+  }
+  if (uses.includes("display")) {
+    s += p.tier === "flagship" ? 20 : p.tier === "mid" ? 8 : 0;
+    s += (p.year - 2010) * 3;
+  }
   if (uses.length === 0) s += p.tier === "flagship" ? 20 : p.tier === "mid" ? 6 : 0;
   // Mild premium proxy: among otherwise-tied models the pricier (top) variant
   // edges ahead, so "best phone" lands on the Ultra rather than the base model.
@@ -312,10 +341,13 @@ function reasonsFor(p: ConsultPhone, uses: Use[], locale: Locale): string[] {
     else if (u === "compact") out.push(en ? `a compact ${p.displayIn}″ screen` : `компактный экран ${p.displayIn}″`);
     else if (u === "big") out.push(en ? `a large ${p.displayIn}″ display` : `большой экран ${p.displayIn}″`);
     else if (u === "storage") out.push(en ? `up to ${p.storageGb >= 1024 ? p.storageGb / 1024 + "TB" : p.storageGb + "GB"} storage` : `память до ${p.storageGb >= 1024 ? p.storageGb / 1024 + " ТБ" : p.storageGb + " ГБ"}`);
-    else if (u === "fiveg") out.push(en ? `5G support` : `поддержка 5G`);
+    else if (u === "fiveg") out.push(en ? `strong 5G connectivity` : `уверенная 5G-связь`);
     else if (u === "foldable") out.push(en ? `a folding design` : `складной корпус`);
     else if (u === "spen") out.push(en ? `an S Pen that's great for drawing and notes` : `S Pen — удобно рисовать и делать заметки`);
     else if (u === "water") out.push(en ? `water resistance` : `влагозащита`);
+    else if (u === "longevity") out.push(en ? `long software support for years to come` : `долгая поддержка обновлений на годы вперёд`);
+    else if (u === "durable") out.push(en ? `a tough, well-protected build` : `прочный, хорошо защищённый корпус`);
+    else if (u === "display") out.push(en ? `a smooth, high-quality display` : `плавный качественный экран`);
     else out.push(en ? `modern, capable hardware` : `свежая и мощная начинка`);
   }
   return out.slice(0, 2);
