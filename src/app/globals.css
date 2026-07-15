@@ -290,6 +290,14 @@ body {
   background: var(--samsung);
 }
 
+/* In dark mode the deep Samsung navy (#1428a0) is nearly invisible on the
+ * dark background, so lighten the navy accent text (links like "7 models →")
+ * to a readable blue. Targets both the arbitrary utility and the helper. */
+.dark .text-\[\#1428a0\],
+.dark .text-samsung {
+  color: #6ea8fe;
+}
+
 /* Inputs: readable text in both themes */
 input,
 textarea,
