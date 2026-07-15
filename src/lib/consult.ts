@@ -53,6 +53,26 @@ export function getConsultPhones(): ConsultPhone[] {
     }));
 }
 
+/** A compact plain-text catalog of every model, used to ground the AI chat. */
+export function getCatalogText(): string {
+  return getAllPhones()
+    .map((p) => {
+      const s = p.specs;
+      const bits = [
+        s.display,
+        s.chipset,
+        s.ram,
+        s.mainCamera,
+        s.battery,
+        s.waterResistance,
+      ]
+        .filter(Boolean)
+        .join(", ");
+      return `- ${p.name} (${p.releaseDate}, ${p.series}): ${bits} — /phones/${p.slug}`;
+    })
+    .join("\n");
+}
+
 export type Use = "camera" | "gaming" | "battery" | "spen" | "compact" | "foldable";
 
 /** Rank phones for the chosen tier + use-cases; returns the top matches. */
