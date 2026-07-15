@@ -17,7 +17,7 @@ export default function PhoneCard({ phone, locale = "en" }: { phone: Phone; loca
       {/* The emerge transform lives on this wrapper (not the <img>) because the
        * image's `img-fade` class sets `transition: opacity`, which would clobber
        * a transform transition on the same element and make it jump instantly. */}
-      <div className="aspect-[4/5] rounded-t-2xl bg-white [clip-path:inset(-14%_-3%_0_-3%)] origin-bottom group-hover:scale-[1.05] group-hover:-translate-y-1 transition-transform duration-[1400ms] ease-[cubic-bezier(0.4,0,0.2,1)]">
+      <div className="aspect-[4/5] rounded-t-2xl bg-white [clip-path:inset(-8%_-2%_0_-2%)] origin-bottom group-hover:scale-[1.03] group-hover:-translate-y-0.5 transition-transform duration-[1400ms] ease-[cubic-bezier(0.4,0,0.2,1)]">
         <PhoneVisual phone={phone} thumb className="rounded-t-2xl" />
       </div>
       <div className="p-4 flex flex-col gap-1 flex-1">
