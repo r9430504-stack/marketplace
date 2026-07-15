@@ -13,24 +13,16 @@ export default function WelcomeOverlay() {
   const title = TITLE[localeFromPathname(usePathname() || "/")];
   const [show, setShow] = useState(false);
 
+  // Always show on every page load — not gated by localStorage — so the
+  // welcome animation appears regardless of any cached "seen" flag.
   useEffect(() => {
-    try {
-      if (localStorage.getItem("welcome-seen") === "1") return;
-    } catch {
-      return;
-    }
     const id = window.setTimeout(() => setShow(true), 600);
     return () => window.clearTimeout(id);
   }, []);
 
   if (!show) return null;
 
-  const close = () => {
-    setShow(false);
-    try {
-      localStorage.setItem("welcome-seen", "1");
-    } catch {}
-  };
+  const close = () => setShow(false);
 
   return (
     <div
