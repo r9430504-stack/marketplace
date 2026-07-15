@@ -168,7 +168,9 @@ const USE_PATTERNS: { use: Use; re: RegExp }[] = [
 function detectTier(t: string): Tier | null {
   const rub =
     t.match(/(\d{1,3}(?:[ .]\d{3})+|\d{4,6})\s*(?:руб|₽|р(?=\s)|rub)/) ||
-    t.match(/(\d{1,3})\s*(?:к|тыс)(?=\s)/);
+    // budget stated with a preposition but no currency word: "до 60000", "за 40 000"
+    t.match(/(?:до|за|около|порядка|бюджет\w*|в районе|максимум|уложит\w*|не (?:больше|дороже))\s*~?\s*(\d{1,3}(?:[ .]\d{3})+|\d{4,6})/) ||
+    t.match(/(\d{1,3})\s*(?:к|тыс)(?=\s|$)/);
   const usd = t.match(/\$\s*(\d{2,4})/) || t.match(/(\d{2,4})\s*(?:\$|usd|dollar|доллар)/);
   let priceUsd = 0;
   if (usd) priceUsd = parseInt(usd[1], 10);
@@ -339,11 +341,11 @@ function scoreFor(p: ConsultPhone, intent: Intent): number {
     s += p.tier === "flagship" ? 20 : p.tier === "mid" ? 8 : 0;
     s += (p.year - 2010) * 3;
   }
-  if (uses.length === 0) s += p.tier === "flagship" ? 20 : p.tier === "mid" ? 6 : 0;
+  if (uses.length === 0) s += p.tier === "flagship" ? 14 : p.tier === "mid" ? 6 : 0;
   // Mild premium proxy: among otherwise-tied models the pricier (top) variant
   // edges ahead, so "best phone" lands on the Ultra rather than the base model.
   // Foldables are excluded so a general "best phone" isn't a niche foldable.
-  s += p.foldable ? 0 : p.priceUsd / 1000;
+  s += p.foldable ? 0 : p.priceUsd / 1500;
   // Refinement modifiers
   if (intent.newest) s += (p.year - 2010) * 10;
   if (intent.cheapest) s += p.priceUsd > 0 ? (1200 - p.priceUsd) / 12 : 0;
@@ -523,6 +525,10 @@ const SAY = {
     en: "I only help with choosing Samsung Galaxy phones 🙂 Tell me what you need — camera, battery, budget, size — and I'll recommend one.",
     ru: "Я помогаю только с выбором смартфонов Samsung Galaxy 🙂 Скажите, что нужно — камера, батарея, бюджет, размер — и я подберу.",
   },
+  clarify: {
+    en: "Happy to help you choose! To get it right, tell me two things: roughly what budget, and what matters most to you — camera, battery, gaming, screen size — or who it's for (work, a kid, a parent). Then I'll pick the best match.",
+    ru: "С удовольствием помогу выбрать! Чтобы попасть точно, подскажите два момента: какой примерно бюджет и что для вас важнее всего — камера, батарея, игры, размер экрана — или для кого он (работа, ребёнку, родителям)? И я подберу лучший вариант.",
+  },
 };
 
 /** Produce a consultant reply. `userTexts` are the recent user messages
@@ -553,6 +559,15 @@ export function answerLocal(userTexts: string[], locale: Locale, phones: Consult
   if (intent.bye) return SAY.bye[locale];
   if (intent.greeting) return SAY.greet[locale];
   if (intent.affirm) return SAY.affirm[locale];
-  if (intent.hasSignal) return recommendReply(intent, phones, locale);
+  if (intent.hasSignal) {
+    // Topical but no concrete criteria (e.g. "посоветуй телефон"). On the first
+    // vague message, act like a real consultant and ask what matters instead of
+    // dumping a flagship. If they stay vague across turns, just recommend.
+    const dontMind = /любой|не знаю|всё равно|все равно|не важно|不|any|whatever|don'?t (know|care)|no idea/.test(
+      norm(userTexts.join(" "))
+    );
+    if (!dontMind && userTexts.filter((x) => x.trim()).length <= 1) return SAY.clarify[locale];
+    return recommendReply(intent, phones, locale);
+  }
   return SAY.offtopic[locale];
 }
