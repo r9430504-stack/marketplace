@@ -515,7 +515,9 @@ function recommendReply(intent: Intent, phones: ConsultPhone[], locale: Locale):
   const msg = en
     ? `Good question! For that I'd go with the **${descriptor(best)}**. You'll get ${reasons} — exactly what you're after. Overall it's ${tierWord(best, locale)} with ${specLine(best, locale)}. ${suitsSentence(best, locale)}${altsSentence(alts, locale)} You can open its full page here: ${link(best)}.`
     : `Хороший вопрос! Под такое я бы посоветовал **${descriptor(best)}**. Вас порадует ${reasons} — как раз то, что вам нужно. В целом это ${tierWord(best, locale)}: ${specLine(best, locale)}. ${suitsSentence(best, locale)}${altsSentence(alts, locale)} Открыть страницу с полными характеристиками можно здесь: ${link(best)}.`;
-  return `${msg}\nGOTO: ${link(best)}`;
+  // Offer a button for the top pick and each alternative (up to 3).
+  const gotos = top.slice(0, 3).map((p) => `GOTO: ${link(p)}`).join("\n");
+  return `${msg}\n${gotos}`;
 }
 
 function endorseReply(p: ConsultPhone, intent: Intent, locale: Locale): string {

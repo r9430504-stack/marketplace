@@ -65,10 +65,15 @@ const T = {
 
 const LINK_RE = /(\/(?:ru\/)?(?:phones|compare|best|series)\/[a-z0-9-]+)/g;
 
-function splitGoto(content: string): { text: string; goto: string | null } {
-  const m = content.match(/^\s*GOTO:\s*(\/\S+)\s*$/im);
-  if (!m) return { text: content, goto: null };
-  return { text: content.replace(m[0], "").trim(), goto: m[1] };
+function splitGoto(content: string): { text: string; gotos: string[] } {
+  const gotos: string[] = [];
+  const text = content
+    .replace(/^\s*GOTO:\s*(\/\S+)\s*$/gim, (_m, p1: string) => {
+      gotos.push(p1);
+      return "";
+    })
+    .trim();
+  return { text, gotos };
 }
 
 function renderRich(text: string) {
@@ -239,18 +244,21 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
                   </div>
                 );
               }
-              const { text, goto } = splitGoto(m.content);
+              const { text, gotos } = splitGoto(m.content);
               return (
                 <div key={i} className="text-left space-y-2">
                   <span className="inline-block rounded-2xl px-3 py-2 max-w-[85%] bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100 whitespace-pre-wrap">{renderRich(text)}</span>
-                  {goto && (
-                    <div>
-                      <button
-                        onClick={() => { router.push(hrefFor(goto)); setOpen(false); }}
-                        className="btn-primary px-4 py-2 text-sm"
-                      >
-                        {t.goto(nameFor(goto) || "")}
-                      </button>
+                  {gotos.length > 0 && (
+                    <div className="flex flex-col items-start gap-2">
+                      {gotos.map((g, k) => (
+                        <button
+                          key={g}
+                          onClick={() => { router.push(hrefFor(g)); setOpen(false); }}
+                          className={`${k === 0 ? "btn-primary" : "btn-outline"} px-4 py-2 text-sm`}
+                        >
+                          {t.goto(nameFor(g) || "")}
+                        </button>
+                      ))}
                     </div>
                   )}
                 </div>
