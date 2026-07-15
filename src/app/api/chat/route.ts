@@ -84,13 +84,37 @@ export async function POST(req: Request) {
       }
     );
     if (!res.ok) {
-      return Response.json({ error: "upstream", status: res.status }, { status: 502 });
+      let detail = "";
+      try {
+        const errJson = await res.json();
+        detail = errJson?.error?.message || JSON.stringify(errJson).slice(0, 300);
+      } catch {
+        detail = (await res.text().catch(() => "")).slice(0, 300);
+      }
+      return Response.json(
+        { error: "upstream", status: res.status, detail },
+        { status: 502 }
+      );
     }
     const data = await res.json();
     const reply =
       data?.candidates?.[0]?.content?.parts?.map((p: { text?: string }) => p.text).join("") ?? "";
-    return Response.json({ reply: reply.trim() || "…" });
-  } catch {
-    return Response.json({ error: "network" }, { status: 502 });
+    if (!reply.trim()) {
+      // No text — surface the finish reason / block reason so we can debug.
+      const reason =
+        data?.candidates?.[0]?.finishReason ||
+        data?.promptFeedback?.blockReason ||
+        "empty response";
+      return Response.json(
+        { error: "empty_reply", detail: String(reason) },
+        { status: 502 }
+      );
+    }
+    return Response.json({ reply: reply.trim() });
+  } catch (e) {
+    return Response.json(
+      { error: "network", detail: e instanceof Error ? e.message : "fetch failed" },
+      { status: 502 }
+    );
   }
 }
