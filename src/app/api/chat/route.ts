@@ -196,9 +196,10 @@ export async function POST(req: Request) {
     return Response.json({ error: "empty" }, { status: 400 });
   }
 
-  // The latest user message drives our own engine.
-  const lastUser = [...messages].reverse().find((m) => m.role === "user")?.content ?? "";
-  const localReply = () => answerLocal(lastUser, locale, getConsultPhones());
+  // Recent user messages drive our own engine (last one leads; earlier ones
+  // add context so short follow-ups like "а подешевле?" still work).
+  const userTexts = messages.filter((m) => m.role === "user").map((m) => m.content);
+  const localReply = () => answerLocal(userTexts, locale, getConsultPhones());
 
   // No cloud provider configured → always answer with our own engine.
   if (!provider) {
