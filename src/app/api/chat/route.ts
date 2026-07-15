@@ -2,8 +2,6 @@ import { getCatalogText } from "@/lib/consult";
 
 export const runtime = "nodejs";
 
-const MODEL = process.env.GEMINI_MODEL || "gemini-2.0-flash";
-
 // Very small best-effort in-memory rate limit (per instance): N requests/min/IP.
 const hits = new Map<string, number[]>();
 function limited(ip: string, max = 12, windowMs = 60_000): boolean {
@@ -31,13 +29,148 @@ Catalog (name (release date, line): key specs — link):
 ${getCatalogText()}`;
 }
 
+// Result of a provider call: either a reply, or an error with a human-readable
+// detail we surface to the widget for debugging.
+type CallResult =
+  | { reply: string }
+  | { error: string; detail: string; status?: number };
+
+/** Pick the chat provider from whichever API key is configured.
+ * Order: explicit CHAT_PROVIDER wins, otherwise Groq → OpenRouter → Gemini. */
+type Provider =
+  | { name: "gemini"; key: string; model: string }
+  | { name: "openai"; label: string; key: string; model: string; url: string; extraHeaders?: Record<string, string> };
+
+function pickProvider(): Provider | null {
+  const groq = process.env.GROQ_API_KEY;
+  const openrouter = process.env.OPENROUTER_API_KEY;
+  const gemini = process.env.GEMINI_API_KEY;
+  const forced = (process.env.CHAT_PROVIDER || "").toLowerCase();
+
+  const groqProvider = (): Provider | null =>
+    groq
+      ? {
+          name: "openai",
+          label: "groq",
+          key: groq,
+          model: process.env.GROQ_MODEL || "llama-3.3-70b-versatile",
+          url: "https://api.groq.com/openai/v1/chat/completions",
+        }
+      : null;
+
+  const openrouterProvider = (): Provider | null =>
+    openrouter
+      ? {
+          name: "openai",
+          label: "openrouter",
+          key: openrouter,
+          model: process.env.OPENROUTER_MODEL || "meta-llama/llama-3.3-70b-instruct:free",
+          url: "https://openrouter.ai/api/v1/chat/completions",
+          extraHeaders: {
+            "HTTP-Referer": "https://galaxyarchive.org",
+            "X-Title": "Galaxy Archive",
+          },
+        }
+      : null;
+
+  const geminiProvider = (): Provider | null =>
+    gemini
+      ? { name: "gemini", key: gemini, model: process.env.GEMINI_MODEL || "gemini-2.0-flash" }
+      : null;
+
+  if (forced === "groq") return groqProvider();
+  if (forced === "openrouter") return openrouterProvider();
+  if (forced === "gemini") return geminiProvider();
+
+  return groqProvider() || openrouterProvider() || geminiProvider();
+}
+
+async function callOpenAICompatible(
+  p: Extract<Provider, { name: "openai" }>,
+  locale: string,
+  messages: Msg[]
+): Promise<CallResult> {
+  const res = await fetch(p.url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${p.key}`,
+      ...(p.extraHeaders ?? {}),
+    },
+    body: JSON.stringify({
+      model: p.model,
+      temperature: 0.4,
+      max_tokens: 600,
+      messages: [{ role: "system", content: systemPrompt(locale) }, ...messages],
+    }),
+  });
+  if (!res.ok) {
+    let detail = "";
+    try {
+      const j = await res.json();
+      detail = j?.error?.message || JSON.stringify(j).slice(0, 300);
+    } catch {
+      detail = (await res.text().catch(() => "")).slice(0, 300);
+    }
+    return { error: "upstream", status: res.status, detail: `[${p.label}] ${detail}` };
+  }
+  const data = await res.json();
+  const reply = (data?.choices?.[0]?.message?.content ?? "").trim();
+  if (!reply) {
+    return { error: "empty_reply", detail: `[${p.label}] ${data?.choices?.[0]?.finish_reason || "empty response"}` };
+  }
+  return { reply };
+}
+
+async function callGemini(
+  p: Extract<Provider, { name: "gemini" }>,
+  locale: string,
+  messages: Msg[]
+): Promise<CallResult> {
+  const contents = messages.map((m) => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: m.content }],
+  }));
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${p.model}:generateContent?key=${p.key}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: systemPrompt(locale) }] },
+        contents,
+        generationConfig: { temperature: 0.4, maxOutputTokens: 600 },
+      }),
+    }
+  );
+  if (!res.ok) {
+    let detail = "";
+    try {
+      const errJson = await res.json();
+      detail = errJson?.error?.message || JSON.stringify(errJson).slice(0, 300);
+    } catch {
+      detail = (await res.text().catch(() => "")).slice(0, 300);
+    }
+    return { error: "upstream", status: res.status, detail: `[gemini] ${detail}` };
+  }
+  const data = await res.json();
+  const reply = (
+    data?.candidates?.[0]?.content?.parts?.map((x: { text?: string }) => x.text).join("") ?? ""
+  ).trim();
+  if (!reply) {
+    const reason =
+      data?.candidates?.[0]?.finishReason ||
+      data?.promptFeedback?.blockReason ||
+      "empty response";
+    return { error: "empty_reply", detail: `[gemini] ${reason}` };
+  }
+  return { reply };
+}
+
 export async function POST(req: Request) {
-  const key = process.env.GEMINI_API_KEY;
-  if (!key) {
-    return Response.json(
-      { error: "not_configured", reply: null },
-      { status: 503 }
-    );
+  const provider = pickProvider();
+  if (!provider) {
+    return Response.json({ error: "not_configured", reply: null }, { status: 503 });
   }
 
   const ip =
@@ -56,7 +189,7 @@ export async function POST(req: Request) {
   }
 
   const locale = body.locale === "ru" ? "ru" : "en";
-  const messages = (body.messages ?? [])
+  const messages: Msg[] = (body.messages ?? [])
     .filter((m) => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
     .slice(-10)
     .map((m) => ({ role: m.role, content: m.content.slice(0, 1000) }));
@@ -65,52 +198,16 @@ export async function POST(req: Request) {
     return Response.json({ error: "empty" }, { status: 400 });
   }
 
-  const contents = messages.map((m) => ({
-    role: m.role === "assistant" ? "model" : "user",
-    parts: [{ text: m.content }],
-  }));
-
   try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${key}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          system_instruction: { parts: [{ text: systemPrompt(locale) }] },
-          contents,
-          generationConfig: { temperature: 0.4, maxOutputTokens: 600 },
-        }),
-      }
-    );
-    if (!res.ok) {
-      let detail = "";
-      try {
-        const errJson = await res.json();
-        detail = errJson?.error?.message || JSON.stringify(errJson).slice(0, 300);
-      } catch {
-        detail = (await res.text().catch(() => "")).slice(0, 300);
-      }
-      return Response.json(
-        { error: "upstream", status: res.status, detail },
-        { status: 502 }
-      );
+    const result =
+      provider.name === "gemini"
+        ? await callGemini(provider, locale, messages)
+        : await callOpenAICompatible(provider, locale, messages);
+
+    if ("reply" in result) {
+      return Response.json({ reply: result.reply });
     }
-    const data = await res.json();
-    const reply =
-      data?.candidates?.[0]?.content?.parts?.map((p: { text?: string }) => p.text).join("") ?? "";
-    if (!reply.trim()) {
-      // No text — surface the finish reason / block reason so we can debug.
-      const reason =
-        data?.candidates?.[0]?.finishReason ||
-        data?.promptFeedback?.blockReason ||
-        "empty response";
-      return Response.json(
-        { error: "empty_reply", detail: String(reason) },
-        { status: 502 }
-      );
-    }
-    return Response.json({ reply: reply.trim() });
+    return Response.json({ error: result.error, detail: result.detail }, { status: 502 });
   } catch (e) {
     return Response.json(
       { error: "network", detail: e instanceof Error ? e.message : "fetch failed" },
