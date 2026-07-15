@@ -18,7 +18,7 @@ export default function PhoneCard({ phone, locale = "en" }: { phone: Phone; loca
         <PhoneVisual
           phone={phone}
           thumb
-          className="origin-bottom rounded-t-2xl group-hover:scale-[1.05] group-hover:-translate-y-1 transition-transform duration-[900ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
+          className="origin-bottom rounded-t-2xl group-hover:scale-[1.05] group-hover:-translate-y-1 transition-transform duration-[1400ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
         />
       </div>
       <div className="p-4 flex flex-col gap-1 flex-1">
