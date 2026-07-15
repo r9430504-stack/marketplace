@@ -44,7 +44,7 @@ export default function HomeContent({ locale = "en" }: { locale?: Locale }) {
             <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-[#1428a0] bg-[#eef1fb] rounded-full px-3 py-1">
               {T.badge(firstYear, lastYear)}
             </p>
-            <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-black leading-[1.05] text-balance">
+            <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-black dark:text-gray-100 leading-[1.05] text-balance">
               {T.h1}
             </h1>
             <p className="mt-5 text-lg text-gray-600 max-w-xl">{T.intro(total, firstYear, lastYear)}</p>
@@ -83,7 +83,7 @@ export default function HomeContent({ locale = "en" }: { locale?: Locale }) {
         <div className="max-w-6xl mx-auto px-4 py-14">
           <div className="flex items-end justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold tracking-tight text-black">{T.linesTitle}</h2>
+              <h2 className="text-2xl font-bold tracking-tight text-black dark:text-gray-100">{T.linesTitle}</h2>
               <p className="text-sm text-gray-500 mt-0.5">{T.linesSub}</p>
             </div>
             <Link href="/phones" className="text-sm font-semibold text-[#1428a0] hover:underline shrink-0">
@@ -102,7 +102,7 @@ export default function HomeContent({ locale = "en" }: { locale?: Locale }) {
                   className="reveal group rounded-2xl border border-gray-200 bg-white p-5 min-h-[124px] flex flex-col justify-between transition-colors hover:border-black"
                 >
                   <div>
-                    <p className="font-bold text-[15px] text-black">{s.label}</p>
+                    <p className="font-bold text-[15px] text-black dark:text-gray-100">{s.label}</p>
                     <p className="text-gray-500 text-xs mt-1 leading-snug line-clamp-2">{s.blurb}</p>
                   </div>
                   <p className="text-[#1428a0] text-sm font-semibold mt-3">{T.modelsCount(count)}</p>
@@ -117,7 +117,7 @@ export default function HomeContent({ locale = "en" }: { locale?: Locale }) {
       <section className="max-w-6xl mx-auto px-4 py-14">
         <div className="flex items-end justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-black">{T.flagshipsTitle}</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-black dark:text-gray-100">{T.flagshipsTitle}</h2>
             <p className="text-sm text-gray-500 mt-0.5">{T.flagshipsSub}</p>
           </div>
           <Link href="/phones" className="text-sm font-semibold text-[#1428a0] hover:underline shrink-0">
@@ -140,7 +140,7 @@ export default function HomeContent({ locale = "en" }: { locale?: Locale }) {
         <div className="max-w-6xl mx-auto px-4 py-14">
           <div className="flex items-end justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold tracking-tight text-black">{T.guidesTitle}</h2>
+              <h2 className="text-2xl font-bold tracking-tight text-black dark:text-gray-100">{T.guidesTitle}</h2>
               <p className="text-sm text-gray-500 mt-0.5">{T.guidesSub}</p>
             </div>
             <Link href="/best" className="text-sm font-semibold text-[#1428a0] hover:underline shrink-0">
@@ -154,7 +154,7 @@ export default function HomeContent({ locale = "en" }: { locale?: Locale }) {
                 href={`/best/${c.slug}`}
                 className="reveal group rounded-2xl border border-gray-200 bg-white p-5 min-h-[110px] flex flex-col justify-between transition-colors hover:border-black"
               >
-                <p className="font-bold text-[15px] text-black leading-snug">{c.title}</p>
+                <p className="font-bold text-[15px] text-black dark:text-gray-100 leading-snug">{c.title}</p>
                 <p className="text-[#1428a0] text-sm font-semibold mt-3">{T.explore}</p>
               </Link>
             ))}
@@ -169,7 +169,7 @@ export default function HomeContent({ locale = "en" }: { locale?: Locale }) {
           className="reveal block rounded-2xl border border-gray-200 bg-[#f5f5f7] p-8 transition-colors hover:border-black"
         >
           <p className="text-sm font-semibold uppercase tracking-wide text-[#1428a0]">{T.timelineKicker}</p>
-          <h2 className="mt-2 text-2xl font-bold tracking-tight text-black">{T.timelineTitle}</h2>
+          <h2 className="mt-2 text-2xl font-bold tracking-tight text-black dark:text-gray-100">{T.timelineTitle}</h2>
           <p className="mt-2 text-gray-600 max-w-2xl">{T.timelineText(firstYear, lastYear)}</p>
           <span className="mt-4 inline-block text-[#1428a0] font-semibold">{T.openTimeline}</span>
         </Link>

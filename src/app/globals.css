@@ -207,6 +207,15 @@ body {
   background: #f5f5f7;
   border: 1px solid #ececec;
 }
+.dark .glass {
+  background: #141414;
+  border-color: #2a2a2a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+.dark .glass-soft {
+  background: #1b1b1b;
+  border-color: #2a2a2a;
+}
 
 /* Samsung-style primary CTA: solid black pill */
 .btn-primary {
@@ -240,6 +249,21 @@ body {
 .btn-outline:hover {
   background: #111111;
   color: #ffffff;
+}
+.dark .btn-outline {
+  color: #ededed;
+  border-color: #4b5563;
+}
+.dark .btn-outline:hover {
+  background: #ededed;
+  color: #111111;
+}
+.dark .btn-primary {
+  background: #ffffff;
+  color: #111111;
+}
+.dark .btn-primary:hover {
+  background: #d1d5db;
 }
 
 /* Soft image fade-in — set to loaded by RevealInit once the image finishes

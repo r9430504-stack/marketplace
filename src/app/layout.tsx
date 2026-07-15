@@ -61,6 +61,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
       <head>
+        {/* Apply the saved (or system) theme before first paint — no flash. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()`,
+          }}
+        />
         {/* No JS — show content immediately, without the reveal/fade animations */}
         <noscript>
           <style>{`.reveal{opacity:1 !important;transform:none !important}.img-fade{opacity:1 !important}`}</style>
