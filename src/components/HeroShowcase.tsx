@@ -33,7 +33,7 @@ export default function HeroShowcase({ items }: { items: Item[] }) {
       ref={ref}
       onMouseMove={onMove}
       onMouseLeave={reset}
-      className="[perspective:1200px]"
+      className="[perspective:1200px] w-full max-w-md mx-auto"
     >
       <div className="hero-parallax grid grid-cols-2 gap-4">
         {items.map((p, i) => (
