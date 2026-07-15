@@ -1,4 +1,5 @@
 import { getAllPhones, batteryMah, hasRuTranslation, type Phone, type SeriesId } from "./phones";
+import { estimateCurrentUsd } from "./pricing";
 
 export type ConsultPhone = {
   slug: string;
@@ -13,6 +14,7 @@ export type ConsultPhone = {
   chargingW: number;
   storageGb: number;
   priceUsd: number;
+  currentUsd: number;
   fiveG: boolean;
   displayIn: number;
   spen: boolean;
@@ -65,6 +67,7 @@ export function getConsultPhones(): ConsultPhone[] {
       chargingW: firstNum(/(\d[\d.,]*)\s*W/i, p.specs.charging),
       storageGb: maxStorageGb(p.specs.storage),
       priceUsd: firstNum(/\$\s*(\d[\d,]*)/, p.specs.launchPrice),
+      currentUsd: estimateCurrentUsd(firstNum(/\$\s*(\d[\d,]*)/, p.specs.launchPrice), p.releaseYear),
       fiveG:
         /5g/i.test(p.name) ||
         /5g/i.test(p.specs.chipset) ||

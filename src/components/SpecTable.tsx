@@ -1,5 +1,6 @@
 import type { Specs } from "@/lib/phones";
 import type { Locale } from "@/lib/i18n";
+import { parseLaunchUsd, estimateCurrentUsd, fmtUsd } from "@/lib/pricing";
 
 const ROWS: { key: keyof Specs; label: string }[] = [
   { key: "display", label: "Display" },
@@ -45,7 +46,17 @@ const RU_LABELS: Record<keyof Specs, string> = {
   launchPrice: "Цена на старте",
 };
 
-export default function SpecTable({ specs, locale = "en" }: { specs: Specs; locale?: Locale }) {
+export default function SpecTable({
+  specs,
+  locale = "en",
+  year,
+}: {
+  specs: Specs;
+  locale?: Locale;
+  year?: number;
+}) {
+  const launchUsd = parseLaunchUsd(specs.launchPrice);
+  const currentUsd = year ? estimateCurrentUsd(launchUsd, year) : 0;
   return (
     <div className="glass overflow-hidden rounded-2xl">
       <table className="w-full text-sm">
@@ -65,6 +76,19 @@ export default function SpecTable({ specs, locale = "en" }: { specs: Specs; loca
               </tr>
             );
           })}
+          {currentUsd > 0 && (
+            <tr className="border-b border-white/40 last:border-0 even:bg-white/25">
+              <th className="text-left align-top font-medium text-gray-500 dark:text-gray-400 py-3 px-4 w-2/5">
+                {locale === "ru" ? "Цена сейчас (≈)" : "Current price (est.)"}
+              </th>
+              <td className="py-3 px-4 text-gray-900 dark:text-gray-100">
+                {fmtUsd(currentUsd)}
+                <span className="text-gray-400 dark:text-gray-500">
+                  {locale === "ru" ? " — примерно, б/у рынок" : " — approx., used market"}
+                </span>
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>
