@@ -197,7 +197,7 @@ export default async function PhonePage({
       {/* Specifications */}
       <section className="mt-10">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Full specifications</h2>
-        <SpecTable specs={phone.specs} />
+        <SpecTable specs={phone.specs} year={phone.releaseYear} />
       </section>
 
       {/* Compare */}

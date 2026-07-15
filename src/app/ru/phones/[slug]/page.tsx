@@ -168,7 +168,7 @@ export default async function PhonePageRu({
 
       <section className="mt-10">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Полные характеристики</h2>
-        <SpecTable specs={phone.specs} locale="ru" />
+        <SpecTable specs={phone.specs} locale="ru" year={phone.releaseYear} />
       </section>
 
       {comparisons.length > 0 && (

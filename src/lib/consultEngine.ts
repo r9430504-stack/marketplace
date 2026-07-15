@@ -35,6 +35,7 @@ type Intent = {
   mentioned: ConsultPhone[];
   newest: boolean;
   cheapest: boolean;
+  budgetUsd: number;
   greeting: boolean;
   thanks: boolean;
   bye: boolean;
@@ -165,20 +166,25 @@ const USE_PATTERNS: { use: Use; re: RegExp }[] = [
   },
 ];
 
-function detectTier(t: string): Tier | null {
+/** Parse a stated budget into USD (0 if none). Handles ₽/руб/к/тыс, $/usd and
+ * budgets stated with a preposition and no currency ("до 60000"). */
+function parseBudgetUsd(t: string): number {
   const rub =
     t.match(/(\d{1,3}(?:[ .]\d{3})+|\d{4,6})\s*(?:руб|₽|р(?=\s)|rub)/) ||
-    // budget stated with a preposition but no currency word: "до 60000", "за 40 000"
     t.match(/(?:до|за|около|порядка|бюджет\w*|в районе|максимум|уложит\w*|не (?:больше|дороже))\s*~?\s*(\d{1,3}(?:[ .]\d{3})+|\d{4,6})/) ||
     t.match(/(\d{1,3})\s*(?:к|тыс)(?=\s|$)/);
   const usd = t.match(/\$\s*(\d{2,4})/) || t.match(/(\d{2,4})\s*(?:\$|usd|dollar|доллар)/);
-  let priceUsd = 0;
-  if (usd) priceUsd = parseInt(usd[1], 10);
-  else if (rub) {
+  if (usd) return parseInt(usd[1], 10);
+  if (rub) {
     let n = parseInt(rub[1].replace(/[ .]/g, ""), 10);
     if (/к|тыс/.test(rub[0]) && n < 1000) n *= 1000;
-    priceUsd = n / 95;
+    return Math.round(n / 95); // ₽→$ for matching against catalog USD prices
   }
+  return 0;
+}
+
+function detectTier(t: string): Tier | null {
+  const priceUsd = parseBudgetUsd(t);
   if (priceUsd > 0) {
     if (priceUsd < 320) return "budget";
     if (priceUsd < 720) return "mid";
@@ -203,6 +209,7 @@ type Extract = {
   mentioned: ConsultPhone[];
   newest: boolean;
   cheapest: boolean;
+  budgetUsd: number;
 };
 
 // Personas / buying contexts: who or what the phone is for → soft preferences.
@@ -262,6 +269,7 @@ function extract(text: string, phones: ConsultPhone[]): Extract {
     mentioned: findMentions(text, phones),
     newest,
     cheapest,
+    budgetUsd: parseBudgetUsd(t),
   };
 }
 
@@ -290,6 +298,7 @@ function parseIntent(recent: string[], phones: ConsultPhone[]): Intent {
   const nl = norm(last).trim();
   const t = norm([prevText, last].join(" "));
   const topical = /телефон|смартфон|phone|galaxy|samsung|самсунг|модел|model|девайс|аппарат|устройств/.test(t);
+  const budgetUsd = lastX.budgetUsd || (!fresh ? prevX.budgetUsd : 0);
   const hasSignal = uses.length > 0 || tier !== null || mentioned.length > 0 || newest || cheapest || topical;
   return {
     tier,
@@ -297,6 +306,7 @@ function parseIntent(recent: string[], phones: ConsultPhone[]): Intent {
     mentioned,
     newest,
     cheapest,
+    budgetUsd,
     greeting: GREETING_RE.test(nl),
     thanks: THANKS_RE.test(nl),
     bye: BYE_RE.test(nl),
@@ -345,10 +355,17 @@ function scoreFor(p: ConsultPhone, intent: Intent): number {
   // Mild premium proxy: among otherwise-tied models the pricier (top) variant
   // edges ahead, so "best phone" lands on the Ultra rather than the base model.
   // Foldables are excluded so a general "best phone" isn't a niche foldable.
-  s += p.foldable ? 0 : p.priceUsd / 1500;
+  s += p.foldable ? 0 : (p.currentUsd || p.priceUsd) / 1500;
   // Refinement modifiers
   if (intent.newest) s += (p.year - 2010) * 10;
-  if (intent.cheapest) s += p.priceUsd > 0 ? (1200 - p.priceUsd) / 12 : 0;
+  if (intent.cheapest) {
+    const price = p.currentUsd || p.priceUsd;
+    s += price > 0 ? (1000 - price) / 10 : 0;
+  }
+  // Within budget → boost; over budget → strong penalty.
+  if (intent.budgetUsd > 0 && p.currentUsd > 0) {
+    s += p.currentUsd <= intent.budgetUsd ? 12 : -((p.currentUsd - intent.budgetUsd) / 20);
+  }
   return s;
 }
 
@@ -359,7 +376,13 @@ export function isRecommendable(p: ConsultPhone): boolean {
 
 function pick(phones: ConsultPhone[], intent: Intent, limit = 3): ConsultPhone[] {
   // Only recommend phones that are at most 7 years old.
-  const recent = phones.filter(isRecommendable);
+  let recent = phones.filter(isRecommendable);
+  // Honour a stated budget by the estimated CURRENT price (what it costs today),
+  // with a little headroom. If nothing fits, ignore the budget rather than fail.
+  if (intent.budgetUsd > 0) {
+    const withinBudget = recent.filter((p) => p.currentUsd > 0 && p.currentUsd <= intent.budgetUsd * 1.12);
+    if (withinBudget.length) recent = withinBudget;
+  }
   let pool = intent.tier ? recent.filter((p) => p.tier === intent.tier) : [...recent];
   if (intent.uses.includes("foldable")) pool = pool.filter((p) => p.foldable);
   if (intent.uses.includes("spen")) pool = pool.filter((p) => p.spen);
@@ -373,7 +396,8 @@ function pick(phones: ConsultPhone[], intent: Intent, limit = 3): ConsultPhone[]
 const link = (p: ConsultPhone) => `/phones/${p.slug}`;
 
 function descriptor(p: ConsultPhone): string {
-  const price = p.priceUsd > 0 ? `, $${p.priceUsd}` : "";
+  // Show the estimated current price (what it costs today) rather than launch.
+  const price = p.currentUsd > 0 ? `, ≈$${p.currentUsd}` : "";
   return `${p.name} (${p.year}${price})`;
 }
 
