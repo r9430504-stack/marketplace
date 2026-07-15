@@ -38,7 +38,7 @@ export default function PhoneCard({ phone, locale = "en" }: { phone: Phone; loca
 
 function Spec({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 border border-gray-200 text-gray-600">
+    <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 border border-gray-200 text-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300">
       {children}
     </span>
   );

@@ -36,8 +36,8 @@ export default function PhoneBrowser({
   const chip = (active: boolean) =>
     `px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
       active
-        ? "bg-black text-white"
-        : "bg-white border border-gray-300 text-gray-700 hover:border-black hover:text-black"
+        ? "bg-black text-white dark:bg-white dark:text-black"
+        : "bg-white border border-gray-300 text-gray-700 hover:border-black hover:text-black dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-400 dark:hover:text-white"
     }`;
 
   return (
