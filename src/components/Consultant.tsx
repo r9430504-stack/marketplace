@@ -76,23 +76,14 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
   }, [msgs, loading]);
 
   // Proactive greeting bubble near the button, so people understand what
-  // "Galaxy AI" is without having to open the chat first. Shows once.
+  // "Galaxy AI" is without having to open the chat first. Shows on every
+  // load (not gated by localStorage) so it never depends on cached state.
   useEffect(() => {
-    try {
-      if (localStorage.getItem("consult-greeted") === "1") return;
-    } catch {
-      return;
-    }
     const id = window.setTimeout(() => setBubble(true), 2600);
     return () => window.clearTimeout(id);
   }, []);
 
-  const dismissBubble = () => {
-    setBubble(false);
-    try {
-      localStorage.setItem("consult-greeted", "1");
-    } catch {}
-  };
+  const dismissBubble = () => setBubble(false);
 
   const toggleOpen = () => {
     dismissBubble();
