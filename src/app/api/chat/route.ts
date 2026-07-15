@@ -1,4 +1,5 @@
-import { getCatalogText } from "@/lib/consult";
+import { getCatalogText, getConsultPhones } from "@/lib/consult";
+import { answerLocal } from "@/lib/consultEngine";
 
 export const runtime = "nodejs";
 
@@ -169,9 +170,6 @@ async function callGemini(
 
 export async function POST(req: Request) {
   const provider = pickProvider();
-  if (!provider) {
-    return Response.json({ error: "not_configured", reply: null }, { status: 503 });
-  }
 
   const ip =
     req.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
@@ -198,6 +196,17 @@ export async function POST(req: Request) {
     return Response.json({ error: "empty" }, { status: 400 });
   }
 
+  // The latest user message drives our own engine.
+  const lastUser = [...messages].reverse().find((m) => m.role === "user")?.content ?? "";
+  const localReply = () => answerLocal(lastUser, locale, getConsultPhones());
+
+  // No cloud provider configured → always answer with our own engine.
+  if (!provider) {
+    return Response.json({ reply: localReply() });
+  }
+
+  // A provider is configured → use it as the "nice narrator", but never let a
+  // provider failure break the consultant: fall back to our own engine.
   try {
     const result =
       provider.name === "gemini"
@@ -207,11 +216,8 @@ export async function POST(req: Request) {
     if ("reply" in result) {
       return Response.json({ reply: result.reply });
     }
-    return Response.json({ error: result.error, detail: result.detail }, { status: 502 });
-  } catch (e) {
-    return Response.json(
-      { error: "network", detail: e instanceof Error ? e.message : "fetch failed" },
-      { status: 502 }
-    );
+    return Response.json({ reply: localReply(), degraded: result.detail });
+  } catch {
+    return Response.json({ reply: localReply(), degraded: "network" });
   }
 }

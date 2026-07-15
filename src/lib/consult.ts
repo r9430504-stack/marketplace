@@ -42,7 +42,9 @@ export function getConsultPhones(): ConsultPhone[] {
       releaseDate: p.releaseDate,
       tier: tierOf(p),
       batteryMah: batteryMah(p),
-      cameraMp: firstNum(/(\d[\d,]*)\s*MP/i, p.specs.mainCamera),
+      // The main sensor is the leading number, e.g. "108 + 12 + 12" → 108
+      // (older "…, N MP" matching grabbed the smallest/last sensor instead).
+      cameraMp: firstNum(/(\d[\d,]*)/, p.specs.mainCamera),
       displayIn: firstNum(/(\d+(?:\.\d+)?)/, p.specs.display),
       spen:
         p.series === "Galaxy Note" ||
