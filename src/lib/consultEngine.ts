@@ -134,7 +134,7 @@ const USE_PATTERNS: { use: Use; re: RegExp }[] = [
   },
   {
     use: "fiveg",
-    re: /5g|5 g|пят(ое|ого) поколени|скоростн(ой|ый) интернет|5[- ]?джи/,
+    re: /5g|5 g|5[- ]?джи|пят(ое|ого) поколени|хорош(ий|им|его) интернет|быстр(ый|ым|ого) интернет|мобильн(ый|ым) интернет|хорошая связь|хорошей связ|ловит сет|good internet|fast internet|connectivity|\bnetwork\b/,
   },
   {
     use: "foldable",
@@ -168,7 +168,7 @@ function detectTier(t: string): Tier | null {
     return "flagship";
   }
   if (/флагман|топ(?:\b|овы)|премиум|лучш|мощнейш|high[- ]?end|flagship|premium|\bbest\b/.test(t)) return "flagship";
-  if (/бюджет|дешев|дешёв|недорог|подешевл|эконом|\bcheap|budget|affordable|inexpensive/.test(t)) return "budget";
+  if (/бюджет|деш[её ]|дешо|дишо|дишев|недорог|подешевл|подешевш|эконом|копееч|за копейки|не дорог|\bcheap|budget|affordable|inexpensive|low[- ]?cost/.test(t)) return "budget";
   if (/средн(?:ий|яя|его|ей)|\bmid\b|mid[- ]?range|middle/.test(t)) return "mid";
   return null;
 }
@@ -180,15 +180,51 @@ const THANKS_RE = /спасиб|благодар|пасиб|спс|thank|thx/;
 const BYE_RE = /^(пока|до свидан|прощай|бывай|bye|goodbye|see ya|see you)/;
 const AFFIRM_RE = /^(да|ага|угу|окей|ок|хорошо|ладно|давай|конечно|yes|yeah|yep|ok|sure|alright)$/;
 
-function parseIntent(joined: string, last: string, phones: ConsultPhone[]): Intent {
-  const t = norm(joined);
+type Extract = {
+  tier: Tier | null;
+  uses: Use[];
+  mentioned: ConsultPhone[];
+  newest: boolean;
+  cheapest: boolean;
+};
+
+function extract(text: string, phones: ConsultPhone[]): Extract {
+  const t = norm(text);
   const uses: Use[] = [];
   for (const { use, re } of USE_PATTERNS) if (re.test(t)) uses.push(use);
-  const tier = detectTier(t);
-  const mentioned = findMentions(joined, phones);
-  const newest = /новее|нов(ый|ая|ое|еньк|инк)|свеж|последн|актуальн|latest|newest|recent|\bnew\b/.test(t);
-  const cheapest = /дешевле|подешевл|дешев|дешёв|бюджетн|эконом|cheaper|cheapest|affordable/.test(t);
+  return {
+    tier: detectTier(t),
+    uses,
+    mentioned: findMentions(text, phones),
+    newest: /новее|нов(ый|ая|ое|еньк|инк)|свеж|последн|актуальн|latest|newest|recent|\bnew\b/.test(t),
+    cheapest: /дешевле|подешевл|деш[её ]|дешо|дишо|бюджетн|эконом|копееч|cheaper|cheapest|affordable/.test(t),
+  };
+}
+
+// Build the intent from recent messages. The LAST message takes priority: if
+// it carries its own criteria (a tier, a use-case or a named model), it is a
+// fresh request that OVERRIDES earlier context — so switching from "flagship"
+// to "cheap" actually switches. Only a bare refinement ("а подешевле?", "что-то
+// новее") inherits the previous criteria and just tweaks them.
+function parseIntent(recent: string[], phones: ConsultPhone[]): Intent {
+  const last = recent[recent.length - 1] ?? "";
+  const prevText = recent.slice(0, -1).join(" \n ");
+  const lastX = extract(last, phones);
+  const prevX = extract(prevText, phones);
+
+  // A new use-case or a named model = a fresh request that resets the criteria.
+  // A price/tier change alone ("а подешевле") is a refinement: keep the prior
+  // use-cases, just override the tier.
+  const fresh = lastX.uses.length > 0 || lastX.mentioned.length > 0;
+
+  const tier = lastX.tier ?? prevX.tier;
+  const uses = fresh ? lastX.uses : prevX.uses;
+  const mentioned = lastX.mentioned.length ? lastX.mentioned : fresh ? [] : prevX.mentioned;
+  const newest = lastX.newest || (!fresh && prevX.newest);
+  const cheapest = lastX.cheapest || (!fresh && prevX.cheapest);
+
   const nl = norm(last).trim();
+  const t = norm([prevText, last].join(" "));
   const topical = /телефон|смартфон|phone|galaxy|samsung|самсунг|модел|model|девайс|аппарат|устройств/.test(t);
   const hasSignal = uses.length > 0 || tier !== null || mentioned.length > 0 || newest || cheapest || topical;
   return {
@@ -272,7 +308,7 @@ function reasonsFor(p: ConsultPhone, uses: Use[], locale: Locale): string[] {
     else if (u === "foldable") out.push(en ? `a folding design` : `складной корпус`);
     else if (u === "spen") out.push(en ? `an S Pen that's great for drawing and notes` : `S Pen — удобно рисовать и делать заметки`);
     else if (u === "water") out.push(en ? `water resistance` : `влагозащита`);
-    else out.push(en ? `it's one of the latest, most capable models` : `это одна из самых свежих и мощных моделей`);
+    else out.push(en ? `modern, capable hardware` : `свежая и мощная начинка`);
   }
   return out.slice(0, 2);
 }
@@ -402,9 +438,7 @@ const SAY = {
  * drive the criteria so short follow-ups like "а подешевле?" still work. */
 export function answerLocal(userTexts: string[], locale: Locale, phones: ConsultPhone[]): string {
   const recent = userTexts.slice(-3);
-  const last = recent[recent.length - 1] ?? "";
-  const joined = recent.join(" \n ");
-  const intent = parseIntent(joined, last, phones);
+  const intent = parseIntent(recent, phones);
 
   if (intent.mentioned.length >= 2) {
     return compareReply(intent.mentioned[0], intent.mentioned[1], intent, locale);
