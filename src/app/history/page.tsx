@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllPhones, getYears, seriesMeta } from "@/lib/phones";
-import AdSlot from "@/components/AdSlot";
 import BackButton from "@/components/BackButton";
 
 export const metadata: Metadata = {
@@ -54,7 +53,6 @@ export default function HistoryPage() {
                   );
                 })}
               </div>
-              {idx === 1 && <AdSlot />}
             </div>
           );
         })}
