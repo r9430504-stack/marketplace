@@ -14,11 +14,11 @@ export default function PhoneCard({ phone, locale = "en" }: { phone: Phone; loca
       href={href}
       className="reveal group glass rounded-2xl relative hover:shadow-2xl hover:-translate-y-1.5 hover:z-10 transition-all duration-300 ease-out flex flex-col"
     >
-      <div className="aspect-[4/5] rounded-t-2xl bg-white [clip-path:inset(-40%_-6%_0_-6%)]">
+      <div className="aspect-[4/5] rounded-t-2xl bg-white [clip-path:inset(-14%_-3%_0_-3%)]">
         <PhoneVisual
           phone={phone}
           thumb
-          className="origin-bottom rounded-t-2xl group-hover:scale-[1.12] group-hover:-translate-y-2 transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+          className="origin-bottom rounded-t-2xl group-hover:scale-[1.05] group-hover:-translate-y-1 transition-transform duration-[900ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
         />
       </div>
       <div className="p-4 flex flex-col gap-1 flex-1">
