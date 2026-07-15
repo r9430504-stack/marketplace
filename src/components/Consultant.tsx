@@ -130,7 +130,7 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
   return (
     <>
       {bubble && !open && (
-        <div className="fixed bottom-24 right-5 z-40 w-[min(16rem,calc(100vw-2.5rem))] animate-[fadeIn_.4s_ease]">
+        <div className="fixed bottom-24 right-5 z-[60] w-[min(16rem,calc(100vw-2.5rem))] animate-[fadeIn_.4s_ease]">
           <button
             onClick={toggleOpen}
             className="block w-full text-left rounded-2xl bg-white shadow-2xl border border-gray-200 px-4 py-3 text-sm text-gray-800 hover:border-[#1428a0] transition-colors"
@@ -151,13 +151,13 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
         id="ai-consultant-button"
         onClick={toggleOpen}
         aria-label={t.open}
-        className="fixed bottom-5 right-5 z-40 h-14 w-14 rounded-full bg-[#1428a0] text-white text-2xl font-bold shadow-lg hover:scale-105 active:scale-95 transition-transform flex items-center justify-center"
+        className="fixed bottom-5 right-5 z-[60] h-14 w-14 rounded-full bg-[#1428a0] text-white text-2xl font-bold shadow-lg hover:scale-105 active:scale-95 transition-transform flex items-center justify-center"
       >
         {open ? "✕" : "G"}
       </button>
 
       {open && (
-        <div className="fixed bottom-24 right-5 z-40 w-[calc(100vw-2.5rem)] max-w-sm rounded-2xl bg-white shadow-2xl border border-gray-200 overflow-hidden flex flex-col h-[75vh] max-h-[560px]">
+        <div className="fixed bottom-24 right-5 z-[60] w-[calc(100vw-2.5rem)] max-w-sm rounded-2xl bg-white shadow-2xl border border-gray-200 overflow-hidden flex flex-col h-[75vh] max-h-[560px]">
           <div className="bg-[#1428a0] text-white px-4 py-3 flex items-center gap-2 shrink-0">
             <span className="h-8 w-8 rounded-full bg-white/15 flex items-center justify-center font-bold">G</span>
             <span className="font-semibold">{t.title}</span>
