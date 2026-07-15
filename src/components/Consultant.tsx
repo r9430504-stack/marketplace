@@ -12,7 +12,9 @@ const T = {
   en: {
     open: "Open the AI consultant",
     title: "Galaxy AI Consultant",
+    greeting: "👋 Hi! I'm Galaxy AI — your smart assistant for choosing a Samsung Galaxy phone. Tell me what matters to you (budget, camera, battery, size…) and I'll pick the right model and open its page for you.",
     intro: "Ask me anything about Samsung Galaxy phones — I'll recommend the right one from our catalog.",
+    bubble: "👋 Need help choosing a Galaxy? Ask me!",
     suggestions: ["Which Galaxy has the best battery?", "S24 or S25?", "Recommend a compact flagship", "Best Samsung foldable"],
     placeholder: "Ask about a Galaxy phone…",
     send: "Send",
@@ -25,7 +27,9 @@ const T = {
   ru: {
     open: "Открыть ИИ-консультанта",
     title: "Galaxy AI консультант",
+    greeting: "👋 Привет! Я Galaxy AI — умный помощник по выбору смартфона Samsung Galaxy. Опишите, что для вас важно (бюджет, камера, батарея, размер…), и я подберу подходящую модель и открою её страницу.",
     intro: "Спросите что угодно про смартфоны Samsung Galaxy — подберу подходящий из нашего каталога.",
+    bubble: "👋 Помогу выбрать Galaxy — спросите меня!",
     suggestions: ["Какой Galaxy с лучшей батареей?", "S24 или S25?", "Посоветуй компактный флагман", "Лучший складной Samsung"],
     placeholder: "Спросите про телефон Galaxy…",
     send: "Отпр.",
@@ -64,11 +68,36 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
   const [msgs, setMsgs] = useState<ChatMsg[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [bubble, setBubble] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [msgs, loading]);
+
+  // Proactive greeting bubble near the button, so people understand what
+  // "Galaxy AI" is without having to open the chat first. Shows once.
+  useEffect(() => {
+    try {
+      if (localStorage.getItem("consult-greeted") === "1") return;
+    } catch {
+      return;
+    }
+    const id = window.setTimeout(() => setBubble(true), 2600);
+    return () => window.clearTimeout(id);
+  }, []);
+
+  const dismissBubble = () => {
+    setBubble(false);
+    try {
+      localStorage.setItem("consult-greeted", "1");
+    } catch {}
+  };
+
+  const toggleOpen = () => {
+    dismissBubble();
+    setOpen((o) => !o);
+  };
 
   const hrefFor = (path: string) => {
     const slug = path.split("/").filter(Boolean).pop() ?? "";
@@ -109,9 +138,27 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
 
   return (
     <>
+      {bubble && !open && (
+        <div className="fixed bottom-24 right-5 z-40 w-[min(16rem,calc(100vw-2.5rem))] animate-[fadeIn_.4s_ease]">
+          <button
+            onClick={toggleOpen}
+            className="block w-full text-left rounded-2xl bg-white shadow-2xl border border-gray-200 px-4 py-3 text-sm text-gray-800 hover:border-[#1428a0] transition-colors"
+          >
+            {t.bubble}
+          </button>
+          <button
+            onClick={dismissBubble}
+            aria-label="Dismiss"
+            className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-gray-800 text-white text-xs leading-none shadow flex items-center justify-center"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       <button
         id="ai-consultant-button"
-        onClick={() => setOpen((o) => !o)}
+        onClick={toggleOpen}
         aria-label={t.open}
         className="fixed bottom-5 right-5 z-40 h-14 w-14 rounded-full bg-[#1428a0] text-white text-2xl font-bold shadow-lg hover:scale-105 active:scale-95 transition-transform flex items-center justify-center"
       >
@@ -128,7 +175,9 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
           <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 text-sm space-y-3">
             {msgs.length === 0 && (
               <>
-                <p className="text-gray-600">{t.intro}</p>
+                <div className="text-left">
+                  <span className="inline-block rounded-2xl px-3 py-2 max-w-[90%] bg-gray-100 text-gray-800">{t.greeting}</span>
+                </div>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {t.suggestions.map((s) => (
                     <button key={s} onClick={() => send(s)} className="px-3 py-1.5 rounded-full text-xs border border-gray-300 text-gray-700 hover:border-black text-left">{s}</button>
