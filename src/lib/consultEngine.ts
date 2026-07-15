@@ -36,6 +36,7 @@ type Intent = {
   newest: boolean;
   cheapest: boolean;
   budgetUsd: number;
+  power: boolean;
   greeting: boolean;
   thanks: boolean;
   bye: boolean;
@@ -210,6 +211,7 @@ type Extract = {
   newest: boolean;
   cheapest: boolean;
   budgetUsd: number;
+  power: boolean;
 };
 
 // Personas / buying contexts: who or what the phone is for → soft preferences.
@@ -230,6 +232,12 @@ function extract(text: string, phones: ConsultPhone[]): Extract {
   const t = norm(text);
   const uses: Use[] = [];
   for (const { use, re } of USE_PATTERNS) if (re.test(t)) uses.push(use);
+
+  // Wants power / a flagship-class device (regardless of age).
+  const power =
+    /мощн|мощь|флагман|топ(ов|\b)|производит|шустр|быстр(ый|ая|ое)?\b|premium|flagship|powerful|performance|beast|high[- ]?end/.test(
+      t
+    ) || uses.includes("gaming");
 
   let tier = detectTier(t);
   let newest =
@@ -263,13 +271,23 @@ function extract(text: string, phones: ConsultPhone[]): Extract {
   if (/не большой|не нужен большой|небольшой|not (too )?big|not large/.test(t))
     cleaned = cleaned.filter((u) => u !== "big");
 
+  // Budget: an explicit number wins; otherwise infer a ceiling from words so
+  // "дешёвый"/"средняя цена" act as price limits (which lets value flagships in).
+  let budgetUsd = parseBudgetUsd(t);
+  if (budgetUsd === 0) {
+    if (/средн(яя|юю|ей|его)?\s*цен|средн\w* ценов|mid[- ]?price|average price/.test(t)) budgetUsd = 550;
+    else if (/дешев|дешёв|дешов|дишов|недорог|не дорог|подешевл|бюджет|эконом|копееч|cheap|budget|affordable|low[- ]?cost|inexpensive/.test(t))
+      budgetUsd = 320;
+  }
+
   return {
     tier,
     uses: cleaned,
     mentioned: findMentions(text, phones),
     newest,
     cheapest,
-    budgetUsd: parseBudgetUsd(t),
+    budgetUsd,
+    power,
   };
 }
 
@@ -299,7 +317,9 @@ function parseIntent(recent: string[], phones: ConsultPhone[]): Intent {
   const t = norm([prevText, last].join(" "));
   const topical = /телефон|смартфон|phone|galaxy|samsung|самсунг|модел|model|девайс|аппарат|устройств/.test(t);
   const budgetUsd = lastX.budgetUsd || (!fresh ? prevX.budgetUsd : 0);
-  const hasSignal = uses.length > 0 || tier !== null || mentioned.length > 0 || newest || cheapest || topical;
+  const power = lastX.power || (!fresh && prevX.power);
+  const hasSignal =
+    uses.length > 0 || tier !== null || mentioned.length > 0 || newest || cheapest || power || topical;
   return {
     tier,
     uses,
@@ -307,6 +327,7 @@ function parseIntent(recent: string[], phones: ConsultPhone[]): Intent {
     newest,
     cheapest,
     budgetUsd,
+    power,
     greeting: GREETING_RE.test(nl),
     thanks: THANKS_RE.test(nl),
     bye: BYE_RE.test(nl),
@@ -366,6 +387,16 @@ function scoreFor(p: ConsultPhone, intent: Intent): number {
   if (intent.budgetUsd > 0 && p.currentUsd > 0) {
     s += p.currentUsd <= intent.budgetUsd ? 12 : -((p.currentUsd - intent.budgetUsd) / 20);
   }
+  // Wants power → favour the most capable device: a former flagship that's now
+  // cheap beats a new budget phone at the same price. Capability = flagship
+  // class + newer chip (recency). Deprioritise niche foldables for a generic
+  // "powerful" ask so it lands on an S-Ultra, not a Fold.
+  if (intent.power) {
+    s += p.tier === "flagship" ? 40 : p.tier === "mid" ? 16 : 0;
+    s += (p.year - 2010) * 4; // newer chip
+    s += Math.min(p.priceUsd, 1400) / 45; // premium/Ultra models were more powerful (capped so Folds don't run away)
+    if (p.foldable && !intent.uses.includes("foldable")) s -= 60;
+  }
   return s;
 }
 
@@ -383,10 +414,14 @@ function pick(phones: ConsultPhone[], intent: Intent, limit = 3): ConsultPhone[]
     const withinBudget = recent.filter((p) => p.currentUsd > 0 && p.currentUsd <= intent.budgetUsd * 1.12);
     if (withinBudget.length) recent = withinBudget;
   }
-  let pool = intent.tier ? recent.filter((p) => p.tier === intent.tier) : [...recent];
+  // "Powerful within a budget" → don't lock to a price tier; rank every phone in
+  // budget by capability so an affordable ex-flagship can win. Otherwise keep
+  // the requested tier.
+  const valueFlagship = intent.power && intent.budgetUsd > 0;
+  let pool = intent.tier && !valueFlagship ? recent.filter((p) => p.tier === intent.tier) : [...recent];
   if (intent.uses.includes("foldable")) pool = pool.filter((p) => p.foldable);
   if (intent.uses.includes("spen")) pool = pool.filter((p) => p.spen);
-  if (pool.length === 0) pool = intent.tier ? recent.filter((p) => p.tier === intent.tier) : [...recent];
+  if (pool.length === 0) pool = intent.tier && !valueFlagship ? recent.filter((p) => p.tier === intent.tier) : [...recent];
   if (pool.length === 0) pool = [...recent];
   if (pool.length === 0) pool = [...phones]; // ultimate safety net
   return pool.sort((a, b) => scoreFor(b, intent) - scoreFor(a, intent)).slice(0, limit);
