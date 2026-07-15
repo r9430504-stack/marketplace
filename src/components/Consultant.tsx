@@ -11,7 +11,7 @@ type ChatMsg = { role: "user" | "assistant"; content: string };
 const T = {
   en: {
     open: "Open the AI consultant",
-    title: "Galaxy AI consultant",
+    title: "Galaxy AI Consultant",
     intro: "Ask me anything about Samsung Galaxy phones — I'll recommend the right one from our catalog.",
     suggestions: ["Which Galaxy has the best battery?", "S24 or S25?", "Recommend a compact flagship", "Best Samsung foldable"],
     placeholder: "Ask about a Galaxy phone…",
@@ -24,7 +24,7 @@ const T = {
   },
   ru: {
     open: "Открыть ИИ-консультанта",
-    title: "ИИ-консультант Galaxy",
+    title: "Galaxy AI консультант",
     intro: "Спросите что угодно про смартфоны Samsung Galaxy — подберу подходящий из нашего каталога.",
     suggestions: ["Какой Galaxy с лучшей батареей?", "S24 или S25?", "Посоветуй компактный флагман", "Лучший складной Samsung"],
     placeholder: "Спросите про телефон Galaxy…",
