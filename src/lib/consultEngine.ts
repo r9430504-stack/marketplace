@@ -203,16 +203,63 @@ type Extract = {
   cheapest: boolean;
 };
 
+// Personas / buying contexts: who or what the phone is for → soft preferences.
+// These only add "soft" use-cases (never spen/foldable, which hard-filter) plus
+// an optional tier, so a persona shapes the pick without over-narrowing it.
+const CONTEXTS: { re: RegExp; add: Use[]; tier?: Tier; newest?: boolean; cheapest?: boolean }[] = [
+  { re: /для работ|рабоч(ий|ая) (телефон|модел)|для бизнес|бизнес[- ]?телефон|офис|for work|for business|work phone/, add: ["longevity", "battery", "display"], tier: "flagship" },
+  { re: /для (учеб|студент)|студенч|школьник|for (a )?student|for school/, add: ["battery"], tier: "mid", cheapest: true },
+  { re: /для (ребен|реб[её]н|дет)|детск|ребёнку|ребенку|for (a )?(kid|child|children)/, add: ["durable", "battery"], tier: "budget" },
+  { re: /для (мам|бабушк|дедушк|родител|пожил|бати|отц)|для пожилых|простой в использован|для родителей|for (my )?(mom|mum|parent|grandma|grandpa|elderly)/, add: ["big", "display"], tier: "mid" },
+  { re: /фотограф|фото[- ]?блог|для съ[её]мк|для фото|photograph|for photos|content creat/, add: ["camera", "selfie"] },
+  { re: /путешеств|в поездк|для поездок|турист|travel|for trips/, add: ["battery", "durable", "camera"] },
+  { re: /крут(ой|ая|ое|ый)|понт|чтобы завидовал|статусн|престиж|флексить|\bflex\b|show off|status symbol|понтов|вау[- ]?эффект|wow[- ]?effect/, add: [], tier: "flagship" },
+  { re: /цена.?качеств|цену.?качеств|соотношени[ею] цен|выгодн|оправдыва|разумн(ая|ой) цен|value for money|bang for (the )?buck|worth the money/, add: [], tier: "mid", cheapest: true },
+];
+
 function extract(text: string, phones: ConsultPhone[]): Extract {
   const t = norm(text);
   const uses: Use[] = [];
   for (const { use, re } of USE_PATTERNS) if (re.test(t)) uses.push(use);
+
+  let tier = detectTier(t);
+  let newest =
+    /новее|нов(ый|ая|ое|еньк|инк)|свеж|последн|актуальн|latest|newest|recent|\bnew\b/.test(t);
+  const cheapestBase =
+    /дешевле|подешевл|деш[её ]|дешо|дишо|бюджетн|эконом|копееч|cheaper|cheapest|affordable/.test(t);
+  let cheapest = cheapestBase;
+
+  // Persona / context expansion.
+  for (const c of CONTEXTS) {
+    if (!c.re.test(t)) continue;
+    for (const u of c.add) if (!uses.includes(u)) uses.push(u);
+    if (c.tier && !tier) tier = c.tier;
+    if (c.newest) newest = true;
+    if (c.cheapest) cheapest = true;
+  }
+
+  // "Upgrade from an old phone" → wants something current.
+  if (/апгрейд|обновить телефон|поменять телефон|замен(а|у|ить) телефон|перейти с|пересесть с|мой старый|старый телефон|устарел|upgrade|replace my (old )?phone|time for a new phone/.test(t)) {
+    newest = true;
+    if (!tier) tier = "flagship";
+  }
+
+  // Negations: strip a hard-filter use the user explicitly does NOT want, so
+  // "не складной" doesn't get read as wanting a foldable.
+  let cleaned = uses;
+  if (/без стилус|не нужен стилус|не нужен s[- ]?pen|без s[- ]?pen|не хочу стилус|without (a )?stylus|no s[- ]?pen/.test(t))
+    cleaned = cleaned.filter((u) => u !== "spen");
+  if (/не складн|без складн|не нужен складн|не хочу складн|not (a )?fold|no fold|not foldable/.test(t))
+    cleaned = cleaned.filter((u) => u !== "foldable");
+  if (/не большой|не нужен большой|небольшой|not (too )?big|not large/.test(t))
+    cleaned = cleaned.filter((u) => u !== "big");
+
   return {
-    tier: detectTier(t),
-    uses,
+    tier,
+    uses: cleaned,
     mentioned: findMentions(text, phones),
-    newest: /новее|нов(ый|ая|ое|еньк|инк)|свеж|последн|актуальн|latest|newest|recent|\bnew\b/.test(t),
-    cheapest: /дешевле|подешевл|деш[её ]|дешо|дишо|бюджетн|эконом|копееч|cheaper|cheapest|affordable/.test(t),
+    newest,
+    cheapest,
   };
 }
 
