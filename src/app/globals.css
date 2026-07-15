@@ -152,14 +152,21 @@
 }
 .floaty {
   animation: floaty 6s ease-in-out infinite;
+  /* Keep each floating tile on its own stable compositing layer so it doesn't
+   * flicker/disappear during the animation. */
+  backface-visibility: hidden;
+  will-change: transform;
 }
 
-/* Cursor-driven 3D tilt for the hero product cluster */
+/* Cursor-driven tilt for the hero product cluster. The parent supplies the
+ * perspective, so the whole group tilts as one flat plane — no `preserve-3d`,
+ * which (combined with the cards' overflow:hidden + radius + the inner floaty
+ * animation) caused intermittent layer culling and made tiles blink out. */
 .hero-parallax {
   transform: rotateX(calc(var(--py, 0) * -5deg))
     rotateY(calc(var(--px, 0) * 7deg));
   transition: transform 0.35s ease-out;
-  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {
