@@ -141,20 +141,36 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
   return (
     <>
       {bubble && !open && (
-        <div className="fixed bottom-24 right-5 z-[60] w-[min(16rem,calc(100vw-2.5rem))] animate-[fadeIn_.4s_ease]">
-          <button
-            onClick={toggleOpen}
-            className="block w-full text-left rounded-2xl bg-white dark:bg-[#1a1a1a] shadow-2xl border border-gray-200 dark:border-gray-800 px-4 py-3 text-sm text-gray-800 dark:text-gray-100 hover:border-[#1428a0] transition-colors"
-          >
-            {t.bubble}
-          </button>
-          <button
-            onClick={dismissBubble}
-            aria-label="Dismiss"
-            className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-gray-800 text-white text-xs leading-none shadow flex items-center justify-center"
-          >
-            ✕
-          </button>
+        <div className="fixed bottom-24 right-5 z-[60] w-[min(17.5rem,calc(100vw-2.5rem))] animate-[fadeIn_.35s_ease]">
+          {/* A chat-style message from the consultant: avatar, name and text
+           * with a speech-bubble tail pointing down toward the button. */}
+          <div className="relative rounded-2xl bg-white dark:bg-[#1a1a1a] shadow-2xl border border-gray-200 dark:border-gray-800">
+            <button
+              onClick={dismissBubble}
+              aria-label="Dismiss"
+              className="absolute -top-2 -right-2 z-10 h-6 w-6 rounded-full bg-gray-800 dark:bg-gray-700 text-white text-xs leading-none shadow flex items-center justify-center"
+            >
+              ✕
+            </button>
+            <button onClick={toggleOpen} className="flex items-start gap-2.5 p-3 pr-4 text-left">
+              <span className="h-8 w-8 shrink-0 rounded-full bg-[#1428a0] text-white text-sm font-bold grid place-items-center shadow">
+                G
+              </span>
+              <span className="min-w-0">
+                <span className="block text-[12px] font-semibold text-gray-900 dark:text-gray-100">
+                  {t.title}
+                </span>
+                <span className="block text-sm text-gray-700 dark:text-gray-300 mt-0.5 leading-snug">
+                  {t.bubble}
+                </span>
+              </span>
+            </button>
+            {/* speech-bubble tail toward the "G" button below */}
+            <span
+              aria-hidden
+              className="absolute -bottom-1.5 right-7 h-3 w-3 rotate-45 bg-white dark:bg-[#1a1a1a] border-b border-r border-gray-200 dark:border-gray-800"
+            />
+          </div>
         </div>
       )}
 
