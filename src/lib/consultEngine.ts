@@ -12,13 +12,30 @@ import type { ConsultPhone } from "./consult";
 export type Locale = "en" | "ru";
 
 type Tier = ConsultPhone["tier"];
-type Use = "camera" | "battery" | "gaming" | "compact" | "big" | "foldable" | "spen" | "water";
+type Use =
+  | "camera"
+  | "selfie"
+  | "battery"
+  | "charging"
+  | "gaming"
+  | "compact"
+  | "big"
+  | "storage"
+  | "fiveg"
+  | "foldable"
+  | "spen"
+  | "water";
 
 type Intent = {
   tier: Tier | null;
   uses: Use[];
   mentioned: ConsultPhone[];
+  newest: boolean;
+  cheapest: boolean;
   greeting: boolean;
+  thanks: boolean;
+  bye: boolean;
+  affirm: boolean;
   hasSignal: boolean;
 };
 
@@ -27,16 +44,38 @@ function norm(s: string): string {
   return ` ${s.toLowerCase().replace(/[^\p{L}\p{N}$₽.\s-]/gu, " ").replace(/\s+/g, " ").trim()} `;
 }
 
-// Aliases people actually type for a model: "s24 ultra", "note 20", "fold 6", "a52".
+// A rough Cyrillic spelling of an English model alias, so "с24 ультра",
+// "нот 20", "фолд 6", "а52" all match too.
+function toCyrillic(a: string): string {
+  return a
+    .replace(/\bultra\b/g, "ультра")
+    .replace(/\bplus\b/g, "плюс")
+    .replace(/\bnote\b/g, "нот")
+    .replace(/\bfold\b/g, "фолд")
+    .replace(/\bflip\b/g, "флип")
+    .replace(/\bedge\b/g, "эйдж")
+    .replace(/\bactive\b/g, "актив")
+    .replace(/\bfe\b/g, "фе")
+    .replace(/\bs(\d)/g, "с$1")
+    .replace(/\ba(\d)/g, "а$1")
+    .replace(/\bm(\d)/g, "м$1")
+    .replace(/\bz\b/g, "з");
+}
+
+// Aliases people actually type for a model: "s24 ultra", "note 20", "fold 6".
 function aliasesFor(p: ConsultPhone): string[] {
   const out = new Set<string>();
   const name = p.name.toLowerCase().replace(/^galaxy\s+/, ""); // "s24 ultra"
   out.add(name);
-  const slug = p.slug.replace(/^galaxy-/, "").replace(/-/g, " "); // "s24 ultra"
-  out.add(slug);
-  // "z fold 6" → also "fold 6"; "z flip 5" → "flip 5"
-  const noZ = name.replace(/^z\s+/, "");
+  out.add(p.slug.replace(/^galaxy-/, "").replace(/-/g, " "));
+  const noZ = name.replace(/^z\s+/, ""); // "z fold 6" → "fold 6"
   if (noZ !== name) out.add(noZ);
+  // Cyrillic variants
+  for (const a of [...out]) {
+    const c = toCyrillic(a);
+    if (c !== a) out.add(c);
+  }
+  out.add(toCyrillic(name).replace(/\bнот\b/, "ноут")); // "ноут 20"
   return [...out].filter((a) => a.length >= 2);
 }
 
@@ -48,44 +87,54 @@ function findMentions(text: string, phones: ConsultPhone[]): ConsultPhone[] {
   entries.sort((x, y) => y.a.length - x.a.length);
 
   let masked = norm(text);
-  const found = new Map<string, ConsultPhone>();
+  const found: { p: ConsultPhone; at: number }[] = [];
   for (const { p, a } of entries) {
-    if (found.has(p.slug)) continue;
+    if (found.some((f) => f.p.slug === p.slug)) continue;
     const idx = masked.indexOf(a);
     if (idx !== -1) {
-      found.set(p.slug, p);
+      found.push({ p, at: idx });
       masked = masked.slice(0, idx) + " ".repeat(a.length) + masked.slice(idx + a.length);
     }
   }
-  // Preserve the order they appear in the original text.
-  const t = norm(text);
-  return [...found.values()].sort(
-    (x, y) => t.indexOf(` ${aliasesFor(x)[0]} `) - t.indexOf(` ${aliasesFor(y)[0]} `)
-  );
+  return found.sort((x, y) => x.at - y.at).map((f) => f.p);
 }
 
-// Rich association layer — many synonyms, slang and colloquial hints (RU + EN)
-// so casual phrasing like "люблю рисовать" or "смотреть фильмы" is understood.
 const USE_PATTERNS: { use: Use; re: RegExp }[] = [
   {
+    use: "selfie",
+    re: /селфи|автопортрет|фронтал|передн(ей|яя) камер|себя снима|для себя|блог|влог|стрим|созвон|видеозвон|selfie|front[- ]?cam|vlog|video call|face/,
+  },
+  {
     use: "camera",
-    re: /камер|фотк|фото|фотогр|снима|съем|съём|снимк|кадр|селфи|автопортрет|портрет|боке|зум|макро|ночн(ой|ая|ые) съ|инстаграм|\bинст[аы]\b|тикток|блог|влог|content|photo|camera|selfie|\bpic\b|picture|shoot|\bshot\b|portrait|bokeh|zoom|macro|instagram|tiktok|\bvlog\b|photograph/,
+    re: /камер|фотк|фото|фотогр|снима|съем|съём|снимк|кадр|боке|зум|макро|ночн(ой|ая|ые) съ|инстаграм|инст[аы]|тикток|content|photo|camera|\bpic\b|picture|shoot|\bshot\b|portrait|bokeh|zoom|macro|instagram|tiktok|photograph/,
   },
   {
     use: "battery",
-    re: /батар|аккум|заряд|автоном|[её]мкост|держит|хватае|надолго|целый день|весь день|на весь день|долго работ|не сад|не разряж|мач|мА|battery|charg|endur|long[- ]?last|all[- ]?day|screen[- ]?time|\bmah\b|\bpower\b/,
+    re: /батар|аккум|заряд(?!к)|автоном|[её]мкост|держит|хватае|надолго|целый день|весь день|на весь день|долго работ|не сад|не разряж| мач |battery|endur|long[- ]?last|all[- ]?day|screen[- ]?time|\bmah\b/,
+  },
+  {
+    use: "charging",
+    re: /быстр(ая|ой|о)? заряд|зарядк|подзаряд|быстро заряж|за час|ватт| вт |fast charg|quick charg|\bwatt\b|\bwt\b|charging speed/,
   },
   {
     use: "gaming",
-    re: /\bигр|поигр|гейм|геймер|пабг|pubg|genshin|геншин|\bcod\b|standoff|стандофф|фортнайт|fortnite|роблокс|roblox|фпс|\bfps\b|тянет игр|не лаг|без лаг|тормоз|мощн|производит|быстр|шустр|\bgame|gaming|performanc|powerful|\bfast\b|smooth|snapdragon|процессор/,
+    re: /игр|поигр|гейм|геймер|пабг|pubg|genshin|геншин|\bcod\b|standoff|стандофф|фортнайт|fortnite|роблокс|roblox|фпс|\bfps\b|не лаг|без лаг|тормоз|мощн|производит|быстр|шустр|\bgame|gaming|performanc|powerful|\bfast\b|smooth|snapdragon|процессор/,
   },
   {
     use: "compact",
-    re: /компакт|маленьк|небольш|миниат|одной рук|в карман|карманн|л[её]гк(ий|ая|ое|еньк)|неболь|small|compact|one[- ]?hand|pocket|\bmini\b|\btiny\b|lightweight/,
+    re: /компакт|маленьк|небольш|миниат|одной рук|в карман|карманн|л[её]гк(ий|ая|ое|еньк)|small|compact|one[- ]?hand|pocket|\bmini\b|\btiny\b|lightweight/,
   },
   {
     use: "big",
-    re: /больш(ой|ая|им|ой)?\s*(экран|дисплей|телефон|диагонал)|огромн|лопат|фаблет|фильм|кино|сериал|ютуб|youtube|нетфликс|netflix|видео|смотреть|читать|чтен|big screen|large (screen|display)|huge|phablet|movie|watch (video|movie)|reading|media/,
+    re: /больш(ой|ая|им)?\s*(экран|дисплей|телефон|диагонал)|огромн|лопат|фаблет|фильм|кино|сериал|ютуб|youtube|нетфликс|netflix|видео|смотреть|читать|чтен|big screen|large (screen|display)|huge|phablet|movie|watch (video|movie)|reading|media/,
+  },
+  {
+    use: "storage",
+    re: /памят|встроен|накопит|гигабайт| гб |терабайт|много места|для файлов|storage|memory|\bgb\b|\btb\b|space/,
+  },
+  {
+    use: "fiveg",
+    re: /5g|5 g|пят(ое|ого) поколени|скоростн(ой|ый) интернет|5[- ]?джи/,
   },
   {
     use: "foldable",
@@ -93,7 +142,7 @@ const USE_PATTERNS: { use: Use; re: RegExp }[] = [
   },
   {
     use: "spen",
-    re: /стилус|\bперо\b|рисова|рису[юеё]|рисуй|рисунок|рисован|порисова|нарисова|черч|черт[иёе]|набросок|скетч|sketch|эскиз|замет|конспект|записыва|запис(ать|и) от руки|подпис|s[- ]?pen|\bspen\b|stylus|\bpen\b|draw|paint|art\b|artist|handwrit|scribble|doodle|note[- ]?tak/,
+    re: /стилус| перо |рисова|рису[юеё]|рисуй|рисунок|рисован|порисова|нарисова|черч|черт[иёе]|набросок|скетч|sketch|эскиз|замет|конспект|записыва|подпис|s[- ]?pen|\bspen\b|stylus|\bpen\b|draw|paint|art\b|artist|handwrit|scribble|doodle|note[- ]?tak/,
   },
   {
     use: "water",
@@ -102,65 +151,90 @@ const USE_PATTERNS: { use: Use; re: RegExp }[] = [
 ];
 
 function detectTier(t: string): Tier | null {
-  // Numeric budget → tier (handles ₽/руб/к/тыс and $ / usd)
   const rub =
-    t.match(/(\d{1,3}(?:[ .]\d{3})+|\d{4,6})\s*(?:руб|₽|\bр\b|rub)/) ||
-    t.match(/(\d{1,3})\s*(?:к|тыс)\b/);
+    t.match(/(\d{1,3}(?:[ .]\d{3})+|\d{4,6})\s*(?:руб|₽|р(?=\s)|rub)/) ||
+    t.match(/(\d{1,3})\s*(?:к|тыс)(?=\s)/);
   const usd = t.match(/\$\s*(\d{2,4})/) || t.match(/(\d{2,4})\s*(?:\$|usd|dollar|доллар)/);
   let priceUsd = 0;
   if (usd) priceUsd = parseInt(usd[1], 10);
   else if (rub) {
     let n = parseInt(rub[1].replace(/[ .]/g, ""), 10);
     if (/к|тыс/.test(rub[0]) && n < 1000) n *= 1000;
-    priceUsd = n / 95; // rough ₽→$ for tier bucketing only
+    priceUsd = n / 95;
   }
   if (priceUsd > 0) {
     if (priceUsd < 320) return "budget";
     if (priceUsd < 720) return "mid";
     return "flagship";
   }
-  // Keyword tiers
   if (/флагман|топ(?:\b|овы)|премиум|лучш|мощнейш|high[- ]?end|flagship|premium|\bbest\b/.test(t)) return "flagship";
   if (/бюджет|дешев|дешёв|недорог|подешевл|эконом|\bcheap|budget|affordable|inexpensive/.test(t)) return "budget";
   if (/средн(?:ий|яя|его|ей)|\bmid\b|mid[- ]?range|middle/.test(t)) return "mid";
   return null;
 }
 
-const GREETING_RE = /^\s*(привет|здравствуй|здаров|хай|hello|hi|hey|yo|доброе|добрый|good (morning|day|evening))\b/i;
+// These run on a normalized (lowercased, punctuation-stripped, trimmed) copy
+// of the last message — no ASCII \b, which does not work with Cyrillic.
+const GREETING_RE = /^(привет|здравствуй|здаров|хай|hello|hi|hey|yo|доброе|добрый|good (morning|day|evening))/;
+const THANKS_RE = /спасиб|благодар|пасиб|спс|thank|thx/;
+const BYE_RE = /^(пока|до свидан|прощай|бывай|bye|goodbye|see ya|see you)/;
+const AFFIRM_RE = /^(да|ага|угу|окей|ок|хорошо|ладно|давай|конечно|yes|yeah|yep|ok|sure|alright)$/;
 
-function parseIntent(text: string, phones: ConsultPhone[]): Intent {
-  const t = norm(text);
+function parseIntent(joined: string, last: string, phones: ConsultPhone[]): Intent {
+  const t = norm(joined);
   const uses: Use[] = [];
   for (const { use, re } of USE_PATTERNS) if (re.test(t)) uses.push(use);
   const tier = detectTier(t);
-  const mentioned = findMentions(text, phones);
-  const greeting = GREETING_RE.test(text.trim());
-  const topical =
-    /телефон|смартфон|phone|galaxy|samsung|самсунг|модел|model|девайс|аппарат|устройств/.test(t);
-  const hasSignal = uses.length > 0 || tier !== null || mentioned.length > 0 || topical;
-  return { tier, uses, mentioned, greeting, hasSignal };
+  const mentioned = findMentions(joined, phones);
+  const newest = /новее|нов(ый|ая|ое|еньк|инк)|свеж|последн|актуальн|latest|newest|recent|\bnew\b/.test(t);
+  const cheapest = /дешевле|подешевл|дешев|дешёв|бюджетн|эконом|cheaper|cheapest|affordable/.test(t);
+  const nl = norm(last).trim();
+  const topical = /телефон|смартфон|phone|galaxy|samsung|самсунг|модел|model|девайс|аппарат|устройств/.test(t);
+  const hasSignal = uses.length > 0 || tier !== null || mentioned.length > 0 || newest || cheapest || topical;
+  return {
+    tier,
+    uses,
+    mentioned,
+    newest,
+    cheapest,
+    greeting: GREETING_RE.test(nl),
+    thanks: THANKS_RE.test(nl),
+    bye: BYE_RE.test(nl),
+    affirm: AFFIRM_RE.test(nl),
+    hasSignal,
+  };
 }
 
 // ── Scoring ───────────────────────────────────────────────────
 function scoreFor(p: ConsultPhone, intent: Intent): number {
   let s = (p.year - 2010) * 3; // recency baseline
   const { uses } = intent;
-  if (uses.includes("battery")) s += p.batteryMah / 350;
   if (uses.includes("camera")) s += p.cameraMp / 6;
+  if (uses.includes("selfie")) s += p.frontMp / 2.5;
+  if (uses.includes("battery")) s += p.batteryMah / 350;
+  if (uses.includes("charging")) s += p.chargingW / 2.5;
   if (uses.includes("gaming")) s += p.tier === "flagship" ? 30 : p.tier === "mid" ? 10 : 0;
   if (uses.includes("compact")) {
     s += p.displayIn ? Math.max(0, (6.6 - p.displayIn) * 14) : 0;
-    s += p.tier === "flagship" ? 16 : p.tier === "mid" ? 7 : 0; // prefer mainstream over rugged/niche
+    s += p.tier === "flagship" ? 16 : p.tier === "mid" ? 7 : 0;
   }
   if (uses.includes("big")) {
     s += p.displayIn * 6;
     s += p.tier === "flagship" ? 12 : p.tier === "mid" ? 5 : 0;
   }
+  if (uses.includes("storage")) s += p.storageGb / 64;
+  if (uses.includes("fiveg")) s += p.fiveG ? 14 : -20;
   if (uses.includes("foldable")) s += p.foldable ? 30 : 0;
   if (uses.includes("spen")) s += p.spen ? 30 : 0;
   if (uses.includes("water")) s += p.water ? 10 : 0;
-  // No specific use → reward the strongest all-rounders (latest flagships).
   if (uses.length === 0) s += p.tier === "flagship" ? 20 : p.tier === "mid" ? 6 : 0;
+  // Mild premium proxy: among otherwise-tied models the pricier (top) variant
+  // edges ahead, so "best phone" lands on the Ultra rather than the base model.
+  // Foldables are excluded so a general "best phone" isn't a niche foldable.
+  s += p.foldable ? 0 : p.priceUsd / 1000;
+  // Refinement modifiers
+  if (intent.newest) s += (p.year - 2010) * 10;
+  if (intent.cheapest) s += p.priceUsd > 0 ? (1200 - p.priceUsd) / 12 : 0;
   return s;
 }
 
@@ -174,78 +248,61 @@ function pick(phones: ConsultPhone[], intent: Intent, limit = 3): ConsultPhone[]
 }
 
 // ── Phrasing ──────────────────────────────────────────────────
-const L = {
-  link: (p: ConsultPhone) => `/phones/${p.slug}`,
-  reasons(p: ConsultPhone, uses: Use[], locale: Locale): string[] {
-    const en = locale === "en";
-    const out: string[] = [];
-    const seen = uses.length ? uses : (["general"] as (Use | "general")[]);
-    for (const u of seen) {
-      if (u === "camera") out.push(en ? `a strong ${p.cameraMp}MP camera` : `сильная камера на ${p.cameraMp} МП`);
-      else if (u === "battery") out.push(en ? `a big ${p.batteryMah} mAh battery` : `ёмкий аккумулятор ${p.batteryMah} мА·ч`);
-      else if (u === "gaming") out.push(en ? `flagship-grade performance` : `флагманская производительность`);
-      else if (u === "compact") out.push(en ? `a compact ${p.displayIn}″ screen` : `компактный экран ${p.displayIn}″`);
-      else if (u === "big") out.push(en ? `a large ${p.displayIn}″ display` : `большой экран ${p.displayIn}″`);
-      else if (u === "foldable") out.push(en ? `a folding design` : `складной корпус`);
-      else if (u === "spen") out.push(en ? `an S Pen that's great for drawing and notes` : `S Pen — удобно рисовать и делать заметки`);
-      else if (u === "water") out.push(en ? `water resistance` : `влагозащита`);
-      else out.push(en ? `it's one of the latest, most capable models` : `это одна из самых свежих и мощных моделей`);
-    }
-    return out.slice(0, 2);
-  },
-};
+const link = (p: ConsultPhone) => `/phones/${p.slug}`;
+
+function descriptor(p: ConsultPhone): string {
+  const price = p.priceUsd > 0 ? `, $${p.priceUsd}` : "";
+  return `${p.name} (${p.year}${price})`;
+}
+
+function reasonsFor(p: ConsultPhone, uses: Use[], locale: Locale): string[] {
+  const en = locale === "en";
+  const out: string[] = [];
+  const list = uses.length ? uses : (["general"] as (Use | "general")[]);
+  for (const u of list) {
+    if (u === "camera") out.push(en ? `a strong ${p.cameraMp}MP camera` : `сильная камера на ${p.cameraMp} МП`);
+    else if (u === "selfie") out.push(en ? `a sharp ${p.frontMp}MP selfie camera` : `чёткая фронталка ${p.frontMp} МП`);
+    else if (u === "battery") out.push(en ? `a big ${p.batteryMah} mAh battery` : `ёмкий аккумулятор ${p.batteryMah} мА·ч`);
+    else if (u === "charging") out.push(en ? `${p.chargingW}W fast charging` : `быстрая зарядка ${p.chargingW} Вт`);
+    else if (u === "gaming") out.push(en ? `flagship-grade performance` : `флагманская производительность`);
+    else if (u === "compact") out.push(en ? `a compact ${p.displayIn}″ screen` : `компактный экран ${p.displayIn}″`);
+    else if (u === "big") out.push(en ? `a large ${p.displayIn}″ display` : `большой экран ${p.displayIn}″`);
+    else if (u === "storage") out.push(en ? `up to ${p.storageGb >= 1024 ? p.storageGb / 1024 + "TB" : p.storageGb + "GB"} storage` : `память до ${p.storageGb >= 1024 ? p.storageGb / 1024 + " ТБ" : p.storageGb + " ГБ"}`);
+    else if (u === "fiveg") out.push(en ? `5G support` : `поддержка 5G`);
+    else if (u === "foldable") out.push(en ? `a folding design` : `складной корпус`);
+    else if (u === "spen") out.push(en ? `an S Pen that's great for drawing and notes` : `S Pen — удобно рисовать и делать заметки`);
+    else if (u === "water") out.push(en ? `water resistance` : `влагозащита`);
+    else out.push(en ? `it's one of the latest, most capable models` : `это одна из самых свежих и мощных моделей`);
+  }
+  return out.slice(0, 2);
+}
 
 function joinList(items: string[], locale: Locale): string {
   if (items.length <= 1) return items[0] ?? "";
   const last = items[items.length - 1];
-  const head = items.slice(0, -1).join(", ");
-  return `${head} ${locale === "en" ? "and" : "и"} ${last}`;
+  return `${items.slice(0, -1).join(", ")} ${locale === "en" ? "and" : "и"} ${last}`;
 }
 
 function recommendReply(intent: Intent, phones: ConsultPhone[], locale: Locale): string {
   const top = pick(phones, intent, 3);
   const best = top[0];
   const en = locale === "en";
-  const reasons = joinList(L.reasons(best, intent.uses, locale), locale);
-  const alts = top.slice(1, 3).map((p) => `${p.name} (${L.link(p)})`);
-
+  const reasons = joinList(reasonsFor(best, intent.uses, locale), locale);
+  const alts = top.slice(1, 3).map((p) => `${p.name} (${link(p)})`);
   let msg = en
-    ? `For that I'd go with the **${best.name}** — ${reasons}. Take a look: ${L.link(best)}.`
-    : `Под такое советую **${best.name}** — ${reasons}. Смотри здесь: ${L.link(best)}.`;
-  if (alts.length) {
-    msg += en ? ` Also worth a look: ${alts.join(", ")}.` : ` Ещё присмотрись: ${alts.join(", ")}.`;
-  }
-  return `${msg}\nGOTO: ${L.link(best)}`;
-}
-
-function compareReply(a: ConsultPhone, b: ConsultPhone, intent: Intent, locale: Locale): string {
-  const en = locale === "en";
-  // Winner: honour requested use if any, else the higher overall score.
-  const winner = scoreFor(a, intent) >= scoreFor(b, intent) ? a : b;
-  const loser = winner === a ? b : a;
-  const diffs: string[] = [];
-  if (winner.year !== loser.year)
-    diffs.push(en ? `it's newer (${winner.year})` : `новее (${winner.year})`);
-  if (winner.batteryMah > loser.batteryMah)
-    diffs.push(en ? `a bigger ${winner.batteryMah} mAh battery` : `батарея больше — ${winner.batteryMah} мА·ч`);
-  if (winner.cameraMp > loser.cameraMp)
-    diffs.push(en ? `a higher-res ${winner.cameraMp}MP camera` : `камера выше — ${winner.cameraMp} МП`);
-  if (winner.spen && !loser.spen) diffs.push(en ? `S Pen support` : `есть S Pen`);
-  const why = joinList(diffs.slice(0, 3), locale) || (en ? `it's the stronger all-rounder` : `он сильнее в целом`);
-
-  const head = en
-    ? `Between the ${a.name} and ${b.name}, I'd pick the **${winner.name}** — ${why}.`
-    : `Из ${a.name} и ${b.name} я бы взял **${winner.name}** — ${why}.`;
-  return `${head} ${L.link(winner)}.\nGOTO: ${L.link(winner)}`;
+    ? `For that I'd go with the **${descriptor(best)}** — ${reasons}. Take a look: ${link(best)}.`
+    : `Под такое советую **${descriptor(best)}** — ${reasons}. Смотри здесь: ${link(best)}.`;
+  if (alts.length) msg += en ? ` Also worth a look: ${alts.join(", ")}.` : ` Ещё присмотрись: ${alts.join(", ")}.`;
+  return `${msg}\nGOTO: ${link(best)}`;
 }
 
 function endorseReply(p: ConsultPhone, intent: Intent, locale: Locale): string {
   const en = locale === "en";
-  const reasons = joinList(L.reasons(p, intent.uses, locale), locale);
+  const reasons = joinList(reasonsFor(p, intent.uses, locale), locale);
   const head = en
-    ? `Yes — the **${p.name}** is a great fit: ${reasons}. Take a look: ${L.link(p)}.`
-    : `Да, **${p.name}** отлично подходит: ${reasons}. Смотри здесь: ${L.link(p)}.`;
-  return `${head}\nGOTO: ${L.link(p)}`;
+    ? `Yes — the **${descriptor(p)}** is a great fit: ${reasons}. Take a look: ${link(p)}.`
+    : `Да, **${descriptor(p)}** отлично подходит: ${reasons}. Смотри здесь: ${link(p)}.`;
+  return `${head}\nGOTO: ${link(p)}`;
 }
 
 function passesFilters(p: ConsultPhone, intent: Intent): boolean {
@@ -254,52 +311,87 @@ function passesFilters(p: ConsultPhone, intent: Intent): boolean {
   return true;
 }
 
+function compareReply(a: ConsultPhone, b: ConsultPhone, intent: Intent, locale: Locale): string {
+  const en = locale === "en";
+  const winner = scoreFor(a, intent) >= scoreFor(b, intent) ? a : b;
+  const loser = winner === a ? b : a;
+  const diffs: string[] = [];
+  if (winner.year !== loser.year) diffs.push(en ? `it's newer (${winner.year})` : `новее (${winner.year})`);
+  if (winner.batteryMah > loser.batteryMah) diffs.push(en ? `a bigger ${winner.batteryMah} mAh battery` : `батарея больше — ${winner.batteryMah} мА·ч`);
+  if (winner.cameraMp > loser.cameraMp) diffs.push(en ? `a higher-res ${winner.cameraMp}MP camera` : `камера выше — ${winner.cameraMp} МП`);
+  if (winner.chargingW > loser.chargingW) diffs.push(en ? `faster ${winner.chargingW}W charging` : `зарядка быстрее — ${winner.chargingW} Вт`);
+  if (winner.spen && !loser.spen) diffs.push(en ? `S Pen support` : `есть S Pen`);
+  const why = joinList(diffs.slice(0, 3), locale) || (en ? `it's the stronger all-rounder` : `он сильнее в целом`);
+  const head = en
+    ? `Between the ${a.name} and ${b.name}, I'd pick the **${winner.name}** — ${why}.`
+    : `Из ${a.name} и ${b.name} я бы взял **${winner.name}** — ${why}.`;
+  return `${head} ${link(winner)}.\nGOTO: ${link(winner)}`;
+}
+
 function singleReply(p: ConsultPhone, locale: Locale): string {
   const en = locale === "en";
   const extras: string[] = [];
-  if (p.spen) extras.push(en ? "S Pen" : "S Pen");
+  if (p.spen) extras.push("S Pen");
   if (p.foldable) extras.push(en ? "folding screen" : "складной экран");
   if (p.water) extras.push(en ? "water resistance" : "влагозащита");
   const tail = extras.length ? (en ? `, plus ${joinList(extras, locale)}` : `, а также ${joinList(extras, locale)}`) : "";
   const body = en
-    ? `The **${p.name}** (${p.releaseDate}) — ${p.displayIn}″ display, ${p.cameraMp}MP camera and ${p.batteryMah} mAh battery${tail}. Full details: ${L.link(p)}.`
-    : `**${p.name}** (${p.releaseDate}) — экран ${p.displayIn}″, камера ${p.cameraMp} МП и батарея ${p.batteryMah} мА·ч${tail}. Все характеристики: ${L.link(p)}.`;
-  return `${body}\nGOTO: ${L.link(p)}`;
+    ? `The **${descriptor(p)}** — ${p.displayIn}″ display, ${p.cameraMp}MP camera and ${p.batteryMah} mAh battery${tail}. Full details: ${link(p)}.`
+    : `**${descriptor(p)}** — экран ${p.displayIn}″, камера ${p.cameraMp} МП и батарея ${p.batteryMah} мА·ч${tail}. Все характеристики: ${link(p)}.`;
+  return `${body}\nGOTO: ${link(p)}`;
 }
 
-const GREET = {
-  en: "Hi! Tell me what matters most — budget, camera, battery, screen size, S Pen or a foldable — and I'll pick the best Galaxy for you.",
-  ru: "Привет! Скажите, что важнее — бюджет, камера, батарея, размер экрана, S Pen или складной — и я подберу лучший Galaxy.",
-};
-const OFFTOPIC = {
-  en: "I only help with choosing Samsung Galaxy phones 🙂 Tell me what you need — camera, battery, budget, size — and I'll recommend one.",
-  ru: "Я помогаю только с выбором смартфонов Samsung Galaxy 🙂 Скажите, что нужно — камера, батарея, бюджет, размер — и я подберу.",
+const SAY = {
+  greet: {
+    en: "Hi! Tell me what matters most — budget, camera, battery, screen size, gaming, S Pen or a foldable — and I'll pick the best Galaxy for you.",
+    ru: "Привет! Скажите, что важнее — бюджет, камера, батарея, размер экрана, игры, S Pen или складной — и я подберу лучший Galaxy.",
+  },
+  thanks: {
+    en: "Happy to help! 🙂 Ask me anytime — I can also compare two models or find one for a specific budget.",
+    ru: "Рад помочь! 🙂 Обращайтесь — ещё могу сравнить две модели или подобрать под конкретный бюджет.",
+  },
+  bye: {
+    en: "Good luck with your choice! 👋 Come back anytime.",
+    ru: "Удачи с выбором! 👋 Заходите ещё.",
+  },
+  affirm: {
+    en: "Great! What matters most to you — camera, battery, gaming, screen size or budget?",
+    ru: "Отлично! Что для вас важнее всего — камера, батарея, игры, размер экрана или бюджет?",
+  },
+  offtopic: {
+    en: "I only help with choosing Samsung Galaxy phones 🙂 Tell me what you need — camera, battery, budget, size — and I'll recommend one.",
+    ru: "Я помогаю только с выбором смартфонов Samsung Galaxy 🙂 Скажите, что нужно — камера, батарея, бюджет, размер — и я подберу.",
+  },
 };
 
-/** Produce a consultant reply for the user's latest message. Always answers. */
-export function answerLocal(userText: string, locale: Locale, phones: ConsultPhone[]): string {
-  const intent = parseIntent(userText || "", phones);
+/** Produce a consultant reply. `userTexts` are the recent user messages
+ * (oldest→newest); the last one drives greeting/thanks, all of them together
+ * drive the criteria so short follow-ups like "а подешевле?" still work. */
+export function answerLocal(userTexts: string[], locale: Locale, phones: ConsultPhone[]): string {
+  const recent = userTexts.slice(-3);
+  const last = recent[recent.length - 1] ?? "";
+  const joined = recent.join(" \n ");
+  const intent = parseIntent(joined, last, phones);
 
-  // Two or more named models → comparison.
   if (intent.mentioned.length >= 2) {
     return compareReply(intent.mentioned[0], intent.mentioned[1], intent, locale);
   }
   if (intent.mentioned.length === 1) {
     const p = intent.mentioned[0];
-    // Named model + criteria → confirm it fits, or recommend a better match.
-    if (intent.uses.length > 0) {
+    const otherSignal = intent.uses.length > 0 || intent.tier !== null || intent.newest || intent.cheapest;
+    if (otherSignal) {
       if (passesFilters(p, intent)) return endorseReply(p, intent, locale);
       return recommendReply(intent, phones, locale);
     }
-    // Just a model name → tell them about it.
     return singleReply(p, locale);
   }
-  // Any real signal (criteria and/or a model + criteria) → recommend.
-  if (intent.hasSignal) {
+  if (intent.uses.length > 0 || intent.tier !== null || intent.newest || intent.cheapest) {
     return recommendReply(intent, phones, locale);
   }
-  // Pure greeting.
-  if (intent.greeting) return GREET[locale];
-  // Nothing to go on.
-  return OFFTOPIC[locale];
+  if (intent.thanks) return SAY.thanks[locale];
+  if (intent.bye) return SAY.bye[locale];
+  if (intent.greeting) return SAY.greet[locale];
+  if (intent.affirm) return SAY.affirm[locale];
+  if (intent.hasSignal) return recommendReply(intent, phones, locale);
+  return SAY.offtopic[locale];
 }

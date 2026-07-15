@@ -9,6 +9,11 @@ export type ConsultPhone = {
   tier: "flagship" | "mid" | "budget";
   batteryMah: number;
   cameraMp: number;
+  frontMp: number;
+  chargingW: number;
+  storageGb: number;
+  priceUsd: number;
+  fiveG: boolean;
   displayIn: number;
   spen: boolean;
   foldable: boolean;
@@ -31,6 +36,17 @@ function firstNum(re: RegExp, s?: string): number {
   return m ? parseFloat(m[1].replace(/,/g, "")) : 0;
 }
 
+/** Largest storage capacity in GB, understanding "256 / 512 GB / 1 TB". */
+function maxStorageGb(s?: string): number {
+  if (!s) return 0;
+  let max = 0;
+  for (const m of s.matchAll(/(\d[\d.,]*)\s*(TB|GB)/gi)) {
+    const n = parseFloat(m[1].replace(/,/g, "")) * (/tb/i.test(m[2]) ? 1024 : 1);
+    if (n > max) max = n;
+  }
+  return max;
+}
+
 export function getConsultPhones(): ConsultPhone[] {
   return getAllPhones()
     .filter((p) => p.image)
@@ -45,6 +61,14 @@ export function getConsultPhones(): ConsultPhone[] {
       // The main sensor is the leading number, e.g. "108 + 12 + 12" → 108
       // (older "…, N MP" matching grabbed the smallest/last sensor instead).
       cameraMp: firstNum(/(\d[\d,]*)/, p.specs.mainCamera),
+      frontMp: firstNum(/(\d[\d,]*)/, p.specs.frontCamera),
+      chargingW: firstNum(/(\d[\d.,]*)\s*W/i, p.specs.charging),
+      storageGb: maxStorageGb(p.specs.storage),
+      priceUsd: firstNum(/\$\s*(\d[\d,]*)/, p.specs.launchPrice),
+      fiveG:
+        /5g/i.test(p.name) ||
+        /5g/i.test(p.specs.chipset) ||
+        (FLAGSHIP.includes(p.series) && p.releaseYear >= 2020),
       displayIn: firstNum(/(\d+(?:\.\d+)?)/, p.specs.display),
       spen:
         p.series === "Galaxy Note" ||
