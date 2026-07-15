@@ -283,26 +283,59 @@ function joinList(items: string[], locale: Locale): string {
   return `${items.slice(0, -1).join(", ")} ${locale === "en" ? "and" : "и"} ${last}`;
 }
 
+function tierWord(p: ConsultPhone, locale: Locale): string {
+  const en = locale === "en";
+  if (p.tier === "flagship") return en ? "a top-tier flagship" : "флагман высшего уровня";
+  if (p.tier === "mid") return en ? "a solid mid-ranger" : "крепкий представитель среднего класса";
+  return en ? "a budget-friendly pick" : "доступная модель без переплат";
+}
+
+// A short spec highlight line for the chosen phone.
+function specLine(p: ConsultPhone, locale: Locale): string {
+  const en = locale === "en";
+  return en
+    ? `a ${p.displayIn}″ screen, a ${p.cameraMp}MP main camera and a ${p.batteryMah} mAh battery`
+    : `экран ${p.displayIn}″, основная камера ${p.cameraMp} МП и батарея ${p.batteryMah} мА·ч`;
+}
+
+// Who this phone suits — one warm sentence based on its stand-out traits.
+function suitsSentence(p: ConsultPhone, locale: Locale): string {
+  const en = locale === "en";
+  if (p.foldable) return en ? "It's for people who want a big-screen experience that still folds into a pocket." : "Он для тех, кто хочет большой экран, который складывается и помещается в карман.";
+  if (p.spen) return en ? "With the built-in S Pen it's a great pick for drawing, notes and getting things done." : "Со встроенным S Pen это отличный выбор для рисования, заметок и работы.";
+  if (p.tier === "flagship") return en ? "It's a powerful everyday phone that will stay fast for years to come." : "Это мощный аппарат на каждый день, которого хватит на годы вперёд.";
+  if (p.tier === "mid") return en ? "It strikes a nice balance between price and features for everyday use." : "Он хорошо балансирует цену и возможности для повседневных задач.";
+  return en ? "It covers the essentials well without stretching your budget." : "Он закрывает всё нужное и при этом не бьёт по кошельку.";
+}
+
+function altsSentence(alts: ConsultPhone[], locale: Locale): string {
+  if (alts.length === 0) return "";
+  const en = locale === "en";
+  const list = joinList(alts.map((p) => `${p.name} (${link(p)})`), locale);
+  return en
+    ? ` If you'd like to compare, ${alts.length > 1 ? "two" : "another"} option${alts.length > 1 ? "s" : ""} worth a look ${alts.length > 1 ? "are" : "is"} ${list}.`
+    : ` Если хочется сравнить, присмотритесь ещё к ${list}.`;
+}
+
 function recommendReply(intent: Intent, phones: ConsultPhone[], locale: Locale): string {
   const top = pick(phones, intent, 3);
   const best = top[0];
   const en = locale === "en";
   const reasons = joinList(reasonsFor(best, intent.uses, locale), locale);
-  const alts = top.slice(1, 3).map((p) => `${p.name} (${link(p)})`);
-  let msg = en
-    ? `For that I'd go with the **${descriptor(best)}** — ${reasons}. Take a look: ${link(best)}.`
-    : `Под такое советую **${descriptor(best)}** — ${reasons}. Смотри здесь: ${link(best)}.`;
-  if (alts.length) msg += en ? ` Also worth a look: ${alts.join(", ")}.` : ` Ещё присмотрись: ${alts.join(", ")}.`;
+  const alts = top.slice(1, 3);
+  const msg = en
+    ? `Good question! For that I'd go with the **${descriptor(best)}**. You'll get ${reasons} — exactly what you're after. Overall it's ${tierWord(best, locale)} with ${specLine(best, locale)}. ${suitsSentence(best, locale)}${altsSentence(alts, locale)} You can open its full page here: ${link(best)}.`
+    : `Хороший вопрос! Под такое я бы посоветовал **${descriptor(best)}**. Вас порадует ${reasons} — как раз то, что вам нужно. В целом это ${tierWord(best, locale)}: ${specLine(best, locale)}. ${suitsSentence(best, locale)}${altsSentence(alts, locale)} Открыть страницу с полными характеристиками можно здесь: ${link(best)}.`;
   return `${msg}\nGOTO: ${link(best)}`;
 }
 
 function endorseReply(p: ConsultPhone, intent: Intent, locale: Locale): string {
   const en = locale === "en";
   const reasons = joinList(reasonsFor(p, intent.uses, locale), locale);
-  const head = en
-    ? `Yes — the **${descriptor(p)}** is a great fit: ${reasons}. Take a look: ${link(p)}.`
-    : `Да, **${descriptor(p)}** отлично подходит: ${reasons}. Смотри здесь: ${link(p)}.`;
-  return `${head}\nGOTO: ${link(p)}`;
+  const msg = en
+    ? `Yes, great choice — the **${descriptor(p)}** is a great fit for that. You'll get ${reasons}, which is just what you mentioned. It's ${tierWord(p, locale)} with ${specLine(p, locale)}. ${suitsSentence(p, locale)} Here's its full page: ${link(p)}.`
+    : `Да, отличный выбор — **${descriptor(p)}** под это подходит прекрасно. Вы получите ${reasons} — ровно то, о чём вы сказали. Это ${tierWord(p, locale)}: ${specLine(p, locale)}. ${suitsSentence(p, locale)} Вот его полная страница: ${link(p)}.`;
+  return `${msg}\nGOTO: ${link(p)}`;
 }
 
 function passesFilters(p: ConsultPhone, intent: Intent): boolean {
@@ -322,23 +355,23 @@ function compareReply(a: ConsultPhone, b: ConsultPhone, intent: Intent, locale: 
   if (winner.chargingW > loser.chargingW) diffs.push(en ? `faster ${winner.chargingW}W charging` : `зарядка быстрее — ${winner.chargingW} Вт`);
   if (winner.spen && !loser.spen) diffs.push(en ? `S Pen support` : `есть S Pen`);
   const why = joinList(diffs.slice(0, 3), locale) || (en ? `it's the stronger all-rounder` : `он сильнее в целом`);
-  const head = en
-    ? `Between the ${a.name} and ${b.name}, I'd pick the **${winner.name}** — ${why}.`
-    : `Из ${a.name} и ${b.name} я бы взял **${winner.name}** — ${why}.`;
-  return `${head} ${link(winner)}.\nGOTO: ${link(winner)}`;
+  const msg = en
+    ? `Both are strong phones, but I'd pick the **${winner.name}** — ${why}. The ${loser.name} is still a good phone, yet the ${winner.name} comes out ahead for most people. On paper the winner gives you ${specLine(winner, locale)}. Here's its page so you can dive into the details: ${link(winner)}.`
+    : `Обе модели сильные, но я бы взял **${winner.name}** — ${why}. ${loser.name} тоже хорош, но ${winner.name} в большинстве сценариев ощутимо выигрывает. По характеристикам у него ${specLine(winner, locale)}. Вот его страница, чтобы посмотреть детали: ${link(winner)}.`;
+  return `${msg}\nGOTO: ${link(winner)}`;
 }
 
 function singleReply(p: ConsultPhone, locale: Locale): string {
   const en = locale === "en";
   const extras: string[] = [];
   if (p.spen) extras.push("S Pen");
-  if (p.foldable) extras.push(en ? "folding screen" : "складной экран");
+  if (p.foldable) extras.push(en ? "a folding screen" : "складной экран");
   if (p.water) extras.push(en ? "water resistance" : "влагозащита");
-  const tail = extras.length ? (en ? `, plus ${joinList(extras, locale)}` : `, а также ${joinList(extras, locale)}`) : "";
-  const body = en
-    ? `The **${descriptor(p)}** — ${p.displayIn}″ display, ${p.cameraMp}MP camera and ${p.batteryMah} mAh battery${tail}. Full details: ${link(p)}.`
-    : `**${descriptor(p)}** — экран ${p.displayIn}″, камера ${p.cameraMp} МП и батарея ${p.batteryMah} мА·ч${tail}. Все характеристики: ${link(p)}.`;
-  return `${body}\nGOTO: ${link(p)}`;
+  const tail = extras.length ? (en ? ` It also has ${joinList(extras, locale)}.` : ` Также есть ${joinList(extras, locale)}.`) : "";
+  const msg = en
+    ? `The **${descriptor(p)}** is ${tierWord(p, locale)} from ${p.releaseDate}. It has ${specLine(p, locale)}.${tail} ${suitsSentence(p, locale)} You can read its full specs and story here: ${link(p)}.`
+    : `**${descriptor(p)}** — это ${tierWord(p, locale)}, вышел в ${p.year} году. У него ${specLine(p, locale)}.${tail} ${suitsSentence(p, locale)} Полные характеристики и историю модели можно посмотреть здесь: ${link(p)}.`;
+  return `${msg}\nGOTO: ${link(p)}`;
 }
 
 const SAY = {
