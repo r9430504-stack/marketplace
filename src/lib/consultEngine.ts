@@ -274,12 +274,20 @@ function scoreFor(p: ConsultPhone, intent: Intent): number {
   return s;
 }
 
+/** Never recommend a phone older than 7 years. */
+export function isRecommendable(p: ConsultPhone): boolean {
+  return new Date().getFullYear() - p.year <= 7;
+}
+
 function pick(phones: ConsultPhone[], intent: Intent, limit = 3): ConsultPhone[] {
-  let pool = intent.tier ? phones.filter((p) => p.tier === intent.tier) : [...phones];
+  // Only recommend phones that are at most 7 years old.
+  const recent = phones.filter(isRecommendable);
+  let pool = intent.tier ? recent.filter((p) => p.tier === intent.tier) : [...recent];
   if (intent.uses.includes("foldable")) pool = pool.filter((p) => p.foldable);
   if (intent.uses.includes("spen")) pool = pool.filter((p) => p.spen);
-  if (pool.length === 0) pool = intent.tier ? phones.filter((p) => p.tier === intent.tier) : [...phones];
-  if (pool.length === 0) pool = [...phones];
+  if (pool.length === 0) pool = intent.tier ? recent.filter((p) => p.tier === intent.tier) : [...recent];
+  if (pool.length === 0) pool = [...recent];
+  if (pool.length === 0) pool = [...phones]; // ultimate safety net
   return pool.sort((a, b) => scoreFor(b, intent) - scoreFor(a, intent)).slice(0, limit);
 }
 
@@ -337,6 +345,11 @@ function specLine(p: ConsultPhone, locale: Locale): string {
 // Who this phone suits — one warm sentence based on its stand-out traits.
 function suitsSentence(p: ConsultPhone, locale: Locale): string {
   const en = locale === "en";
+  // Never frame a 7+ year-old phone as a phone to buy today.
+  if (!isRecommendable(p))
+    return en
+      ? "It's an older model now — worth knowing for its place in Galaxy history rather than as a phone to buy today."
+      : "Это уже устаревшая модель — интересна скорее как часть истории Galaxy, чем как телефон для покупки сегодня.";
   if (p.foldable) return en ? "It's for people who want a big-screen experience that still folds into a pocket." : "Он для тех, кто хочет большой экран, который складывается и помещается в карман.";
   if (p.spen) return en ? "With the built-in S Pen it's a great pick for drawing, notes and getting things done." : "Со встроенным S Pen это отличный выбор для рисования, заметок и работы.";
   if (p.tier === "flagship") return en ? "It's a powerful everyday phone that will stay fast for years to come." : "Это мощный аппарат на каждый день, которого хватит на годы вперёд.";
@@ -447,7 +460,9 @@ export function answerLocal(userTexts: string[], locale: Locale, phones: Consult
     const p = intent.mentioned[0];
     const otherSignal = intent.uses.length > 0 || intent.tier !== null || intent.newest || intent.cheapest;
     if (otherSignal) {
-      if (passesFilters(p, intent)) return endorseReply(p, intent, locale);
+      // Only endorse the named model if it fits AND isn't older than 7 years;
+      // otherwise suggest a current model instead of recommending an old one.
+      if (passesFilters(p, intent) && isRecommendable(p)) return endorseReply(p, intent, locale);
       return recommendReply(intent, phones, locale);
     }
     return singleReply(p, locale);
