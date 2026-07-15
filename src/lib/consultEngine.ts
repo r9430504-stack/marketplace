@@ -414,14 +414,14 @@ function pick(phones: ConsultPhone[], intent: Intent, limit = 3): ConsultPhone[]
     const withinBudget = recent.filter((p) => p.currentUsd > 0 && p.currentUsd <= intent.budgetUsd * 1.12);
     if (withinBudget.length) recent = withinBudget;
   }
-  // "Powerful within a budget" → don't lock to a price tier; rank every phone in
-  // budget by capability so an affordable ex-flagship can win. Otherwise keep
-  // the requested tier.
-  const valueFlagship = intent.power && intent.budgetUsd > 0;
-  let pool = intent.tier && !valueFlagship ? recent.filter((p) => p.tier === intent.tier) : [...recent];
+  // Whenever a budget is set, consider ALL models that fit that price (don't
+  // lock to a class), so an affordable ex-flagship competes with new budget
+  // phones and the best value wins. Only lock to a tier when no budget is given.
+  const budgetRanking = intent.budgetUsd > 0;
+  let pool = intent.tier && !budgetRanking ? recent.filter((p) => p.tier === intent.tier) : [...recent];
   if (intent.uses.includes("foldable")) pool = pool.filter((p) => p.foldable);
   if (intent.uses.includes("spen")) pool = pool.filter((p) => p.spen);
-  if (pool.length === 0) pool = intent.tier && !valueFlagship ? recent.filter((p) => p.tier === intent.tier) : [...recent];
+  if (pool.length === 0) pool = intent.tier && !budgetRanking ? recent.filter((p) => p.tier === intent.tier) : [...recent];
   if (pool.length === 0) pool = [...recent];
   if (pool.length === 0) pool = [...phones]; // ultimate safety net
   return pool.sort((a, b) => scoreFor(b, intent) - scoreFor(a, intent)).slice(0, limit);
