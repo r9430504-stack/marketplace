@@ -56,7 +56,7 @@ export default function AdSlot({
           data-full-width-responsive="true"
         />
       ) : (
-        <div className="flex items-center justify-center h-24 rounded-xl border border-dashed border-gray-300 text-xs text-gray-500 bg-gray-50">
+        <div className="flex items-center justify-center h-24 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 text-xs text-gray-500 bg-gray-50 dark:bg-white/5">
           AdSense ad space
         </div>
       )}
