@@ -1,12 +1,34 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { localeFromPathname } from "@/lib/i18n";
 import type { ConsultPhone } from "@/lib/consult";
 
 type ChatMsg = { role: "user" | "assistant"; content: string };
+
+/** Reveal `text` character-by-character (typewriter) while `active`. Splits by
+ * code points so emoji aren't cut in half. */
+function useTypewriter(text: string, active: boolean, speed = 38) {
+  const chars = useMemo(() => [...text], [text]);
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    if (!active) {
+      setN(0);
+      return;
+    }
+    setN(0);
+    let i = 0;
+    const id = window.setInterval(() => {
+      i += 1;
+      setN(i);
+      if (i >= chars.length) window.clearInterval(id);
+    }, speed);
+    return () => window.clearInterval(id);
+  }, [chars, active, speed]);
+  return { text: chars.slice(0, n).join(""), done: n >= chars.length };
+}
 
 const T = {
   en: {
@@ -95,6 +117,9 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
     } catch {}
   };
 
+  // Type the invitation out slowly, like the consultant is writing it.
+  const typed = useTypewriter(t.bubble, bubble && !open);
+
   const toggleOpen = () => {
     dismissBubble();
     setOpen((o) => !o);
@@ -160,8 +185,11 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
                 <span className="block text-[12px] font-semibold text-gray-900 dark:text-gray-100">
                   {t.title}
                 </span>
-                <span className="block text-sm text-gray-700 dark:text-gray-300 mt-0.5 leading-snug">
-                  {t.bubble}
+                <span className="block text-sm text-gray-700 dark:text-gray-300 mt-0.5 leading-snug min-h-[1.25rem]">
+                  {typed.text}
+                  {!typed.done && (
+                    <span className="ml-0.5 inline-block w-1.5 h-3.5 -mb-0.5 bg-[#1428a0] dark:bg-blue-400 animate-pulse align-middle" />
+                  )}
                 </span>
               </span>
             </button>
