@@ -163,7 +163,7 @@ export default async function PhonePage({
             {phone.keyFeatures.map((f) => (
               <span
                 key={f}
-                className="text-xs font-medium px-3 py-1.5 rounded-full bg-[#eef1fb] text-[#1428a0] border border-[#dbe1f6]"
+                className="text-xs font-medium px-3 py-1.5 rounded-full bg-[#eef1fb] text-[#1428a0] border border-[#dbe1f6] dark:bg-[#1b2338] dark:text-blue-300 dark:border-[#2b3a5e]"
               >
                 {f}
               </span>
