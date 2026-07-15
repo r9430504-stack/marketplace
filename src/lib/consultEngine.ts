@@ -64,15 +64,41 @@ function findMentions(text: string, phones: ConsultPhone[]): ConsultPhone[] {
   );
 }
 
+// Rich association layer — many synonyms, slang and colloquial hints (RU + EN)
+// so casual phrasing like "люблю рисовать" or "смотреть фильмы" is understood.
 const USE_PATTERNS: { use: Use; re: RegExp }[] = [
-  { use: "camera", re: /камер|фото|съем|съём|снима|селфи|photo|camera|selfie|photograph/ },
-  { use: "battery", re: /батар|аккум|заряд|автоном|battery|charg|endurance|long[- ]?last/ },
-  { use: "gaming", re: /игр|гейм|pubg|genshin|\bcod\b|фпс|\bfps\b|game|gaming|performanc|производит|мощн|быстр|flagship|snapdragon/ },
-  { use: "compact", re: /компакт|маленьк|небольш|одной рук|small|compact|one[- ]?hand|pocket|mini/ },
-  { use: "big", re: /большой экран|больш(ой|им) диспл|большой телефон|big screen|large screen|huge|phablet/ },
-  { use: "foldable", re: /склад|раскладушк|гибк|book|раскрыв|\bfold|\bflip|foldable/ },
-  { use: "spen", re: /стилус|перо|\bручк|рисова|замет|\bs[- ]?pen\b|\bspen\b|stylus|\bpen\b|note[- ]?tak/ },
-  { use: "water", re: /влаг|водонепрониц|водозащ|ip6[78]|water|waterproof|dust/ },
+  {
+    use: "camera",
+    re: /камер|фотк|фото|фотогр|снима|съем|съём|снимк|кадр|селфи|автопортрет|портрет|боке|зум|макро|ночн(ой|ая|ые) съ|инстаграм|\bинст[аы]\b|тикток|блог|влог|content|photo|camera|selfie|\bpic\b|picture|shoot|\bshot\b|portrait|bokeh|zoom|macro|instagram|tiktok|\bvlog\b|photograph/,
+  },
+  {
+    use: "battery",
+    re: /батар|аккум|заряд|автоном|[её]мкост|держит|хватае|надолго|целый день|весь день|на весь день|долго работ|не сад|не разряж|мач|мА|battery|charg|endur|long[- ]?last|all[- ]?day|screen[- ]?time|\bmah\b|\bpower\b/,
+  },
+  {
+    use: "gaming",
+    re: /\bигр|поигр|гейм|геймер|пабг|pubg|genshin|геншин|\bcod\b|standoff|стандофф|фортнайт|fortnite|роблокс|roblox|фпс|\bfps\b|тянет игр|не лаг|без лаг|тормоз|мощн|производит|быстр|шустр|\bgame|gaming|performanc|powerful|\bfast\b|smooth|snapdragon|процессор/,
+  },
+  {
+    use: "compact",
+    re: /компакт|маленьк|небольш|миниат|одной рук|в карман|карманн|л[её]гк(ий|ая|ое|еньк)|неболь|small|compact|one[- ]?hand|pocket|\bmini\b|\btiny\b|lightweight/,
+  },
+  {
+    use: "big",
+    re: /больш(ой|ая|им|ой)?\s*(экран|дисплей|телефон|диагонал)|огромн|лопат|фаблет|фильм|кино|сериал|ютуб|youtube|нетфликс|netflix|видео|смотреть|читать|чтен|big screen|large (screen|display)|huge|phablet|movie|watch (video|movie)|reading|media/,
+  },
+  {
+    use: "foldable",
+    re: /склад|раскладушк|раскладн|гибк|книжк|раскрыв|перегиб|трансформ|\bfold|\bflip|foldable|clamshell|book[- ]?style/,
+  },
+  {
+    use: "spen",
+    re: /стилус|\bперо\b|рисова|рису[юеё]|рисуй|рисунок|рисован|порисова|нарисова|черч|черт[иёе]|набросок|скетч|sketch|эскиз|замет|конспект|записыва|запис(ать|и) от руки|подпис|s[- ]?pen|\bspen\b|stylus|\bpen\b|draw|paint|art\b|artist|handwrit|scribble|doodle|note[- ]?tak/,
+  },
+  {
+    use: "water",
+    re: /влаг|водонепрониц|водозащ|водостойк|не боится вод|не боюсь вод|дожд|бассейн|под водой|ip6[78]|water|waterproof|water[- ]?resist|\bdust\b|splash|\brain\b|\bpool\b/,
+  },
 ];
 
 function detectTier(t: string): Tier | null {
@@ -122,8 +148,14 @@ function scoreFor(p: ConsultPhone, intent: Intent): number {
   if (uses.includes("battery")) s += p.batteryMah / 350;
   if (uses.includes("camera")) s += p.cameraMp / 6;
   if (uses.includes("gaming")) s += p.tier === "flagship" ? 30 : p.tier === "mid" ? 10 : 0;
-  if (uses.includes("compact")) s += p.displayIn ? Math.max(0, (6.6 - p.displayIn) * 14) : 0;
-  if (uses.includes("big")) s += p.displayIn * 6;
+  if (uses.includes("compact")) {
+    s += p.displayIn ? Math.max(0, (6.6 - p.displayIn) * 14) : 0;
+    s += p.tier === "flagship" ? 16 : p.tier === "mid" ? 7 : 0; // prefer mainstream over rugged/niche
+  }
+  if (uses.includes("big")) {
+    s += p.displayIn * 6;
+    s += p.tier === "flagship" ? 12 : p.tier === "mid" ? 5 : 0;
+  }
   if (uses.includes("foldable")) s += p.foldable ? 30 : 0;
   if (uses.includes("spen")) s += p.spen ? 30 : 0;
   if (uses.includes("water")) s += p.water ? 10 : 0;
@@ -155,7 +187,7 @@ const L = {
       else if (u === "compact") out.push(en ? `a compact ${p.displayIn}″ screen` : `компактный экран ${p.displayIn}″`);
       else if (u === "big") out.push(en ? `a large ${p.displayIn}″ display` : `большой экран ${p.displayIn}″`);
       else if (u === "foldable") out.push(en ? `a folding design` : `складной корпус`);
-      else if (u === "spen") out.push(en ? `built-in S Pen support` : `поддержка S Pen`);
+      else if (u === "spen") out.push(en ? `an S Pen that's great for drawing and notes` : `S Pen — удобно рисовать и делать заметки`);
       else if (u === "water") out.push(en ? `water resistance` : `влагозащита`);
       else out.push(en ? `it's one of the latest, most capable models` : `это одна из самых свежих и мощных моделей`);
     }
@@ -207,6 +239,21 @@ function compareReply(a: ConsultPhone, b: ConsultPhone, intent: Intent, locale: 
   return `${head} ${L.link(winner)}.\nGOTO: ${L.link(winner)}`;
 }
 
+function endorseReply(p: ConsultPhone, intent: Intent, locale: Locale): string {
+  const en = locale === "en";
+  const reasons = joinList(L.reasons(p, intent.uses, locale), locale);
+  const head = en
+    ? `Yes — the **${p.name}** is a great fit: ${reasons}. Take a look: ${L.link(p)}.`
+    : `Да, **${p.name}** отлично подходит: ${reasons}. Смотри здесь: ${L.link(p)}.`;
+  return `${head}\nGOTO: ${L.link(p)}`;
+}
+
+function passesFilters(p: ConsultPhone, intent: Intent): boolean {
+  if (intent.uses.includes("foldable") && !p.foldable) return false;
+  if (intent.uses.includes("spen") && !p.spen) return false;
+  return true;
+}
+
 function singleReply(p: ConsultPhone, locale: Locale): string {
   const en = locale === "en";
   const extras: string[] = [];
@@ -237,9 +284,15 @@ export function answerLocal(userText: string, locale: Locale, phones: ConsultPho
   if (intent.mentioned.length >= 2) {
     return compareReply(intent.mentioned[0], intent.mentioned[1], intent, locale);
   }
-  // A single named model with no other criteria → tell them about it.
-  if (intent.mentioned.length === 1 && intent.uses.length === 0 && intent.tier === null) {
-    return singleReply(intent.mentioned[0], locale);
+  if (intent.mentioned.length === 1) {
+    const p = intent.mentioned[0];
+    // Named model + criteria → confirm it fits, or recommend a better match.
+    if (intent.uses.length > 0) {
+      if (passesFilters(p, intent)) return endorseReply(p, intent, locale);
+      return recommendReply(intent, phones, locale);
+    }
+    // Just a model name → tell them about it.
+    return singleReply(p, locale);
   }
   // Any real signal (criteria and/or a model + criteria) → recommend.
   if (intent.hasSignal) {
