@@ -55,15 +55,37 @@
 }
 
 /* First-visit welcome: soft ambient Gemini glow around the viewport edges
- * (blue on the left, purple on the right) — no hard border line. */
+ * (blue on the left, purple on the right). Two blurred colour "blobs" slowly
+ * drift, scale and breathe so the light keeps moving and floating — the way
+ * Gemini looks while it is thinking — instead of just pulsing opacity. */
 .gemini-glow {
+  overflow: hidden;
   background:
-    radial-gradient(75% 55% at 12% 100%, rgba(66, 133, 244, 0.6), transparent 72%),
-    radial-gradient(75% 55% at 88% 100%, rgba(155, 114, 203, 0.6), transparent 72%),
-    radial-gradient(55% 45% at 0% 22%, rgba(66, 133, 244, 0.35), transparent 70%),
-    radial-gradient(55% 45% at 100% 22%, rgba(155, 114, 203, 0.35), transparent 70%),
-    radial-gradient(60% 30% at 50% 0%, rgba(120, 130, 210, 0.22), transparent 70%);
-  animation: geminiGlow 3.2s ease-in-out infinite;
+    radial-gradient(55% 45% at 0% 22%, rgba(66, 133, 244, 0.28), transparent 70%),
+    radial-gradient(55% 45% at 100% 22%, rgba(155, 114, 203, 0.28), transparent 70%),
+    radial-gradient(60% 30% at 50% 0%, rgba(120, 130, 210, 0.18), transparent 70%);
+  animation: geminiGlow 4s ease-in-out infinite;
+}
+.gemini-glow::before,
+.gemini-glow::after {
+  content: "";
+  position: absolute;
+  width: 95%;
+  height: 75%;
+  bottom: -22%;
+  border-radius: 50%;
+  filter: blur(48px);
+  will-change: transform, opacity;
+}
+.gemini-glow::before {
+  left: -18%;
+  background: radial-gradient(circle, rgba(66, 133, 244, 0.6), transparent 62%);
+  animation: geminiDriftA 7s ease-in-out infinite;
+}
+.gemini-glow::after {
+  right: -18%;
+  background: radial-gradient(circle, rgba(155, 114, 203, 0.6), transparent 62%);
+  animation: geminiDriftB 8.5s ease-in-out infinite;
 }
 @keyframes geminiGlow {
   0%,
@@ -74,6 +96,36 @@
     opacity: 1;
   }
 }
+@keyframes geminiDriftA {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.85;
+  }
+  33% {
+    transform: translate(14%, -20%) scale(1.18);
+    opacity: 1;
+  }
+  66% {
+    transform: translate(-8%, -6%) scale(0.92);
+    opacity: 0.8;
+  }
+}
+@keyframes geminiDriftB {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.85;
+  }
+  33% {
+    transform: translate(-16%, -12%) scale(0.9);
+    opacity: 0.8;
+  }
+  66% {
+    transform: translate(8%, -24%) scale(1.2);
+    opacity: 1;
+  }
+}
 .gemini-text {
   background: linear-gradient(135deg, #8ab4f8, #c58af9, #f28b82);
   -webkit-background-clip: text;
@@ -81,7 +133,9 @@
   color: transparent;
 }
 @media (prefers-reduced-motion: reduce) {
-  .gemini-glow {
+  .gemini-glow,
+  .gemini-glow::before,
+  .gemini-glow::after {
     animation: none;
   }
 }
