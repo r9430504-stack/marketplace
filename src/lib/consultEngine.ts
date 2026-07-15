@@ -107,63 +107,63 @@ function findMentions(text: string, phones: ConsultPhone[]): ConsultPhone[] {
 const USE_PATTERNS: { use: Use; re: RegExp }[] = [
   {
     use: "selfie",
-    re: /селфи|автопортрет|фронтал|передн(ей|яя) камер|себя снима|для себя|блог|влог|стрим|созвон|видеозвон|selfie|front[- ]?cam|vlog|video call|face/,
+    re: /селфи|автопортрет|фронтал|передн(ей|яя|юю) камер|фронталк|себя снима|для себя|снять себя|блог|влог|стрим|созвон|видео[- ]?звон|видеозвон|конференц|для созвон|selfie|front[- ]?cam|vlog|video[- ]?call|face[- ]?cam/,
   },
   {
     use: "camera",
-    re: /камер|фотк|фото|фотогр|снима|съем|съём|снимк|кадр|боке|зум|макро|ночн(ой|ая|ые) съ|инстаграм|инст[аы]|тикток|content|photo|camera|\bpic\b|picture|shoot|\bshot\b|portrait|bokeh|zoom|macro|instagram|tiktok|photograph/,
+    re: /камер|фотк|фотик|фото|фотогр|фотает|фоткать|сфотк|поснима|снима|съем|съём|снимк|кадр|бок[еэ]|зум|макро|телеобъектив|широкоуг|ультрашир|стабилизац|объектив|оптик|мегапиксел|мпикс| мп камер|ночн(ой|ая|ые|ую) съ|ночн(ая|ой) фото|инстаграм|инст[аы]|тикток|content|photo|camera|\bcam\b|\bpic\b|picture|shoot|\bshot\b|portrait|bokeh|zoom|macro|telephoto|ultrawide|megapixel|\blens\b|instagram|tiktok|photograph|snap/,
   },
   {
     use: "battery",
-    re: /батар|аккум|заряд(?!к)|автоном|[её]мкост|держит|хватае|надолго|целый день|весь день|на весь день|долго работ|не сад|не разряж| мач |battery|endur|long[- ]?last|all[- ]?day|screen[- ]?time|\bmah\b/,
+    re: /батар|аккум|заряд(?!к)|автоном|[её]мкост|держит|хватае|надолго|целый день|весь день|на весь день|до вечера|долго работ|долгоигра|не сад|не разряж|живуч| мач | мах |battery|endur|long[- ]?last|all[- ]?day|screen[- ]?time|\bmah\b/,
   },
   {
     use: "charging",
-    re: /быстр(ая|ой|о)? заряд|зарядк|подзаряд|быстро заряж|за час|ватт| вт |fast charg|quick charg|\bwatt\b|\bwt\b|charging speed/,
+    re: /быстр(ая|ой|о|ую)? заряд|зарядк|подзаряд|быстро заряж|за (час|30|полчаса)|ватт| вт |беспроводн(ая|ой)? заряд|турбозаряд|суперзаряд|fast charg|quick charg|wireless charg|\bwatt\b|\bwt\b|charging speed/,
   },
   {
     use: "gaming",
-    re: /игр|поигр|гейм|геймер|пабг|pubg|genshin|геншин|\bcod\b|standoff|стандофф|фортнайт|fortnite|роблокс|roblox|фпс|\bfps\b|не лаг|без лаг|тормоз|мощн|производит|быстр|шустр|\bgame|gaming|performanc|powerful|\bfast\b|smooth|snapdragon|процессор/,
+    re: /игр|поигр|гейм|геймер|пабг|pubg|genshin|геншин|\bcod\b|standoff|стандофф|фортнайт|fortnite|роблокс|roblox|фпс|\bfps\b|не лаг|без лаг|тормоз|не тупит|тянет игр|потянет игр|мощн|производит|шустр|летает|game|gaming|performanc|powerful|smooth|snapdragon|процессор|\bчип\b|\bgpu\b|фреймрейт|framerate/,
   },
   {
     use: "compact",
-    re: /компакт|маленьк|небольш|миниат|одной рук|в карман|карманн|л[её]гк(ий|ая|ое|еньк)|small|compact|one[- ]?hand|pocket|\bmini\b|\btiny\b|lightweight/,
+    re: /компакт|маленьк|небольш|миниат|одной рук|в карман|карманн|л[её]гк(ий|ая|ое|еньк|о)|малыш|крошечн|не лопат|small|compact|one[- ]?hand|pocket|\bmini\b|\btiny\b|lightweight|\bhandy\b/,
   },
   {
     use: "big",
-    re: /больш(ой|ая|им)?\s*(экран|дисплей|телефон|диагонал)|огромн|лопат|фаблет|фильм|кино|сериал|ютуб|youtube|нетфликс|netflix|видео|смотреть|читать|чтен|big screen|large (screen|display)|huge|phablet|movie|watch (video|movie)|reading|media/,
+    re: /больш(ой|ая|им|ую)?\s*(экран|дисплей|телефон|диагонал)|огромн|лопат|фаблет|фильм|кино|сериал|ютуб|youtube|нетфликс|netflix|видео|смотреть|читать|чтен|крупн(ый)? экран|big screen|large (screen|display)|huge|phablet|movie|watch (video|movie)|reading|media/,
   },
   {
     use: "storage",
-    re: /памят|встроен|накопит|гигабайт| гб |терабайт|много места|для файлов|storage|memory|\bgb\b|\btb\b|space/,
+    re: /памят|встроен(ная|ой)? памя|накопит|гигабайт| гб |терабайт| тб |много места|для файлов|для фото и видео|хранилищ|объ[её]м памяти|storage|memory|\bgb\b|\btb\b|\bspace\b/,
   },
   {
     use: "fiveg",
-    re: /5g|5 g|5[- ]?джи|пят(ое|ого) поколени|хорош(ий|им|его|ая|ей) (интернет|связ|сет|при[её]м)|быстр(ый|ым|ого|ая|ой) (интернет|связ|сет)|мобильн(ый|ым) интернет|стабильн(ая|ой) связ|хорошо ловит|хороший при[её]м|качеств(о|енн) связ|сотов|good (internet|signal|reception|network)|fast internet|connectivity|reception|\bnetwork\b|\bsignal\b/,
+    re: /5g|5 g|5[- ]?джи|пят(ое|ого) поколени|хорош(ий|им|его|ая|ей) (интернет|связ|сет|при[её]м|сигнал)|быстр(ый|ым|ого|ая|ой) (интернет|связ|сет)|мобильн(ый|ым) интернет|стабильн(ый|ая|ой) (интернет|связ)|хорошо ловит|ловит сет|хороший при[её]м|качеств(о|енн) связ|сотов|good (internet|signal|reception|network)|fast internet|connectivity|reception|\bnetwork\b|\bsignal\b/,
   },
   {
     use: "longevity",
-    re: /долгосроч|надолго|на (много|долгие|несколько) лет|жизненн(ый|ого) цикл|срок службы|прослужит|обновлен|поддержк|актуальн(ым|ость)|не устареет|запас на будущ|на будущее|годы вперед|годы вперёд|долго прослуж|долговечн|future[- ]?proof|longevity|long[- ]?term|software (updates?|support)|years of updates|last(s)? (for )?years|lifespan|lifecycle/,
+    re: /долгосроч|надолго|на (много|долгие|несколько|пару) лет|жизненн(ый|ого) цикл|срок службы|прослужит|обновлен|поддержк|актуальн|не устаре|запас на будущ|на будущее|годы вперед|годы вперёд|долго прослуж|долговечн|не выкид|future[- ]?proof|longevity|long[- ]?term|software (updates?|support)|years of updates|last(s)? (for )?years|lifespan|lifecycle/,
   },
   {
     use: "durable",
-    re: /прочн|надежн|надёжн|крепк|не сломает|не разобьет|не разобьёт|ударопрочн|защищ|бронирован|титан|горилл|стекл|броск|неубива|выносл|ремонтопригодн|durable|rugged|sturdy|tough|shockproof|drop[- ]?proof|gorilla|titanium|build quality|solid build/,
+    re: /прочн|надежн|надёжн|крепк|крепыш|не сломает|не разоб|не боится удар|выдержит|ударопрочн|защищ|бронирован|титан|горилл|неубива|выносл|ремонтопригодн|антивандальн|милитари|durable|rugged|sturdy|tough|shockproof|drop[- ]?proof|gorilla|titanium|military|build quality|solid build/,
   },
   {
     use: "display",
-    re: /плавн(ый|ая|ое) (экран|дисплей|скролл|прокрут)|герц|\bгц\b|частот(а|ой) обновлен|120|144|амолед|amoled|яркий экран|качеств(о|енн) экран|чёткий экран|четкий экран|hz\b|refresh rate|smooth (screen|display|scrolling)|bright (screen|display)|oled|display quality|nits/,
+    re: /плавн(ый|ая|ое|о) (экран|дисплей|скролл|прокрут|интерфейс)|герц|\bгц\b|частот(а|ой|у) обновлен|(90|120|144|165)\s*(гц|hz|герц)|амолед|amoled|\boled\b|яркий экран|качеств(о|енн) экран|ч[её]тк(ий|ая) (экран|картинк)|сочный экран|красивый экран|refresh rate|smooth (screen|display|scroll)|bright (screen|display)|display quality|\bnits\b/,
   },
   {
     use: "foldable",
-    re: /склад|раскладушк|раскладн|гибк|книжк|раскрыв|перегиб|трансформ|\bfold|\bflip|foldable|clamshell|book[- ]?style/,
+    re: /склад|раскладушк|раскладн|гибк|книжк|раскрыв|перегиб|трансформ|гнущ|сгиба|\bфолд|\bфлип|\bfold|\bflip|foldable|clamshell|book[- ]?style/,
   },
   {
     use: "spen",
-    re: /стилус| перо |рисова|рису[юеё]|рисуй|рисунок|рисован|порисова|нарисова|черч|черт[иёе]|набросок|скетч|sketch|эскиз|замет|конспект|записыва|подпис|s[- ]?pen|\bspen\b|stylus|\bpen\b|draw|paint|art\b|artist|handwrit|scribble|doodle|note[- ]?tak/,
+    re: /стилус| перо |рисова|рису[юеё]|рисуй|рисунок|рисован|порисова|нарисова|черч|черт[иёе]|набросок|скетч|sketch|эскиз|замет|конспект|записыва|от руки|рукопис|подпис|s[- ]?pen|\bspen\b|stylus|\bpen\b|draw|paint|\bart\b|artist|handwrit|scribble|doodle|note[- ]?tak/,
   },
   {
     use: "water",
-    re: /влаг|водонепрониц|водозащ|водостойк|не боится вод|не боюсь вод|дожд|бассейн|под водой|ip6[78]|water|waterproof|water[- ]?resist|\bdust\b|splash|\brain\b|\bpool\b/,
+    re: /влаг|водонепрониц|водозащ|водостойк|не боится вод|не боюсь вод|не утоп|дожд|бассейн|под водой|купа|брызг|пылевлаг|ip6[78]|water|waterproof|water[- ]?resist|\bdust\b|splash|\brain\b|\bpool\b/,
   },
 ];
 
@@ -191,9 +191,9 @@ function detectTier(t: string): Tier | null {
     if (priceUsd < 720) return "mid";
     return "flagship";
   }
-  if (/флагман|топ(?:\b|овы)|премиум|лучш|мощнейш|high[- ]?end|flagship|premium|\bbest\b/.test(t)) return "flagship";
-  if (/бюджет|деш[её ]|дешо|дишо|дишев|недорог|подешевл|подешевш|эконом|копееч|за копейки|не дорог|\bcheap|budget|affordable|inexpensive|low[- ]?cost/.test(t)) return "budget";
-  if (/средн(?:ий|яя|его|ей)|\bmid\b|mid[- ]?range|middle/.test(t)) return "mid";
+  if (/флагман|флагманск|топ(?:\b|ов)|самый мощн|премиум|премиальн|лучш|мощнейш|топчик|топовое желез|high[- ]?end|flagship|premium|\bbest\b|top[- ]?tier/.test(t)) return "flagship";
+  if (/бюджет|деш[её ]|дешо|дишо|дишев|дешманск|недорог|подешевл|подешевш|эконом|копееч|за копейки|не дорог|бомж|самый дешёв|самый дешев|\bcheap|budget|affordable|inexpensive|low[- ]?cost/.test(t)) return "budget";
+  if (/средн(?:ий|яя|его|ей|юю)|среднячок|золотая середин|\bmid\b|mid[- ]?range|middle/.test(t)) return "mid";
   return null;
 }
 
@@ -235,15 +235,19 @@ function extract(text: string, phones: ConsultPhone[]): Extract {
 
   // Wants power / a flagship-class device (regardless of age).
   const power =
-    /мощн|мощь|флагман|топ(ов|\b)|производит|шустр|быстр(ый|ая|ое)?\b|premium|flagship|powerful|performance|beast|high[- ]?end/.test(
+    /мощн|мощь|флагман|топ(ов|\b)|топчик|производит|шустр|летает|не тормоз|не тупит|зверь|монстр|ракета|быстр(ый|ая|ое)?\b|премиум|премиальн|premium|flagship|powerful|performance|beast|monster|high[- ]?end|fast phone/.test(
       t
     ) || uses.includes("gaming");
 
   let tier = detectTier(t);
   let newest =
-    /новее|нов(ый|ая|ое|еньк|инк)|свеж|последн|актуальн|latest|newest|recent|\bnew\b/.test(t);
+    /новее|нов(ый|ая|ое|еньк|инк)|свеж(ий|ак|ее)?|последн|актуальн|только что вышел|недавно вышел|latest|newest|recent|\bnew\b/.test(
+      t
+    );
   const cheapestBase =
-    /дешевле|подешевл|деш[её ]|дешо|дишо|бюджетн|эконом|копееч|cheaper|cheapest|affordable/.test(t);
+    /дешевле|подешевл|деш[её ]|дешо|дишо|дешманск|бюджетн|эконом|копееч|подешевше|самый дешёв|самый дешев|cheaper|cheapest|affordable/.test(
+      t
+    );
   let cheapest = cheapestBase;
 
   // Persona / context expansion.
@@ -613,7 +617,7 @@ export function answerLocal(userTexts: string[], locale: Locale, phones: Consult
     }
     return singleReply(p, locale);
   }
-  if (intent.uses.length > 0 || intent.tier !== null || intent.newest || intent.cheapest) {
+  if (intent.uses.length > 0 || intent.tier !== null || intent.newest || intent.cheapest || intent.power || intent.budgetUsd > 0) {
     return recommendReply(intent, phones, locale);
   }
   if (intent.thanks) return SAY.thanks[locale];
