@@ -43,12 +43,39 @@ export function useFavorites() {
   const [list, setList] = useStore(FAV_KEY);
   const toggle = useCallback((slug: string) => {
     const cur = read(FAV_KEY);
-    const next = cur.includes(slug) ? cur.filter((s) => s !== slug) : [slug, ...cur];
+    const adding = !cur.includes(slug);
+    const next = adding ? [slug, ...cur] : cur.filter((s) => s !== slug);
     write(FAV_KEY, next);
     setList(next);
+    // Best-effort cloud sync (ignored/401 when signed out).
+    fetch("/api/favorites", {
+      method: adding ? "POST" : "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug }),
+    }).catch(() => {});
   }, [setList]);
   const has = useCallback((slug: string) => list.includes(slug), [list]);
   return { favorites: list, toggle, has };
+}
+
+/** Merge cloud favorites with device favorites (union) once signed in. */
+export async function mergeCloudFavorites(): Promise<void> {
+  try {
+    const r = await fetch("/api/favorites");
+    if (!r.ok) return;
+    const cloud: string[] = (await r.json())?.favorites ?? [];
+    const local = read(FAV_KEY);
+    const union = Array.from(new Set([...cloud, ...local]));
+    write(FAV_KEY, union);
+    const localOnly = local.filter((s) => !cloud.includes(s));
+    if (localOnly.length) {
+      fetch("/api/favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slugs: localOnly }),
+      }).catch(() => {});
+    }
+  } catch {}
 }
 
 /** Record a phone the AI recommended (most-recent first, unique, capped). */

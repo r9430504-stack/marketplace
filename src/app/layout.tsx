@@ -8,6 +8,8 @@ import RevealInit from "@/components/RevealInit";
 import SiteJsonLd from "@/components/SiteJsonLd";
 import Consultant from "@/components/Consultant";
 import WelcomeOverlay from "@/components/WelcomeOverlay";
+import Providers from "@/components/Providers";
+import FavoritesSync from "@/components/FavoritesSync";
 import { getConsultPhones } from "@/lib/consult";
 
 const geistSans = Geist({
@@ -90,13 +92,16 @@ export default function RootLayout({
         )}
       </head>
       <body className="min-h-full flex flex-col bg-white">
-        <SiteJsonLd />
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
-        <Consultant phones={getConsultPhones()} />
-        <WelcomeOverlay />
-        <RevealInit />
+        <Providers>
+          <SiteJsonLd />
+          <SiteHeader />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+          <Consultant phones={getConsultPhones()} />
+          <WelcomeOverlay />
+          <RevealInit />
+          <FavoritesSync />
+        </Providers>
       </body>
     </html>
   );
