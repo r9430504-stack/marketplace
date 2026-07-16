@@ -30,15 +30,61 @@ const SPEC_FIELDS: { key: string; label: string; required?: boolean }[] = [
 const inputCls =
   "w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white px-3 py-2 text-base outline-none focus:border-[#1428a0]";
 
+// Read an image file, downscale it and re-encode so we can store it inline as
+// a compact data: URL (no external file storage needed).
+async function fileToDataUrl(file: File, maxW = 900): Promise<string> {
+  const raw: string = await new Promise((res, rej) => {
+    const fr = new FileReader();
+    fr.onload = () => res(fr.result as string);
+    fr.onerror = () => rej(new Error("read"));
+    fr.readAsDataURL(file);
+  });
+  try {
+    const img = document.createElement("img");
+    await new Promise<void>((res, rej) => {
+      img.onload = () => res();
+      img.onerror = () => rej(new Error("decode"));
+      img.src = raw;
+    });
+    const scale = Math.min(1, maxW / (img.width || maxW));
+    const w = Math.max(1, Math.round(img.width * scale));
+    const h = Math.max(1, Math.round(img.height * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return raw;
+    ctx.drawImage(img, 0, 0, w, h);
+    const webp = canvas.toDataURL("image/webp", 0.85);
+    return webp.startsWith("data:image/webp") ? webp : canvas.toDataURL("image/png");
+  } catch {
+    return raw;
+  }
+}
+
 export default function AdminPhones({ seriesOptions }: { seriesOptions: SeriesOpt[] }) {
   const [f, setF] = useState<Record<string, string>>({ series: seriesOptions[0]?.id ?? "" });
   const [specs, setSpecs] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
+  const [imgBusy, setImgBusy] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string; slug?: string } | null>(null);
   const [list, setList] = useState<Custom[]>([]);
 
   const set = (k: string, v: string) => setF((s) => ({ ...s, [k]: v }));
   const setSpec = (k: string, v: string) => setSpecs((s) => ({ ...s, [k]: v }));
+
+  const onPickImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImgBusy(true);
+    try {
+      set("image", await fileToDataUrl(file));
+    } catch {
+      /* ignore */
+    } finally {
+      setImgBusy(false);
+    }
+  };
 
   const loadList = useCallback(async () => {
     try {
@@ -107,13 +153,19 @@ export default function AdminPhones({ seriesOptions }: { seriesOptions: SeriesOp
           </label>
           <label className="block">
             <span className="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-200">Line *</span>
-            <select className={inputCls} value={f.series ?? ""} onChange={(e) => set("series", e.target.value)}>
+            <input
+              className={inputCls}
+              value={f.series ?? ""}
+              onChange={(e) => set("series", e.target.value)}
+              list="admin-lines"
+              placeholder="Pick or type a new line"
+              required
+            />
+            <datalist id="admin-lines">
               {seriesOptions.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.label}
-                </option>
+                <option key={s.id} value={s.id} />
               ))}
-            </select>
+            </datalist>
           </label>
           <label className="block">
             <span className="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-200">Release year *</span>
@@ -130,10 +182,25 @@ export default function AdminPhones({ seriesOptions }: { seriesOptions: SeriesOp
           <input className={inputCls} value={f.tagline ?? ""} onChange={(e) => set("tagline", e.target.value)} placeholder="A one-line description." />
         </label>
 
-        <label className="block">
-          <span className="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-200">Image URL</span>
-          <input className={inputCls} value={f.image ?? ""} onChange={(e) => set("image", e.target.value)} placeholder="https://…/photo.png" />
-        </label>
+        <div>
+          <span className="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-200">Image</span>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={onPickImage}
+            className="block w-full text-sm text-gray-600 dark:text-gray-300 file:mr-3 file:rounded-full file:border-0 file:bg-[#1428a0] file:px-4 file:py-2 file:font-medium file:text-white hover:file:bg-[#0f1f7a]"
+          />
+          {imgBusy && <p className="mt-1 text-xs text-gray-400">Processing image…</p>}
+          {f.image && (
+            <div className="mt-3 flex items-center gap-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={f.image} alt="" className="h-32 w-32 rounded-xl object-contain bg-white" />
+              <button type="button" onClick={() => set("image", "")} className="text-sm font-medium text-red-600 hover:underline dark:text-red-400">
+                Remove
+              </button>
+            </div>
+          )}
+        </div>
 
         <label className="block">
           <span className="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-200">Key features (comma-separated)</span>
