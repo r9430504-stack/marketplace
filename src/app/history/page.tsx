@@ -31,8 +31,8 @@ export default function HistoryPage() {
           const yearPhones = phones.filter((p) => p.releaseYear === year);
           return (
             <div key={year} className="relative pl-8 pb-10">
-              <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-black ring-4 ring-white dark:ring-[#0b0f17]" />
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{year}</h2>
+              <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-[#1428a0] dark:bg-blue-500 ring-4 ring-white dark:ring-[#0b0f17]" />
+              <h2 className="reveal-up text-2xl font-bold text-gray-900 dark:text-gray-100">{year}</h2>
               <div className="mt-3 space-y-2">
                 {yearPhones.map((p) => {
                   const s = seriesMeta(p.series);

@@ -76,16 +76,16 @@ export default async function ComparePage({
         <span className="text-gray-700 dark:text-gray-300">{a.name} vs {b.name}</span>
       </nav>
 
-      <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-gray-100">
+      <h1 className="rise text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-gray-100" style={{ animationDelay: "60ms" }}>
         {a.name} <span className="text-gray-400">vs</span> {b.name}
       </h1>
-      <p className="text-gray-600 dark:text-gray-300 mt-3 max-w-2xl">
+      <p className="rise text-gray-600 dark:text-gray-300 mt-3 max-w-2xl" style={{ animationDelay: "140ms" }}>
         A side-by-side look at the {a.name} and the {b.name} — how their displays, chipsets, cameras,
         batteries and full specifications compare, so you can see what changed and which one fits you.
       </p>
 
       {/* Two heroes */}
-      <div className="grid grid-cols-2 gap-4 mt-6">
+      <div className="rise grid grid-cols-2 gap-4 mt-6" style={{ animationDelay: "220ms" }}>
         {[a, b].map((p) => (
           <Link
             key={p.slug}
@@ -107,7 +107,7 @@ export default async function ComparePage({
       </div>
 
       {/* Key differences — unique, readable summary per pair */}
-      <section className="mt-8">
+      <section className="reveal-up mt-8">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
           {a.name} vs {b.name}: the key differences
         </h2>
@@ -143,7 +143,7 @@ export default async function ComparePage({
 
       <AdSlot />
 
-      <section className="mt-6">
+      <section className="reveal-up mt-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
           Full specification comparison
         </h2>

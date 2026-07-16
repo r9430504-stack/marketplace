@@ -14,6 +14,10 @@ import { usePathname } from "next/navigation";
  *
  * Respects prefers-reduced-motion.
  */
+// Both scroll-reveal variants share the .in toggle: .reveal (slides from the
+// right, for card grids) and .reveal-up (fades up, for content sections).
+const SEL = ".reveal:not(.in), .reveal-up:not(.in)";
+
 export default function RevealInit() {
   const pathname = usePathname();
 
@@ -61,7 +65,7 @@ export default function RevealInit() {
     // no IntersectionObserver, so nothing ever stays stuck at opacity 0).
     const revealAllNow = () => {
       document
-        .querySelectorAll<HTMLElement>(".reveal:not(.in)")
+        .querySelectorAll<HTMLElement>(SEL)
         .forEach((el) => el.classList.add("in"));
     };
 
@@ -84,7 +88,7 @@ export default function RevealInit() {
       // First pass: scroll-reveal the initial cards (or show all if no IO).
       if (io) {
         document
-          .querySelectorAll<HTMLElement>(".reveal:not(.in)")
+          .querySelectorAll<HTMLElement>(SEL)
           .forEach((el) => io.observe(el));
       } else {
         revealAllNow();
@@ -107,10 +111,8 @@ export default function RevealInit() {
         for (const m of mutations) {
           m.addedNodes.forEach((node) => {
             if (!(node instanceof HTMLElement)) return;
-            if (node.matches(".reveal:not(.in)")) pending.add(node);
-            node
-              .querySelectorAll<HTMLElement>(".reveal:not(.in)")
-              .forEach((el) => pending.add(el));
+            if (node.matches(SEL)) pending.add(node);
+            node.querySelectorAll<HTMLElement>(SEL).forEach((el) => pending.add(el));
           });
         }
         if (!pending.size || raf) return;

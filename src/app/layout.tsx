@@ -77,7 +77,7 @@ export default function RootLayout({
         />
         {/* No JS — show content immediately, without the reveal/fade animations */}
         <noscript>
-          <style>{`.reveal{opacity:1 !important;transform:none !important}.img-fade{opacity:1 !important}`}</style>
+          <style>{`.reveal,.reveal-up{opacity:1 !important;transform:none !important}.img-fade{opacity:1 !important}`}</style>
         </noscript>
         {ADSENSE_CLIENT && (
           <>

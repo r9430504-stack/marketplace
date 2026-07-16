@@ -5,7 +5,7 @@ export default function SiteFooter() {
   return (
     <footer className="mt-16 glass-soft border-x-0 border-b-0">
       <div className="max-w-6xl mx-auto px-4 py-10 grid gap-8 sm:grid-cols-3 text-sm">
-        <div>
+        <div className="reveal-up">
           <p className="font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
             <span className="text-[#1428a0] dark:text-blue-400">◆</span>
             {SITE_NAME}
@@ -29,7 +29,7 @@ export default function SiteFooter() {
             </ul>
           </div>
         </div>
-        <div>
+        <div className="reveal-up">
           <p className="font-semibold text-gray-700 dark:text-gray-200 mb-2">Sections</p>
           <ul className="space-y-1 text-gray-500 dark:text-gray-400">
             <li><Link href="/phones" className="hover:text-[#1428a0] dark:hover:text-blue-400">Model catalog</Link></li>
@@ -43,7 +43,7 @@ export default function SiteFooter() {
             <li><Link href="/disclaimer" className="hover:text-[#1428a0] dark:hover:text-blue-400">Legal information</Link></li>
           </ul>
         </div>
-        <div>
+        <div className="reveal-up">
           <p className="font-semibold text-gray-700 dark:text-gray-200 mb-2">About</p>
           <p className="text-gray-500 dark:text-gray-400">
             <strong className="text-gray-700 dark:text-gray-200">This is not the official Samsung site.</strong>{" "}

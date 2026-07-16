@@ -57,10 +57,12 @@ export default function PhotoViewer({
           setIdx(0);
           setOpen(true);
         }}
-        className="group relative block h-full w-full cursor-zoom-in"
+        className="group relative block h-full w-full cursor-zoom-in overflow-hidden"
         aria-label={`Open photos: ${name}`}
       >
-        {children}
+        <span className="block h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.05] motion-reduce:transition-none motion-reduce:group-hover:scale-100">
+          {children}
+        </span>
         <span className="absolute bottom-2 right-2 rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-medium text-white opacity-90 backdrop-blur transition-opacity group-hover:opacity-100">
           🔍 {many ? `${images.length} photos` : "View"}
         </span>
