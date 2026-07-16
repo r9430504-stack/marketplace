@@ -104,6 +104,81 @@ function findMentions(text: string, phones: ConsultPhone[]): ConsultPhone[] {
   return found.sort((x, y) => x.at - y.at).map((f) => f.p);
 }
 
+// ── Fuzzy matching: tolerate Russian inflections and typos ────
+// The regexes below match exact spellings. This small layer complements them:
+// it stems-by-prefix (камер-у, игр-овой) and allows a tiny edit distance
+// (камира→камер, флагмон→флагман), so real, messy input is understood without
+// hand-listing every form. It only ever ADDS a signal, never removes one.
+function lev(a: string, b: string): number {
+  const m = a.length;
+  const n = b.length;
+  if (Math.abs(m - n) > 2) return 3;
+  const dp = Array.from({ length: n + 1 }, (_, j) => j);
+  for (let i = 1; i <= m; i++) {
+    let prev = dp[0];
+    dp[0] = i;
+    for (let j = 1; j <= n; j++) {
+      const tmp = dp[j];
+      dp[j] = Math.min(dp[j] + 1, dp[j - 1] + 1, prev + (a[i - 1] === b[j - 1] ? 0 : 1));
+      prev = tmp;
+    }
+  }
+  return dp[n];
+}
+
+function tokenize(t: string): string[] {
+  return t.trim().split(/\s+/).filter((w) => w.length >= 2);
+}
+
+/** Does one token match a concept root? Exact, prefix (Russian inflections) or
+ * a small edit distance in the root region (typos). Conservative to avoid false
+ * positives: fuzzy only kicks in for roots of 5+ characters. */
+function matchesRoot(token: string, root: string): boolean {
+  if (token === root) return true;
+  if (root.length >= 3 && token.startsWith(root)) return true;
+  if (root.length >= 5 && root.startsWith(token) && token.length >= root.length - 1) return true;
+  if (root.length >= 5 && token.length >= root.length - 1) {
+    const head = token.slice(0, root.length);
+    return lev(head, root) <= (root.length >= 8 ? 2 : 1);
+  }
+  return false;
+}
+
+function fuzzyHas(tokens: string[], roots: string[]): boolean {
+  for (const tok of tokens) for (const r of roots) if (matchesRoot(tok, r)) return true;
+  return false;
+}
+
+// Stemmed concept keywords (RU + EN) for the fuzzy layer, complementing the
+// USE_PATTERNS regexes. Roots are distinctive stems so a prefix/edit match is
+// safe; short or ambiguous words are left to the regexes only.
+const USE_ROOTS: Partial<Record<Use, string[]>> = {
+  camera: ["камер", "фотк", "фотик", "фотогр", "снимк", "съемк", "съёмк", "объектив", "зум", "макро", "мегапиксел", "инстаграм", "тикток", "camera", "photo", "picture", "zoom", "macro", "lens", "portrait", "instagram"],
+  selfie: ["селфи", "фронтал", "автопортрет", "влог", "блог", "стрим", "созвон", "видеозвон", "selfie", "vlog", "frontcam"],
+  battery: ["батар", "аккум", "автоном", "емкост", "ёмкост", "живуч", "battery", "endur"],
+  charging: ["зарядк", "подзаряд", "ватт", "турбозаряд", "суперзаряд", "charg", "watt"],
+  gaming: ["игр", "поигр", "гейм", "геймер", "пабг", "геншин", "фортнайт", "роблокс", "тормоз", "произв", "gaming", "perform", "snapdragon", "процессор"],
+  compact: ["компакт", "маленьк", "небольш", "миниат", "карман", "малыш", "compact", "pocket"],
+  big: ["огромн", "лопат", "фаблет", "фильм", "сериал", "ютуб", "нетфликс", "phablet", "movie"],
+  storage: ["памят", "накопит", "гигабайт", "терабайт", "хранилищ", "storage", "memory"],
+  foldable: ["склад", "раскладушк", "раскладн", "книжк", "фолд", "флип", "foldable", "clamshell"],
+  spen: ["стилус", "рисова", "черч", "скетч", "эскиз", "замет", "конспект", "рукопис", "stylus", "sketch", "handwrit"],
+  water: ["влаг", "водонепрониц", "водозащ", "водостойк", "дожд", "бассейн", "брызг", "waterproof", "splash"],
+  longevity: ["долгосроч", "долговечн", "обновлен", "поддержк", "устаре", "longevity", "lifespan"],
+  durable: ["прочн", "надежн", "надёжн", "крепк", "ударопрочн", "защищ", "титан", "горилл", "durable", "rugged"],
+  display: ["амолед", "плавн", "герц", "oled", "amoled"],
+};
+
+const TIER_ROOTS: Record<"flagship" | "mid" | "budget", string[]> = {
+  flagship: ["флагман", "флагманск", "топов", "премиум", "премиальн", "мощнейш", "flagship", "premium"],
+  budget: ["бюджет", "дешев", "дешёв", "дешов", "недорог", "эконом", "копеечн", "cheap", "budget", "affordable"],
+  mid: ["средн", "среднячок", "midrange"],
+};
+
+const POWER_ROOTS = ["мощн", "флагман", "зверь", "монстр", "ракета", "произв", "powerful", "flagship", "beast", "monster"];
+const NEWEST_ROOTS = ["новее", "новый", "новеньк", "новинк", "свеж", "последн", "актуальн", "latest", "newest", "recent"];
+const CHEAPEST_ROOTS = ["дешевле", "подешевл", "дешев", "дешёв", "cheaper", "cheapest"];
+
 const USE_PATTERNS: { use: Use; re: RegExp }[] = [
   {
     use: "selfie",
@@ -172,15 +247,18 @@ const USE_PATTERNS: { use: Use; re: RegExp }[] = [
 function parseBudgetUsd(t: string): number {
   const rub =
     t.match(/(\d{1,3}(?:[ .]\d{3})+|\d{4,6})\s*(?:руб|₽|р(?=\s)|rub)/) ||
-    t.match(/(?:до|за|около|порядка|бюджет\w*|в районе|максимум|уложит\w*|не (?:больше|дороже))\s*~?\s*(\d{1,3}(?:[ .]\d{3})+|\d{4,6})/) ||
-    t.match(/(\d{1,3})\s*(?:к|тыс)(?=\s|$)/);
+    t.match(/(?:до|за|около|порядка|бюджет[а-яё]*|в районе|максимум|уложит[а-яё]*|не (?:больше|дороже))\s*~?\s*(\d{1,3}(?:[ .]\d{3})+|\d{4,6})/) ||
+    t.match(/(\d{1,3})\s*(?:к|тыс[а-яё]*|тыщ[а-яё]*|косар[а-яё]*|штук[а-яё]*)(?=\s|$|[.,!?])/) ||
+    t.match(/(?:тыс[а-яё]*|тыщ[а-яё]*)\s*(?:за\s+|на\s+|в\s+)?(\d{1,3})(?=\s|$|[.,!?])/);
   const usd = t.match(/\$\s*(\d{2,4})/) || t.match(/(\d{2,4})\s*(?:\$|usd|dollar|доллар)/);
   if (usd) return parseInt(usd[1], 10);
   if (rub) {
     let n = parseInt(rub[1].replace(/[ .]/g, ""), 10);
-    if (/к|тыс/.test(rub[0]) && n < 1000) n *= 1000;
+    if (/к|тыс|тыщ|косар|штук/.test(rub[0]) && n < 1000) n *= 1000;
     return Math.round(n / 95); // ₽→$ for matching against catalog USD prices
   }
+  // Colloquial round sums.
+  if (/полтос|полтинник/.test(t)) return Math.round(50000 / 95);
   return 0;
 }
 
@@ -230,24 +308,38 @@ const CONTEXTS: { re: RegExp; add: Use[]; tier?: Tier; newest?: boolean; cheapes
 
 function extract(text: string, phones: ConsultPhone[]): Extract {
   const t = norm(text);
+  const toks = tokenize(t);
   const uses: Use[] = [];
   for (const { use, re } of USE_PATTERNS) if (re.test(t)) uses.push(use);
+  // Fuzzy pass: catch inflected forms and typos the regexes missed.
+  for (const use of Object.keys(USE_ROOTS) as Use[]) {
+    if (!uses.includes(use) && fuzzyHas(toks, USE_ROOTS[use]!)) uses.push(use);
+  }
 
   // Wants power / a flagship-class device (regardless of age).
   const power =
     /мощн|мощь|флагман|топ(ов|\b)|топчик|производит|шустр|летает|не тормоз|не тупит|зверь|монстр|ракета|быстр(ый|ая|ое)?\b|премиум|премиальн|premium|flagship|powerful|performance|beast|monster|high[- ]?end|fast phone/.test(
       t
-    ) || uses.includes("gaming");
+    ) || uses.includes("gaming") || fuzzyHas(toks, POWER_ROOTS);
 
   let tier = detectTier(t);
+  // Fuzzy fallback for a mistyped tier word ("флагмон", "бюджэт").
+  if (!tier) {
+    for (const tg of ["flagship", "budget", "mid"] as const) {
+      if (fuzzyHas(toks, TIER_ROOTS[tg])) {
+        tier = tg;
+        break;
+      }
+    }
+  }
   let newest =
     /новее|нов(ый|ая|ое|еньк|инк)|свеж(ий|ак|ее)?|последн|актуальн|только что вышел|недавно вышел|latest|newest|recent|\bnew\b/.test(
       t
-    );
+    ) || fuzzyHas(toks, NEWEST_ROOTS);
   const cheapestBase =
     /дешевле|подешевл|деш[её ]|дешо|дишо|дешманск|бюджетн|эконом|копееч|подешевше|самый дешёв|самый дешев|cheaper|cheapest|affordable/.test(
       t
-    );
+    ) || fuzzyHas(toks, CHEAPEST_ROOTS);
   let cheapest = cheapestBase;
 
   // Persona / context expansion.
