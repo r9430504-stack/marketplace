@@ -82,3 +82,44 @@ export function IconWarn(p: IconProps) {
     </Svg>
   );
 }
+
+/** House — the Home tab. */
+export function IconHome(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M3 10.5 12 3l9 7.5" />
+      <path d="M5 9.5V21h14V9.5" />
+    </Svg>
+  );
+}
+
+/** Four squares — the Catalog / browse tab. */
+export function IconGrid(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <rect x="3.5" y="3.5" width="7" height="7" rx="1.6" />
+      <rect x="13.5" y="3.5" width="7" height="7" rx="1.6" />
+      <rect x="3.5" y="13.5" width="7" height="7" rx="1.6" />
+      <rect x="13.5" y="13.5" width="7" height="7" rx="1.6" />
+    </Svg>
+  );
+}
+
+/** Two panels side by side — the Compare tab. */
+export function IconCompare(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <rect x="3.5" y="4" width="7" height="16" rx="1.6" />
+      <rect x="13.5" y="4" width="7" height="16" rx="1.6" />
+    </Svg>
+  );
+}
+
+/** Star — the Guides / picks tab. */
+export function IconStar(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8L3.6 9.6l5.8-.8z" />
+    </Svg>
+  );
+}

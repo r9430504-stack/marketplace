@@ -6,7 +6,6 @@ import ThemeToggle from "./ThemeToggle";
 import FavoritesLink from "./FavoritesLink";
 import AuthButton from "./AuthButton";
 import AdminLink from "./AdminLink";
-import MobileMenu from "./MobileMenu";
 import BrandMark from "./BrandMark";
 
 export default function SiteHeader() {
@@ -31,7 +30,6 @@ export default function SiteHeader() {
           <ThemeToggle />
           <AdminLink />
           <AuthButton />
-          <MobileMenu />
         </div>
       </div>
     </nav>
