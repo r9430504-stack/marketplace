@@ -4,6 +4,7 @@ import LanguageSwitch from "./LanguageSwitch";
 import HeaderNav from "./HeaderNav";
 import ThemeToggle from "./ThemeToggle";
 import FavoritesLink from "./FavoritesLink";
+import AuthButton from "./AuthButton";
 
 export default function SiteHeader() {
   return (
@@ -23,6 +24,7 @@ export default function SiteHeader() {
           <FavoritesLink />
           <LanguageSwitch />
           <ThemeToggle />
+          <AuthButton />
         </div>
       </div>
     </nav>
