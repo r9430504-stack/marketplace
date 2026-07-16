@@ -4,9 +4,10 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ffffff;
+  /* One UI-style soft grey canvas — white cards sit on top of it */
+  --background: #f1f3f6;
   --foreground: #111111;
-  /* Samsung's signature navy blue — used for links and accents */
+  /* Samsung's signature navy blue — used for links, accents and CTAs */
   --samsung: #1428a0;
 }
 
@@ -224,20 +225,20 @@ body {
   border-color: #2a2a2a;
 }
 
-/* Samsung-style primary CTA: solid black pill */
+/* One UI-style primary CTA: solid Samsung-blue pill */
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: #000000;
+  background: var(--samsung);
   color: #ffffff;
   border-radius: 9999px;
   font-weight: 600;
   transition: background-color 0.15s ease;
 }
 .btn-primary:hover {
-  background: #333333;
+  background: #0f1f7a;
 }
 
 /* Samsung-style secondary CTA: outlined black pill */
@@ -266,11 +267,11 @@ body {
   color: #111111;
 }
 .dark .btn-primary {
-  background: #ffffff;
-  color: #111111;
+  background: #2f6bed;
+  color: #ffffff;
 }
 .dark .btn-primary:hover {
-  background: #d1d5db;
+  background: #245bd6;
 }
 
 /* Soft image fade-in — set to loaded by RevealInit once the image finishes

@@ -91,7 +91,7 @@ export default function RootLayout({
           </>
         )}
       </head>
-      <body className="min-h-full flex flex-col bg-white">
+      <body className="min-h-full flex flex-col">
         <Providers>
           <SiteJsonLd />
           <SiteHeader />
