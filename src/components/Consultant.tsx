@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { localeFromPathname } from "@/lib/i18n";
+import { recordPick } from "@/lib/saved";
 import type { ConsultPhone } from "@/lib/consult";
 
 type ChatMsg = { role: "user" | "assistant"; content: string };
@@ -161,6 +162,9 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
       else if (!r.ok) reply = data.detail ? `${t.error}\n\n⚠️ ${data.detail}` : t.error;
       else reply = data.reply || t.error;
       setMsgs((m) => [...m, { role: "assistant", content: reply }]);
+      // Remember what the AI recommended (top pick) in the user's history.
+      const firstGoto = reply.match(/GOTO:\s*\/(?:ru\/)?phones\/([a-z0-9-]+)/i);
+      if (firstGoto) recordPick(firstGoto[1]);
     } catch {
       setMsgs((m) => [...m, { role: "assistant", content: t.error }]);
     } finally {

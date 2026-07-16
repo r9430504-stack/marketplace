@@ -3,6 +3,7 @@ import { SITE_NAME } from "@/lib/site";
 import LanguageSwitch from "./LanguageSwitch";
 import HeaderNav from "./HeaderNav";
 import ThemeToggle from "./ThemeToggle";
+import FavoritesLink from "./FavoritesLink";
 
 export default function SiteHeader() {
   return (
@@ -19,6 +20,7 @@ export default function SiteHeader() {
         </Link>
         <div className="flex items-center gap-4 text-sm">
           <HeaderNav />
+          <FavoritesLink />
           <LanguageSwitch />
           <ThemeToggle />
         </div>

@@ -17,6 +17,7 @@ import PhoneCard from "@/components/PhoneCard";
 import SpecTable from "@/components/SpecTable";
 import BuyLinks from "@/components/BuyLinks";
 import BackButton from "@/components/BackButton";
+import FavoriteButton from "@/components/FavoriteButton";
 import AdSlot from "@/components/AdSlot";
 import { SITE_URL } from "@/lib/site";
 
@@ -153,9 +154,12 @@ export default async function PhonePage({
         </div>
         <div>
           <span className={`text-sm font-semibold ${s.accent}`}>{s.label}</span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-gray-100 mt-1">
-            {phone.name}
-          </h1>
+          <div className="flex items-start justify-between gap-3 mt-1">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-gray-100">
+              {phone.name}
+            </h1>
+            <FavoriteButton slug={phone.slug} size="lg" className="shrink-0 border border-gray-200 dark:border-gray-700" />
+          </div>
           <p className="text-gray-500 dark:text-gray-400 mt-1">{phone.releaseDate}</p>
           <p className="text-lg text-gray-700 dark:text-gray-200 mt-4">{phone.tagline}</p>
 
