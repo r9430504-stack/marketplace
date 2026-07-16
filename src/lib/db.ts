@@ -55,6 +55,10 @@ function ensure(p: Pool): Promise<void> {
            slug       text        PRIMARY KEY,
            data       jsonb       NOT NULL,
            created_at timestamptz NOT NULL DEFAULT now()
+         );
+         CREATE TABLE IF NOT EXISTS site_settings (
+           key   text PRIMARY KEY,
+           value text NOT NULL
          );`
       )
       .then(() => undefined);
@@ -270,4 +274,36 @@ export async function deleteCustomPhone(slug: string): Promise<void> {
   if (!p) return;
   await ensure(p);
   await p.query("DELETE FROM custom_phones WHERE slug = $1", [slug]);
+}
+
+// ── Editable site settings (key/value) ──────────────────────────────────────
+// Lets the owner change page text from the admin panel without touching code.
+export async function getSiteSettings(): Promise<Record<string, string>> {
+  const p = getPool();
+  if (!p) return {};
+  try {
+    await ensure(p);
+    const r = await p.query("SELECT key, value FROM site_settings");
+    const out: Record<string, string> = {};
+    for (const row of r.rows as { key: string; value: string }[]) out[row.key] = row.value;
+    return out;
+  } catch {
+    return {};
+  }
+}
+
+export async function setSiteSettings(entries: Record<string, string>): Promise<void> {
+  const p = getPool();
+  if (!p) return;
+  await ensure(p);
+  for (const [key, value] of Object.entries(entries)) {
+    if (value === "") {
+      await p.query("DELETE FROM site_settings WHERE key = $1", [key]);
+    } else {
+      await p.query(
+        "INSERT INTO site_settings (key, value) VALUES ($1, $2) ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value",
+        [key, value]
+      );
+    }
+  }
 }

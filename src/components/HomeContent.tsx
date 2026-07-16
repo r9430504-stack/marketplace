@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getAllPhones, getPhoneBySlug, SERIES, seriesSlug } from "@/lib/phones";
+import { getCustomPhones, getSiteSettings } from "@/lib/db";
 import { getCollections } from "@/lib/collections";
 import { t, type Locale } from "@/lib/i18n";
 import PhoneCard from "@/components/PhoneCard";
@@ -15,14 +16,19 @@ const SHOWCASE_SLUGS = [
   "galaxy-s6-edge",
 ];
 
-export default function HomeContent({ locale = "en" }: { locale?: Locale }) {
+export default async function HomeContent({ locale = "en" }: { locale?: Locale }) {
   const T = t(locale).home;
-  const phones = getAllPhones();
+  // Include any owner-added models so every number here updates automatically.
+  const [custom, settings] = await Promise.all([getCustomPhones(), getSiteSettings()]);
+  const phones = [...getAllPhones(), ...custom];
   const featured = phones.filter((p) => p.image).slice(0, 6);
   const total = phones.length;
   const seriesCount = new Set(phones.map((p) => p.series)).size;
   const firstYear = Math.min(...phones.map((p) => p.releaseYear));
   const lastYear = Math.max(...phones.map((p) => p.releaseYear));
+  // Owner-editable hero text (falls back to the built-in copy).
+  const heroTitle = settings[`home_title_${locale}`] || T.h1;
+  const heroIntro = settings[`home_subtitle_${locale}`] || T.intro(total, firstYear, lastYear);
 
   const showcase = SHOWCASE_SLUGS.map(getPhoneBySlug).filter(
     (p): p is NonNullable<typeof p> => Boolean(p?.image)
@@ -45,9 +51,9 @@ export default function HomeContent({ locale = "en" }: { locale?: Locale }) {
               {T.badge(firstYear, lastYear)}
             </p>
             <h1 className="rise mt-4 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-black dark:text-gray-100 leading-[1.05] text-balance" style={{ animationDelay: "140ms" }}>
-              {T.h1}
+              {heroTitle}
             </h1>
-            <p className="rise mt-5 text-lg text-gray-600 dark:text-gray-300 max-w-xl" style={{ animationDelay: "220ms" }}>{T.intro(total, firstYear, lastYear)}</p>
+            <p className="rise mt-5 text-lg text-gray-600 dark:text-gray-300 max-w-xl whitespace-pre-line" style={{ animationDelay: "220ms" }}>{heroIntro}</p>
 
             <div className="rise mt-8 flex flex-wrap gap-3" style={{ animationDelay: "300ms" }}>
               <Link href="/phones" className="btn-primary px-6 py-3 text-base">
