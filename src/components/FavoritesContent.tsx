@@ -17,18 +17,18 @@ export type FavPhone = {
 const T = {
   en: {
     title: "My favorites",
-    sub: "Phones you saved with ♥. Stored on this device.",
+    sub: "Phones you bookmarked. Stored on this device.",
     empty: "No favorites yet.",
-    emptyHint: "Tap the ♥ on any phone to save it here.",
+    emptyHint: "Tap the bookmark on any phone to save it here.",
     browse: "Browse the catalog →",
     recent: "Recent AI picks",
     recentSub: "Models the consultant recommended you.",
   },
   ru: {
     title: "Моё избранное",
-    sub: "Телефоны, отмеченные ♥. Хранятся на этом устройстве.",
+    sub: "Телефоны, отмеченные флажком. Хранятся на этом устройстве.",
     empty: "Пока пусто.",
-    emptyHint: "Нажмите ♥ на любом телефоне, чтобы сохранить его сюда.",
+    emptyHint: "Нажмите на флажок на любом телефоне, чтобы сохранить его сюда.",
     browse: "Открыть каталог →",
     recent: "Недавние подборы ИИ",
     recentSub: "Модели, которые советовал консультант.",
@@ -77,7 +77,7 @@ export default function FavoritesContent({ phones, locale }: { phones: FavPhone[
 
       {favPhones.length === 0 ? (
         <div className="glass rounded-2xl p-10 text-center mt-8">
-          <p className="text-4xl">🤍</p>
+          <p className="text-4xl">🔖</p>
           <p className="mt-3 font-semibold text-gray-900 dark:text-gray-100">{t.empty}</p>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t.emptyHint}</p>
           <Link href={locale === "ru" ? "/ru" : "/phones"} className="btn-primary px-5 py-2.5 text-sm mt-5 inline-flex">
