@@ -5,6 +5,7 @@ import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION, ADSENSE_CLIENT } fro
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import RevealInit from "@/components/RevealInit";
+import MotionInit from "@/components/MotionInit";
 import SiteJsonLd from "@/components/SiteJsonLd";
 import Consultant from "@/components/Consultant";
 import WelcomeOverlay from "@/components/WelcomeOverlay";
@@ -93,6 +94,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col">
         <Providers>
+          <MotionInit />
           <SiteJsonLd />
           <SiteHeader />
           <main className="flex-1">{children}</main>

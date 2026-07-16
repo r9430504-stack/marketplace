@@ -211,14 +211,18 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
         </div>
       )}
 
-      <button
-        id="ai-consultant-button"
-        onClick={toggleOpen}
-        aria-label={t.open}
-        className="fixed bottom-5 right-5 z-[60] h-14 w-14 rounded-full bg-[#1428a0] text-white text-2xl font-bold shadow-lg hover:scale-105 active:scale-95 transition-transform flex items-center justify-center"
-      >
-        {open ? "✕" : "G"}
-      </button>
+      <div className="fixed bottom-5 right-5 z-[60] h-14 w-14">
+        {/* Breathing ring — only while closed, so the assistant looks "alive". */}
+        {!open && <span className="fab-ring" aria-hidden />}
+        <button
+          id="ai-consultant-button"
+          onClick={toggleOpen}
+          aria-label={t.open}
+          className="relative h-14 w-14 rounded-full bg-[#1428a0] text-white text-2xl font-bold shadow-lg hover:scale-105 active:scale-95 transition-transform flex items-center justify-center"
+        >
+          {open ? "✕" : "G"}
+        </button>
+      </div>
 
       {open && (
         <div className="fixed bottom-24 right-5 z-[60] w-[calc(100vw-2.5rem)] max-w-sm rounded-2xl bg-white dark:bg-[#1a1a1a] shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden flex flex-col h-[75vh] max-h-[560px]">

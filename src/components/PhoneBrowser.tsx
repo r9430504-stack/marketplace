@@ -34,7 +34,7 @@ export default function PhoneBrowser({
   );
 
   const chip = (active: boolean) =>
-    `px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+    `px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 active:scale-95 ${
       active
         ? "bg-[#1428a0] text-white dark:bg-blue-600 dark:text-white"
         : "bg-white border border-gray-300 text-gray-700 hover:border-[#1428a0] hover:text-[#1428a0] dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-400 dark:hover:text-white"
