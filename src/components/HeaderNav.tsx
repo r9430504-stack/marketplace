@@ -13,7 +13,7 @@ export default function HeaderNav() {
   const T = t(loc).nav;
 
   const cls =
-    "text-gray-600 dark:text-gray-300 hover:text-[#1428a0] dark:hover:text-blue-400 font-medium";
+    "nav-link text-gray-600 dark:text-gray-300 hover:text-[#1428a0] dark:hover:text-blue-400 font-medium transition-colors";
 
   const link = (enPath: string, label: string) => {
     const href = loc === "ru" && RU_READY.has(enPath) ? withLocale(enPath, "ru") : enPath;

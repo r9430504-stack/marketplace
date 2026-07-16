@@ -41,15 +41,15 @@ export default function HomeContent({ locale = "en" }: { locale?: Locale }) {
         <HeroBackdrop />
         <div className="relative max-w-6xl mx-auto px-4 py-14 sm:py-20 grid md:grid-cols-2 gap-10 lg:gap-14 items-center">
           <div>
-            <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-[#1428a0] dark:text-blue-300 bg-[#eef1fb] dark:bg-[#1b2338] rounded-full px-3 py-1">
+            <p className="shimmer rise inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-[#1428a0] dark:text-blue-300 bg-[#eef1fb] dark:bg-[#1b2338] rounded-full px-3 py-1" style={{ animationDelay: "60ms" }}>
               {T.badge(firstYear, lastYear)}
             </p>
-            <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-black dark:text-gray-100 leading-[1.05] text-balance">
+            <h1 className="rise mt-4 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-black dark:text-gray-100 leading-[1.05] text-balance" style={{ animationDelay: "140ms" }}>
               {T.h1}
             </h1>
-            <p className="mt-5 text-lg text-gray-600 dark:text-gray-300 max-w-xl">{T.intro(total, firstYear, lastYear)}</p>
+            <p className="rise mt-5 text-lg text-gray-600 dark:text-gray-300 max-w-xl" style={{ animationDelay: "220ms" }}>{T.intro(total, firstYear, lastYear)}</p>
 
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="rise mt-8 flex flex-wrap gap-3" style={{ animationDelay: "300ms" }}>
               <Link href="/phones" className="btn-primary px-6 py-3 text-base">
                 {T.search}
               </Link>
@@ -58,7 +58,7 @@ export default function HomeContent({ locale = "en" }: { locale?: Locale }) {
               </Link>
             </div>
 
-            <dl className="mt-10 flex gap-8">
+            <dl className="rise mt-10 flex gap-8" style={{ animationDelay: "380ms" }}>
               {stats.map((s) => (
                 <div key={s.l}>
                   <dt className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-gray-100 tabular-nums">
@@ -71,9 +71,11 @@ export default function HomeContent({ locale = "en" }: { locale?: Locale }) {
           </div>
 
           {showcase.length > 0 && (
-            <HeroShowcase
-              items={showcase.map((p) => ({ slug: p.slug, name: p.name, image: p.image as string }))}
-            />
+            <div className="rise" style={{ animationDelay: "240ms" }}>
+              <HeroShowcase
+                items={showcase.map((p) => ({ slug: p.slug, name: p.name, image: p.image as string }))}
+              />
+            </div>
           )}
         </div>
       </section>

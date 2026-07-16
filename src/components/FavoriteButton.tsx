@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useFavorites } from "@/lib/saved";
 
 /** Bookmark (flag) toggle. Works inside a card <Link> — stops navigation. */
@@ -14,6 +15,7 @@ export default function FavoriteButton({
 }) {
   const { has, toggle } = useFavorites();
   const active = has(slug);
+  const [pop, setPop] = useState(false);
   const px = size === "lg" ? 22 : 18;
   return (
     <button
@@ -22,6 +24,7 @@ export default function FavoriteButton({
         e.preventDefault();
         e.stopPropagation();
         toggle(slug);
+        setPop(true);
       }}
       aria-pressed={active}
       aria-label={active ? "Remove from favorites" : "Add to favorites"}
@@ -40,6 +43,8 @@ export default function FavoriteButton({
         strokeLinejoin="round"
         strokeLinecap="round"
         aria-hidden
+        className={pop ? "animate-fav-pop" : undefined}
+        onAnimationEnd={() => setPop(false)}
       >
         <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4.5L5 21V4a1 1 0 0 1 1-1z" />
       </svg>

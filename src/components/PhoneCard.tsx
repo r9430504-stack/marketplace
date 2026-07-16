@@ -13,7 +13,7 @@ export default function PhoneCard({ phone, locale = "en" }: { phone: Phone; loca
   return (
     <Link
       href={href}
-      className="reveal group glass rounded-2xl relative hover:shadow-2xl hover:-translate-y-1.5 hover:z-10 transition-all duration-300 ease-out flex flex-col"
+      className="reveal group glass rounded-2xl relative hover:shadow-[0_22px_44px_-14px_rgba(20,40,160,0.38)] hover:-translate-y-1.5 hover:z-10 transition-all duration-300 ease-out flex flex-col"
     >
       {/* The emerge transform lives on this wrapper (not the <img>) because the
        * image's `img-fade` class sets `transition: opacity`, which would clobber
