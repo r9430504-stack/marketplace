@@ -18,6 +18,7 @@ import PhoneCard from "@/components/PhoneCard";
 import SpecTable from "@/components/SpecTable";
 import BuyLinks from "@/components/BuyLinks";
 import BackButton from "@/components/BackButton";
+import Comments from "@/components/Comments";
 import AdSlot from "@/components/AdSlot";
 import { SITE_URL } from "@/lib/site";
 
@@ -223,6 +224,10 @@ export default async function PhonePageRu({
           </div>
         </section>
       )}
+
+      <section className="reveal-up mt-12">
+        <Comments slug={phone.slug} locale="ru" />
+      </section>
 
       {(prev || next) && (
         <nav className="reveal-up mt-12 grid grid-cols-2 gap-3">
