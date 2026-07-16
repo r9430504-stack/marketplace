@@ -306,6 +306,93 @@ body {
   }
 }
 
+/* Shimmering placeholder shown behind a photo while it loads (see
+ * PhoneVisual). It sweeps a soft highlight across a grey panel and fades out
+ * once the photo has loaded — so a slow image animates instead of sitting
+ * blank. */
+.img-skeleton {
+  background:
+    linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0) 30%,
+      rgba(255, 255, 255, 0.65) 50%,
+      rgba(255, 255, 255, 0) 70%
+    ),
+    #e9edf2;
+  background-size: 220% 100%, 100% 100%;
+  background-repeat: no-repeat;
+  animation: skeletonSweep 1.5s ease-in-out infinite;
+  transition: opacity 0.4s ease;
+}
+.dark .img-skeleton {
+  background:
+    linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0) 30%,
+      rgba(255, 255, 255, 0.08) 50%,
+      rgba(255, 255, 255, 0) 70%
+    ),
+    #1c1c1c;
+  background-size: 220% 100%, 100% 100%;
+  background-repeat: no-repeat;
+}
+@keyframes skeletonSweep {
+  0% {
+    background-position: 180% 0, 0 0;
+  }
+  100% {
+    background-position: -80% 0, 0 0;
+  }
+}
+/* Once the photo has loaded, fade the skeleton away. */
+.img-frame:has(img.loaded) .img-skeleton {
+  opacity: 0;
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .img-skeleton {
+    animation: none !important;
+  }
+}
+
+/* Chat "typing" indicator — three dots bounce in sequence while the
+ * consultant is thinking. */
+.typing-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background: #9aa3af;
+  animation: typingBounce 1.2s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.typing-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.dark .typing-dot {
+  background: #6b7280;
+}
+@keyframes typingBounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .typing-dot {
+    animation: none !important;
+    opacity: 0.7;
+  }
+}
+
 /* Samsung navy helpers */
 .text-samsung {
   color: var(--samsung);

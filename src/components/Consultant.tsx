@@ -272,7 +272,19 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
                 </div>
               );
             })}
-            {loading && <div className="text-left"><span className="inline-block rounded-2xl px-3 py-2 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400">{t.thinking}</span></div>}
+            {loading && (
+              <div className="text-left">
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-2xl px-4 py-3.5 bg-gray-100 dark:bg-gray-800"
+                  role="status"
+                  aria-label={t.thinking}
+                >
+                  <span className="typing-dot" />
+                  <span className="typing-dot" />
+                  <span className="typing-dot" />
+                </span>
+              </div>
+            )}
           </div>
 
           <form onSubmit={(e) => { e.preventDefault(); send(input); }} className="border-t border-gray-200 dark:border-gray-800 p-2 flex gap-2 shrink-0">
