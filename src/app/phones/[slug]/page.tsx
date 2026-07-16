@@ -18,6 +18,7 @@ import SpecTable from "@/components/SpecTable";
 import BuyLinks from "@/components/BuyLinks";
 import BackButton from "@/components/BackButton";
 import FavoriteButton from "@/components/FavoriteButton";
+import Comments from "@/components/Comments";
 import AdSlot from "@/components/AdSlot";
 import { SITE_URL } from "@/lib/site";
 
@@ -263,6 +264,11 @@ export default async function PhonePage({
           </div>
         </section>
       )}
+
+      {/* Comments */}
+      <section className="reveal-up mt-12">
+        <Comments slug={phone.slug} locale="en" />
+      </section>
 
       {/* Prev / next in the line */}
       {(prev || next) && (
