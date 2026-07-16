@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { getComments, addComment, deleteComment } from "@/lib/db";
+import { containsProfanity } from "@/lib/profanity";
 
 export const runtime = "nodejs";
 
@@ -72,6 +73,7 @@ export async function POST(req: Request) {
   if (!isSlug(body.slug)) return Response.json({ error: "bad_request" }, { status: 400 });
   const text = clean(body.body);
   if (text.length < 2) return Response.json({ error: "empty" }, { status: 400 });
+  if (containsProfanity(text)) return Response.json({ error: "profanity" }, { status: 422 });
 
   try {
     const c = await addComment(body.slug, me, text);
