@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { t, localeFromPathname, withLocale } from "@/lib/i18n";
 
 // Deep pages that already have a Russian version (home is handled separately).
-const RU_READY = new Set<string>(["/phones", "/forum"]);
+const RU_READY = new Set<string>(["/phones", "/forum", "/compare", "/best", "/history"]);
 
 export default function HeaderNav() {
   const path = usePathname() || "/";
