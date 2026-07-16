@@ -8,6 +8,10 @@ export const metadata: Metadata = {
   },
 };
 
+// Refresh periodically so owner-added models and edited text appear
+// automatically (ISR) without a rebuild.
+export const revalidate = 60;
+
 export default function HomePage() {
   return <HomeContent locale="en" />;
 }

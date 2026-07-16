@@ -4,7 +4,18 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 
 type SeriesOpt = { id: string; label: string };
-type Custom = { slug: string; name: string };
+type FullPhone = {
+  slug: string;
+  name: string;
+  series?: string;
+  releaseYear?: number;
+  releaseDate?: string;
+  tagline?: string;
+  image?: string;
+  keyFeatures?: string[];
+  history?: string;
+  specs?: Record<string, string>;
+};
 
 const SPEC_FIELDS: { key: string; label: string; required?: boolean }[] = [
   { key: "display", label: "Display", required: true },
@@ -68,7 +79,8 @@ export default function AdminPhones({ seriesOptions }: { seriesOptions: SeriesOp
   const [busy, setBusy] = useState(false);
   const [imgBusy, setImgBusy] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string; slug?: string } | null>(null);
-  const [list, setList] = useState<Custom[]>([]);
+  const [list, setList] = useState<FullPhone[]>([]);
+  const [editingSlug, setEditingSlug] = useState<string | null>(null);
 
   const set = (k: string, v: string) => setF((s) => ({ ...s, [k]: v }));
   const setSpec = (k: string, v: string) => setSpecs((s) => ({ ...s, [k]: v }));
@@ -90,12 +102,35 @@ export default function AdminPhones({ seriesOptions }: { seriesOptions: SeriesOp
     try {
       const r = await fetch("/api/admin/phones");
       const d = await r.json();
-      setList(Array.isArray(d.phones) ? d.phones.map((p: Custom) => ({ slug: p.slug, name: p.name })) : []);
+      setList(Array.isArray(d.phones) ? (d.phones as FullPhone[]) : []);
     } catch {}
   }, []);
   useEffect(() => {
     loadList();
   }, [loadList]);
+
+  const reset = () => {
+    setF({ series: seriesOptions[0]?.id ?? "" });
+    setSpecs({});
+    setEditingSlug(null);
+  };
+
+  const startEdit = (p: FullPhone) => {
+    setEditingSlug(p.slug);
+    setMsg(null);
+    setF({
+      name: p.name ?? "",
+      series: p.series ?? seriesOptions[0]?.id ?? "",
+      releaseYear: p.releaseYear != null ? String(p.releaseYear) : "",
+      releaseDate: p.releaseDate ?? "",
+      tagline: p.tagline ?? "",
+      image: p.image ?? "",
+      keyFeatures: (p.keyFeatures ?? []).join(", "),
+      history: p.history ?? "",
+    });
+    setSpecs({ ...(p.specs ?? {}) });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,13 +151,13 @@ export default function AdminPhones({ seriesOptions }: { seriesOptions: SeriesOp
           keyFeatures: f.keyFeatures,
           history: f.history,
           specs,
+          editSlug: editingSlug ?? undefined,
         }),
       });
       const d = await r.json().catch(() => ({}));
       if (r.ok && d.slug) {
-        setMsg({ ok: true, text: "Model created.", slug: d.slug });
-        setF({ series: seriesOptions[0]?.id ?? "" });
-        setSpecs({});
+        setMsg({ ok: true, text: editingSlug ? "Model updated." : "Model created.", slug: d.slug });
+        reset();
         loadList();
       } else {
         const err = d.error === "exists" ? "A model with this name already exists." : `Couldn't save (${d.error ?? r.status}).`;
@@ -245,9 +280,16 @@ export default function AdminPhones({ seriesOptions }: { seriesOptions: SeriesOp
           </div>
         )}
 
-        <button type="submit" disabled={busy} className="btn-primary px-6 py-3 text-base disabled:opacity-40">
-          {busy ? "Saving…" : "Create model"}
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button type="submit" disabled={busy} className="btn-primary px-6 py-3 text-base disabled:opacity-40">
+            {busy ? "Saving…" : editingSlug ? "Save changes" : "Create model"}
+          </button>
+          {editingSlug && (
+            <button type="button" onClick={reset} className="btn-outline px-5 py-3 text-base">
+              Cancel edit
+            </button>
+          )}
+        </div>
       </form>
 
       {list.length > 0 && (
@@ -256,12 +298,17 @@ export default function AdminPhones({ seriesOptions }: { seriesOptions: SeriesOp
           <ul className="space-y-2">
             {list.map((p) => (
               <li key={p.slug} className="glass flex items-center justify-between gap-3 rounded-xl px-4 py-3">
-                <Link href={`/phones/${p.slug}`} className="font-medium text-[#1428a0] dark:text-blue-300 hover:underline">
+                <Link href={`/phones/${p.slug}`} className="min-w-0 truncate font-medium text-[#1428a0] dark:text-blue-300 hover:underline">
                   {p.name}
                 </Link>
-                <button onClick={() => remove(p.slug)} className="text-sm font-medium text-red-600 hover:underline dark:text-red-400">
-                  Delete
-                </button>
+                <span className="flex shrink-0 items-center gap-3">
+                  <button onClick={() => startEdit(p)} className="text-sm font-medium text-gray-600 hover:underline dark:text-gray-300">
+                    Edit
+                  </button>
+                  <button onClick={() => remove(p.slug)} className="text-sm font-medium text-red-600 hover:underline dark:text-red-400">
+                    Delete
+                  </button>
+                </span>
               </li>
             ))}
           </ul>

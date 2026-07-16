@@ -1,5 +1,5 @@
 import { auth, isOwnerEmail } from "@/auth";
-import { getCustomPhones, upsertCustomPhone, deleteCustomPhone } from "@/lib/db";
+import { getCustomPhones, getCustomPhone, upsertCustomPhone, deleteCustomPhone } from "@/lib/db";
 import { getPhoneBySlug, type Phone, type SeriesId, type Specs } from "@/lib/phones";
 
 export const runtime = "nodejs";
@@ -41,10 +41,17 @@ export async function POST(req: Request) {
   if (series.length < 2) return Response.json({ error: "series" }, { status: 400 });
   if (!Number.isFinite(year) || year < 2005 || year > 2100) return Response.json({ error: "year" }, { status: 400 });
 
-  const slug = slugify(name);
-  if (!slug) return Response.json({ error: "slug" }, { status: 400 });
-  // Don't shadow a built-in model.
-  if (getPhoneBySlug(slug)) return Response.json({ error: "exists" }, { status: 409 });
+  // Editing an existing custom model keeps its slug; otherwise derive a new one.
+  const editSlug = typeof b.editSlug === "string" && /^[a-z0-9-]{1,64}$/.test(b.editSlug) ? b.editSlug : "";
+  let slug: string;
+  if (editSlug && (await getCustomPhone(editSlug))) {
+    slug = editSlug;
+  } else {
+    slug = slugify(name);
+    if (!slug) return Response.json({ error: "slug" }, { status: 400 });
+    // Don't shadow a built-in model.
+    if (getPhoneBySlug(slug)) return Response.json({ error: "exists" }, { status: 409 });
+  }
 
   const specIn = (b.specs ?? {}) as Record<string, unknown>;
   const specs: Specs = {
