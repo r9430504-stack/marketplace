@@ -47,7 +47,7 @@ export default function AuthButton() {
         <path fill="#4CAF50" d="M24 45c5.2 0 10-2 13.6-5.2l-6.3-5.2C29.2 36 26.7 37 24 37c-5.3 0-9.7-2.6-11.3-6.9l-6.5 5C9.1 41.4 16 45 24 45z" />
         <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4 5.6l6.3 5.2C41.8 35.6 45 30.3 45 24c0-1.2-.1-2.3-.4-3.5z" />
       </svg>
-      <span>{t.in}</span>
+      <span className="hidden sm:inline">{t.in}</span>
     </button>
   );
 }
