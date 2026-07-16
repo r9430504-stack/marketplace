@@ -20,11 +20,15 @@ import BackButton from "@/components/BackButton";
 import FavoriteButton from "@/components/FavoriteButton";
 import Comments from "@/components/Comments";
 import AdSlot from "@/components/AdSlot";
+import { getCustomPhone } from "@/lib/db";
 import { SITE_URL } from "@/lib/site";
 
 export function generateStaticParams() {
   return getAllPhones().map((p) => ({ slug: p.slug }));
 }
+
+// Owner-added models aren't in the static set — render them on demand.
+export const dynamicParams = true;
 
 export async function generateMetadata({
   params,
@@ -32,7 +36,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const phone = getPhoneBySlug(slug);
+  const phone = getPhoneBySlug(slug) ?? (await getCustomPhone(slug)) ?? undefined;
   if (!phone) return { title: "Model not found" };
 
   const title = `${phone.name} — specifications and history`;
@@ -51,7 +55,7 @@ export default async function PhonePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const phone = getPhoneBySlug(slug);
+  const phone = getPhoneBySlug(slug) ?? (await getCustomPhone(slug)) ?? undefined;
   if (!phone) notFound();
 
   const s = seriesMeta(phone.series);

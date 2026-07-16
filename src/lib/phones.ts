@@ -49,6 +49,9 @@ export type Phone = {
   image?: string;
   /** Additional photos (other angles/colors) — shown in the gallery */
   images?: string[];
+  /** True for owner-added models stored in the database (not the static set).
+   *  Their image is a full URL, so we never look for a local thumbnail file. */
+  custom?: boolean;
 };
 
 // ─── Lines ───

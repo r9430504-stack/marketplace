@@ -1,10 +1,11 @@
-import { getAllPhones, getYears, SERIES, type SeriesId } from "@/lib/phones";
+import { getAllPhones, SERIES, type SeriesId } from "@/lib/phones";
+import { getCustomPhones } from "@/lib/db";
 import { t, type Locale } from "@/lib/i18n";
 import PhoneBrowser from "@/components/PhoneBrowser";
 import AdSlot from "@/components/AdSlot";
 import BackButton from "@/components/BackButton";
 
-export default function CatalogContent({
+export default async function CatalogContent({
   locale = "en",
   series,
   q,
@@ -14,8 +15,12 @@ export default function CatalogContent({
   q?: string;
 }) {
   const T = t(locale).catalog;
-  const phones = getAllPhones();
-  const years = getYears();
+  // Static catalog plus any owner-added models from the database.
+  const custom = await getCustomPhones();
+  const phones = [...getAllPhones(), ...custom].sort(
+    (a, b) => b.releaseYear - a.releaseYear || a.name.localeCompare(b.name)
+  );
+  const years = [...new Set(phones.map((p) => p.releaseYear))].sort((a, b) => b - a);
   const validSeries = SERIES.find((s) => s.id === series)?.id as SeriesId | undefined;
 
   return (
