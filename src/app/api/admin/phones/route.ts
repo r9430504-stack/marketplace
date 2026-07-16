@@ -1,6 +1,6 @@
 import { auth, isOwnerEmail } from "@/auth";
 import { getCustomPhones, upsertCustomPhone, deleteCustomPhone } from "@/lib/db";
-import { getPhoneBySlug, SERIES, type Phone, type SeriesId, type Specs } from "@/lib/phones";
+import { getPhoneBySlug, type Phone, type SeriesId, type Specs } from "@/lib/phones";
 
 export const runtime = "nodejs";
 
@@ -34,10 +34,11 @@ export async function POST(req: Request) {
   const b = await req.json().catch(() => ({} as Record<string, unknown>));
 
   const name = str(b.name, 80);
+  // Any line name is allowed — a built-in one or a new custom line.
   const series = str(b.series, 40) as SeriesId;
   const year = Number(b.releaseYear);
   if (name.length < 2) return Response.json({ error: "name" }, { status: 400 });
-  if (!SERIES.some((s) => s.id === series)) return Response.json({ error: "series" }, { status: 400 });
+  if (series.length < 2) return Response.json({ error: "series" }, { status: 400 });
   if (!Number.isFinite(year) || year < 2005 || year > 2100) return Response.json({ error: "year" }, { status: 400 });
 
   const slug = slugify(name);
@@ -75,7 +76,11 @@ export async function POST(req: Request) {
         .filter(Boolean)
         .slice(0, 8);
 
-  const image = str(b.image, 500);
+  // Image is either a normal URL or an uploaded file as a data: URL (capped
+  // to keep the row small — the client already downscales before sending).
+  const image = typeof b.image === "string" ? b.image.trim().slice(0, 2_000_000) : "";
+  const validImage =
+    /^https?:\/\//.test(image) || /^data:image\/(png|jpe?g|webp|gif|avif);base64,/.test(image);
   const phone: Phone = {
     slug,
     name,
@@ -86,7 +91,7 @@ export async function POST(req: Request) {
     history: str(b.history, 4000) || "",
     keyFeatures,
     specs,
-    image: /^https?:\/\//.test(image) ? image : undefined,
+    image: validImage ? image : undefined,
     custom: true,
   };
 

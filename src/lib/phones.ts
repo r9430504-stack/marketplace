@@ -207,7 +207,9 @@ export const SERIES: SeriesMeta[] = [
 ];
 
 export function seriesMeta(id: SeriesId): SeriesMeta {
-  return SERIES.find((s) => s.id === id) ?? SERIES[0];
+  // Unknown (owner-added) lines fall back to a neutral style but keep their
+  // own name as the label, so custom lines display correctly.
+  return SERIES.find((s) => s.id === id) ?? { ...SERIES[0], id, label: id, blurb: "" };
 }
 
 /** URL-safe slug for a line, e.g. "Galaxy Z Fold" → "galaxy-z-fold". */
