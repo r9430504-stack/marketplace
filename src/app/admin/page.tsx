@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { auth, isOwnerEmail } from "@/auth";
 import BackButton from "@/components/BackButton";
 import AdminPhones from "@/components/AdminPhones";
+import { IconLock } from "@/components/icons";
 import { SERIES } from "@/lib/phones";
 
 export const metadata: Metadata = {
@@ -31,7 +32,7 @@ export default async function AdminPage() {
         </>
       ) : (
         <div className="glass rounded-2xl p-8 text-center">
-          <p className="text-4xl">🔒</p>
+          <IconLock className="mx-auto h-9 w-9 text-gray-300 dark:text-gray-600" />
           <p className="mt-3 text-gray-600 dark:text-gray-300">This page is for the site owner only.</p>
         </div>
       )}

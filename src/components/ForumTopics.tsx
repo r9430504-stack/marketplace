@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { Locale } from "@/lib/i18n";
 import { timeAgo } from "@/lib/timeago";
+import { IconChat } from "@/components/icons";
 
 type Topic = {
   id: string;
@@ -69,7 +70,7 @@ export default function ForumTopics({ locale = "en" }: { locale?: Locale }) {
         </ul>
       ) : topics.length === 0 ? (
         <div className="glass rounded-2xl p-8 text-center">
-          <p className="text-4xl">💬</p>
+          <IconChat className="mx-auto h-9 w-9 text-gray-300 dark:text-gray-600" />
           <p className="mt-3 text-gray-600 dark:text-gray-300">{t.empty}</p>
           <Link href={`${base}/new`} className="btn-primary mt-5 inline-flex px-5 py-2.5 text-sm">
             <span className="text-base leading-none">+</span> {t.add}
@@ -83,8 +84,8 @@ export default function ForumTopics({ locale = "en" }: { locale?: Locale }) {
                 href={`${base}/${tp.id}`}
                 className="reveal group glass flex items-center gap-4 rounded-2xl px-4 py-3 transition-all hover:-translate-y-0.5 hover:shadow-md"
               >
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#eef1fb] dark:bg-[#1b2338] text-[#1428a0] dark:text-blue-300 font-bold">
-                  💬
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#eef1fb] dark:bg-[#1b2338] text-[#1428a0] dark:text-blue-300">
+                  <IconChat className="h-5 w-5" />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block font-semibold text-gray-900 dark:text-gray-100 truncate group-hover:text-[#1428a0] dark:group-hover:text-blue-300">

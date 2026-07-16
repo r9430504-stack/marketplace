@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { SERIES, FEATURE_FILTERS, filterPhones, type Phone, type SeriesId } from "@/lib/phones";
 import { t, type Locale } from "@/lib/i18n";
 import PhoneCard from "./PhoneCard";
+import { IconSearchOff } from "./icons";
 
 export default function PhoneBrowser({
   phones,
@@ -117,7 +118,7 @@ export default function PhoneBrowser({
 
       {results.length === 0 ? (
         <div className="text-center py-16 text-gray-400 dark:text-gray-600">
-          <p className="text-4xl">🤔</p>
+          <IconSearchOff className="mx-auto h-9 w-9" />
           <p className="mt-3">{T.foundNone}</p>
         </div>
       ) : (
