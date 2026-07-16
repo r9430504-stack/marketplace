@@ -147,12 +147,12 @@ export default async function PhonePage({
 
       {/* Hero */}
       <div className="grid md:grid-cols-2 gap-8 items-center">
-        <div className="h-72 sm:h-96 rounded-3xl overflow-hidden glass">
+        <div className="rise h-72 sm:h-96 rounded-3xl overflow-hidden glass" style={{ animationDelay: "60ms" }}>
           <PhotoViewer images={gallery} name={phone.name}>
             <PhoneVisual phone={phone} />
           </PhotoViewer>
         </div>
-        <div>
+        <div className="rise" style={{ animationDelay: "180ms" }}>
           <span className={`text-sm font-semibold ${s.accent}`}>{s.label}</span>
           <div className="flex items-start justify-between gap-3 mt-1">
             <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-gray-100">
@@ -189,7 +189,7 @@ export default async function PhonePage({
       <AdSlot />
 
       {/* History */}
-      <section className="mt-4">
+      <section className="reveal-up mt-4">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Model history</h2>
         <div className="prose-none text-gray-700 dark:text-gray-300 leading-relaxed space-y-4">
           {phone.history.split("\n\n").map((para, i) => (
@@ -199,14 +199,14 @@ export default async function PhonePage({
       </section>
 
       {/* Specifications */}
-      <section className="mt-10">
+      <section className="reveal-up mt-10">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Full specifications</h2>
         <SpecTable specs={phone.specs} year={phone.releaseYear} />
       </section>
 
       {/* Compare */}
       {comparisons.length > 0 && (
-        <section className="mt-12">
+        <section className="reveal-up mt-12">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
             Compare the {phone.name}
           </h2>
@@ -233,7 +233,7 @@ export default async function PhonePage({
       )}
 
       {/* FAQ */}
-      <section className="mt-12">
+      <section className="reveal-up mt-12">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
           {phone.name} — frequently asked questions
         </h2>
@@ -242,9 +242,9 @@ export default async function PhonePage({
             <details key={f.q} className="glass rounded-xl px-4 py-3 group">
               <summary className="font-semibold text-gray-900 dark:text-gray-100 cursor-pointer list-none flex items-center justify-between gap-2">
                 {f.q}
-                <span className="text-gray-400 group-open:rotate-45 transition-transform">+</span>
+                <span className="text-gray-400 group-open:rotate-45 transition-transform duration-300">+</span>
               </summary>
-              <p className="text-gray-600 dark:text-gray-300 mt-2 text-sm leading-relaxed">{f.a}</p>
+              <p className="faq-a text-gray-600 dark:text-gray-300 mt-2 text-sm leading-relaxed">{f.a}</p>
             </details>
           ))}
         </div>
@@ -252,7 +252,7 @@ export default async function PhonePage({
 
       {/* Related */}
       {related.length > 0 && (
-        <section className="mt-12">
+        <section className="reveal-up mt-12">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
             More {s.label}
           </h2>
@@ -266,7 +266,7 @@ export default async function PhonePage({
 
       {/* Prev / next in the line */}
       {(prev || next) && (
-        <nav className="mt-12 grid grid-cols-2 gap-3">
+        <nav className="reveal-up mt-12 grid grid-cols-2 gap-3">
           {prev ? (
             <Link
               href={`/phones/${prev.slug}`}

@@ -75,7 +75,7 @@ export default async function CollectionPage({
         <span className="text-gray-700 dark:text-gray-300">{c.title}</span>
       </nav>
 
-      <header className="mb-8">
+      <header className="rise mb-8">
         <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-black dark:text-gray-100">
           {c.title}
         </h1>
@@ -91,7 +91,7 @@ export default async function CollectionPage({
 
       <AdSlot />
 
-      <section className="mt-12">
+      <section className="reveal-up mt-12">
         <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-3">More collections</h2>
         <div className="flex flex-wrap gap-2">
           {getCollections()
@@ -100,7 +100,7 @@ export default async function CollectionPage({
               <Link
                 key={o.slug}
                 href={`/best/${o.slug}`}
-                className="text-sm px-3 py-1.5 rounded-full bg-white border border-gray-300 text-gray-700 hover:border-black hover:text-black transition-colors"
+                className="text-sm px-3 py-1.5 rounded-full bg-white border border-gray-300 text-gray-700 hover:border-[#1428a0] hover:text-[#1428a0] transition-all duration-200 active:scale-95 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-400 dark:hover:text-white"
               >
                 {o.title}
               </Link>
