@@ -107,3 +107,28 @@ export async function deleteComment(id: string, userId: string, isOwner: boolean
   if (isOwner) await p.query("DELETE FROM comments WHERE id = $1", [id]);
   else await p.query("DELETE FROM comments WHERE id = $1 AND user_id = $2", [id, userId]);
 }
+
+// ── Forum board ─────────────────────────────────────────────────────────────
+// Aggregate view over comments: which models have active discussions, and the
+// most recent posts across the whole site. No personal info (no user_id).
+export async function getForumBoards(limit = 100): Promise<{ slug: string; count: number; last: string }[]> {
+  const p = getPool();
+  if (!p) return [];
+  await ensure(p);
+  const r = await p.query(
+    "SELECT slug, count(*)::int AS count, max(created_at) AS last FROM comments GROUP BY slug ORDER BY max(created_at) DESC LIMIT $1",
+    [limit]
+  );
+  return r.rows as { slug: string; count: number; last: string }[];
+}
+
+export async function getLatestComments(limit = 15): Promise<{ slug: string; body: string; created_at: string }[]> {
+  const p = getPool();
+  if (!p) return [];
+  await ensure(p);
+  const r = await p.query(
+    "SELECT slug, body, created_at FROM comments ORDER BY created_at DESC LIMIT $1",
+    [limit]
+  );
+  return r.rows as { slug: string; body: string; created_at: string }[];
+}

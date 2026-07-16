@@ -16,7 +16,7 @@ export function withLocale(path: string, locale: Locale): string {
 }
 
 type Dict = {
-  nav: { catalog: string; compare: string; guides: string; history: string };
+  nav: { catalog: string; compare: string; guides: string; history: string; forum: string };
   langName: string;
   back: string;
   catalog: {
@@ -76,7 +76,7 @@ type Dict = {
 
 export const UI: Record<Locale, Dict> = {
   en: {
-    nav: { catalog: "Catalog", compare: "Compare", guides: "Guides", history: "History" },
+    nav: { catalog: "Catalog", compare: "Compare", guides: "Guides", history: "History", forum: "Forum" },
     langName: "English",
     back: "Back",
     catalog: {
@@ -143,7 +143,7 @@ export const UI: Record<Locale, Dict> = {
     },
   },
   ru: {
-    nav: { catalog: "Каталог", compare: "Сравнение", guides: "Подборки", history: "История" },
+    nav: { catalog: "Каталог", compare: "Сравнение", guides: "Подборки", history: "История", forum: "Форум" },
     langName: "Русский",
     back: "Назад",
     catalog: {

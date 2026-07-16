@@ -8,7 +8,7 @@ type Comment = { id: string; body: string; createdAt: string; mine: boolean };
 
 const T = {
   en: {
-    title: "Comments",
+    title: "Discussion",
     empty: "No comments yet — be the first to share your thoughts.",
     placeholder: "Write a comment…",
     post: "Post",
@@ -26,7 +26,7 @@ const T = {
     day: "d ago",
   },
   ru: {
-    title: "Комментарии",
+    title: "Обсуждение",
     empty: "Пока нет комментариев — будьте первым.",
     placeholder: "Напишите комментарий…",
     post: "Отправить",
