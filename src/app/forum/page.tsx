@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import BackButton from "@/components/BackButton";
-import ForumContent from "@/components/ForumContent";
+import ForumTopics from "@/components/ForumTopics";
 import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
@@ -23,7 +23,7 @@ export default function ForumPage() {
           Discussions about Samsung Galaxy phones — join the conversation on any model&rsquo;s page.
         </p>
       </header>
-      <ForumContent locale="en" />
+      <ForumTopics locale="en" />
     </div>
   );
 }
