@@ -19,6 +19,7 @@ const T = {
     anon: "Anonymous",
     remove: "Delete",
     error: "Something went wrong. Please try again.",
+    profanity: "Your comment looks like it contains offensive language. Please rephrase it.",
     justNow: "just now",
     min: "min ago",
     hr: "h ago",
@@ -36,6 +37,7 @@ const T = {
     anon: "Аноним",
     remove: "Удалить",
     error: "Что-то пошло не так. Попробуйте ещё раз.",
+    profanity: "Похоже, комментарий содержит недопустимую лексику. Пожалуйста, переформулируйте.",
     justNow: "только что",
     min: "мин назад",
     hr: "ч назад",
@@ -109,6 +111,10 @@ export default function Comments({ slug, locale = "en" }: { slug: string; locale
       });
       if (r.status === 401) {
         signIn("google");
+        return;
+      }
+      if (r.status === 422) {
+        setErr(t.profanity);
         return;
       }
       const d = await r.json().catch(() => ({}));
