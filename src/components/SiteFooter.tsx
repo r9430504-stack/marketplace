@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SITE_NAME } from "@/lib/site";
+import BrandMark from "./BrandMark";
 
 export default function SiteFooter() {
   return (
@@ -7,7 +8,7 @@ export default function SiteFooter() {
       <div className="max-w-6xl mx-auto px-4 py-10 grid gap-8 sm:grid-cols-3 text-sm">
         <div className="reveal-up">
           <p className="font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-            <span className="text-[#1428a0] dark:text-blue-400">◆</span>
+            <BrandMark size={22} />
             {SITE_NAME}
           </p>
           <p className="text-gray-500 dark:text-gray-400 mt-2 max-w-xs">
