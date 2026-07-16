@@ -136,7 +136,7 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
     const slug = path.split("/").filter(Boolean).pop() ?? "";
     const p = phones.find((x) => x.slug === slug);
     if (!p) return path;
-    return locale === "ru" && p.hasRu ? `/ru/phones/${p.slug}` : `/phones/${p.slug}`;
+    return locale === "ru" ? `/ru/phones/${p.slug}` : `/phones/${p.slug}`;
   };
   const nameFor = (path: string) => {
     const slug = path.split("/").filter(Boolean).pop() ?? "";

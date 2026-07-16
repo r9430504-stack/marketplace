@@ -2,14 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
+  getAllPhones,
   getPhoneBySlug,
   relatedPhones,
   comparisonsFor,
   comparisonSlug,
   seriesNeighbours,
-  hasRuTranslation,
   localizedPhone,
-  ruTranslatedSlugs,
   seriesMeta,
 } from "@/lib/phones";
 import PhoneVisual from "@/components/PhoneVisual";
@@ -20,11 +19,15 @@ import BuyLinks from "@/components/BuyLinks";
 import BackButton from "@/components/BackButton";
 import Comments from "@/components/Comments";
 import AdSlot from "@/components/AdSlot";
+import { getCustomPhone } from "@/lib/db";
 import { SITE_URL } from "@/lib/site";
 
 export function generateStaticParams() {
-  return ruTranslatedSlugs().map((slug) => ({ slug }));
+  return getAllPhones().map((p) => ({ slug: p.slug }));
 }
+
+// Owner-added models aren't in the static set — render them on demand.
+export const dynamicParams = true;
 
 export async function generateMetadata({
   params,
@@ -32,7 +35,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const base = getPhoneBySlug(slug);
+  const base = getPhoneBySlug(slug) ?? (await getCustomPhone(slug)) ?? undefined;
   if (!base) return { title: "Модель не найдена" };
   const phone = localizedPhone(base, "ru");
   const title = `${phone.name} — характеристики и история`;
@@ -80,8 +83,8 @@ export default async function PhonePageRu({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const base = getPhoneBySlug(slug);
-  if (!base || !hasRuTranslation(slug)) notFound();
+  const base = getPhoneBySlug(slug) ?? (await getCustomPhone(slug)) ?? undefined;
+  if (!base) notFound();
   const phone = localizedPhone(base, "ru");
 
   const s = seriesMeta(phone.series);
@@ -101,8 +104,7 @@ export default async function PhonePageRu({
     })),
   };
 
-  const modelHref = (p: { slug: string }) =>
-    hasRuTranslation(p.slug) ? `/ru/phones/${p.slug}` : `/phones/${p.slug}`;
+  const modelHref = (p: { slug: string }) => `/ru/phones/${p.slug}`;
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">

@@ -199,7 +199,7 @@ export default function TopicThread({ id, locale = "en" }: { id: string; locale?
     );
   }
 
-  const modelHref = `${locale === "ru" && topic.ru ? "/ru" : ""}/phones/${topic.slug}`;
+  const modelHref = `${locale === "ru" ? "/ru" : ""}/phones/${topic.slug}`;
 
   return (
     <div>

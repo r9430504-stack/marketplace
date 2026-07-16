@@ -269,7 +269,9 @@ export function localizeDate(date: string, locale: "en" | "ru"): string {
 export function localizedPhone(phone: Phone, locale: "en" | "ru"): Phone {
   if (locale !== "ru") return phone;
   const ru = PHONES_RU[phone.slug];
-  if (!ru) return phone;
+  // No reviewed prose translation yet — keep the English body but still show the
+  // date in Russian so the page reads as a Russian page, not a mixed one.
+  if (!ru) return { ...phone, releaseDate: localizeDate(phone.releaseDate, "ru") };
   return {
     ...phone,
     tagline: ru.tagline,

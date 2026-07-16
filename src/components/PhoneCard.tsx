@@ -1,15 +1,12 @@
 import Link from "next/link";
-import { seriesMeta, hasRuTranslation, type Phone } from "@/lib/phones";
+import { seriesMeta, type Phone } from "@/lib/phones";
 import type { Locale } from "@/lib/i18n";
 import PhoneVisual from "./PhoneVisual";
 import FavoriteButton from "./FavoriteButton";
 
 export default function PhoneCard({ phone, locale = "en" }: { phone: Phone; locale?: Locale }) {
   const s = seriesMeta(phone.series);
-  const href =
-    locale === "ru" && hasRuTranslation(phone.slug)
-      ? `/ru/phones/${phone.slug}`
-      : `/phones/${phone.slug}`;
+  const href = locale === "ru" ? `/ru/phones/${phone.slug}` : `/phones/${phone.slug}`;
   return (
     <Link
       href={href}

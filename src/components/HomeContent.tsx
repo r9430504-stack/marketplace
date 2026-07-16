@@ -80,6 +80,7 @@ export default async function HomeContent({ locale = "en" }: { locale?: Locale }
             <div className="rise" style={{ animationDelay: "240ms" }}>
               <HeroShowcase
                 items={showcase.map((p) => ({ slug: p.slug, name: p.name, image: p.image as string }))}
+                locale={locale}
               />
             </div>
           )}
@@ -134,7 +135,7 @@ export default async function HomeContent({ locale = "en" }: { locale?: Locale }
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {featured.map((p) => (
-            <PhoneCard key={p.slug} phone={p} />
+            <PhoneCard key={p.slug} phone={p} locale={locale} />
           ))}
         </div>
       </section>
