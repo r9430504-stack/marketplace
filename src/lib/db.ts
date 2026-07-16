@@ -31,7 +31,25 @@ function ensure(p: Pool): Promise<void> {
            body       text        NOT NULL,
            created_at timestamptz NOT NULL DEFAULT now()
          );
-         CREATE INDEX IF NOT EXISTS comments_slug_idx ON comments (slug, created_at DESC);`
+         CREATE INDEX IF NOT EXISTS comments_slug_idx ON comments (slug, created_at DESC);
+         CREATE TABLE IF NOT EXISTS topics (
+           id         bigserial   PRIMARY KEY,
+           slug       text        NOT NULL,
+           title      text        NOT NULL,
+           body       text        NOT NULL,
+           user_id    text        NOT NULL,
+           created_at timestamptz NOT NULL DEFAULT now(),
+           last_at    timestamptz NOT NULL DEFAULT now()
+         );
+         CREATE INDEX IF NOT EXISTS topics_last_idx ON topics (last_at DESC);
+         CREATE TABLE IF NOT EXISTS topic_replies (
+           id         bigserial   PRIMARY KEY,
+           topic_id   bigint      NOT NULL REFERENCES topics(id) ON DELETE CASCADE,
+           body       text        NOT NULL,
+           user_id    text        NOT NULL,
+           created_at timestamptz NOT NULL DEFAULT now()
+         );
+         CREATE INDEX IF NOT EXISTS topic_replies_topic_idx ON topic_replies (topic_id, created_at);`
       )
       .then(() => undefined);
   }
@@ -108,27 +126,97 @@ export async function deleteComment(id: string, userId: string, isOwner: boolean
   else await p.query("DELETE FROM comments WHERE id = $1 AND user_id = $2", [id, userId]);
 }
 
-// ── Forum board ─────────────────────────────────────────────────────────────
-// Aggregate view over comments: which models have active discussions, and the
-// most recent posts across the whole site. No personal info (no user_id).
-export async function getForumBoards(limit = 100): Promise<{ slug: string; count: number; last: string }[]> {
+// ── Forum topics (threads) ──────────────────────────────────────────────────
+// A topic is a user-started thread about a model; replies are the discussion.
+// user_id is stored for accountability/moderation and never sent to clients.
+export type TopicRow = {
+  id: string;
+  slug: string;
+  title: string;
+  body: string;
+  user_id: string;
+  created_at: string;
+  last_at: string;
+};
+
+export async function createTopic(
+  slug: string,
+  userId: string,
+  title: string,
+  body: string
+): Promise<{ id: string } | null> {
   const p = getPool();
-  if (!p) return [];
+  if (!p) return null;
   await ensure(p);
   const r = await p.query(
-    "SELECT slug, count(*)::int AS count, max(created_at) AS last FROM comments GROUP BY slug ORDER BY max(created_at) DESC LIMIT $1",
-    [limit]
+    "INSERT INTO topics (slug, user_id, title, body) VALUES ($1, $2, $3, $4) RETURNING id",
+    [slug, userId, title, body]
   );
-  return r.rows as { slug: string; count: number; last: string }[];
+  return { id: String(r.rows[0].id) };
 }
 
-export async function getLatestComments(limit = 15): Promise<{ slug: string; body: string; created_at: string }[]> {
+export async function listTopics(
+  limit = 100
+): Promise<{ id: string; slug: string; title: string; created_at: string; last_at: string; replies: number }[]> {
   const p = getPool();
   if (!p) return [];
   await ensure(p);
   const r = await p.query(
-    "SELECT slug, body, created_at FROM comments ORDER BY created_at DESC LIMIT $1",
+    `SELECT t.id, t.slug, t.title, t.created_at, t.last_at,
+            (SELECT count(*)::int FROM topic_replies r WHERE r.topic_id = t.id) AS replies
+     FROM topics t ORDER BY t.last_at DESC LIMIT $1`,
     [limit]
   );
-  return r.rows as { slug: string; body: string; created_at: string }[];
+  return r.rows as { id: string; slug: string; title: string; created_at: string; last_at: string; replies: number }[];
+}
+
+export async function getTopic(id: string): Promise<TopicRow | null> {
+  const p = getPool();
+  if (!p) return null;
+  await ensure(p);
+  const r = await p.query("SELECT id, slug, title, body, user_id, created_at, last_at FROM topics WHERE id = $1", [id]);
+  return (r.rows[0] as TopicRow) ?? null;
+}
+
+export async function listReplies(topicId: string): Promise<CommentRow[]> {
+  const p = getPool();
+  if (!p) return [];
+  await ensure(p);
+  const r = await p.query(
+    "SELECT id, user_id, body, created_at FROM topic_replies WHERE topic_id = $1 ORDER BY created_at ASC",
+    [topicId]
+  );
+  return r.rows as CommentRow[];
+}
+
+export async function addReply(
+  topicId: string,
+  userId: string,
+  body: string
+): Promise<{ id: string; body: string; created_at: string } | null> {
+  const p = getPool();
+  if (!p) return null;
+  await ensure(p);
+  const r = await p.query(
+    "INSERT INTO topic_replies (topic_id, user_id, body) VALUES ($1, $2, $3) RETURNING id, body, created_at",
+    [topicId, userId, body]
+  );
+  await p.query("UPDATE topics SET last_at = now() WHERE id = $1", [topicId]);
+  return r.rows[0] as { id: string; body: string; created_at: string };
+}
+
+export async function deleteTopic(id: string, userId: string, isOwner: boolean): Promise<void> {
+  const p = getPool();
+  if (!p) return;
+  await ensure(p);
+  if (isOwner) await p.query("DELETE FROM topics WHERE id = $1", [id]);
+  else await p.query("DELETE FROM topics WHERE id = $1 AND user_id = $2", [id, userId]);
+}
+
+export async function deleteReply(id: string, userId: string, isOwner: boolean): Promise<void> {
+  const p = getPool();
+  if (!p) return;
+  await ensure(p);
+  if (isOwner) await p.query("DELETE FROM topic_replies WHERE id = $1", [id]);
+  else await p.query("DELETE FROM topic_replies WHERE id = $1 AND user_id = $2", [id, userId]);
 }
