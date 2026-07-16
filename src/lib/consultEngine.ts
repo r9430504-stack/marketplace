@@ -667,20 +667,20 @@ const SAY = {
     ru: "Привет! Скажите, что важнее — бюджет, камера, батарея, размер экрана, игры, S Pen или складной — и я подберу лучший Galaxy.",
   },
   thanks: {
-    en: "Happy to help! 🙂 Ask me anytime — I can also compare two models or find one for a specific budget.",
-    ru: "Рад помочь! 🙂 Обращайтесь — ещё могу сравнить две модели или подобрать под конкретный бюджет.",
+    en: "Happy to help! Ask me anytime — I can also compare two models or find one for a specific budget.",
+    ru: "Рад помочь! Обращайтесь — ещё могу сравнить две модели или подобрать под конкретный бюджет.",
   },
   bye: {
-    en: "Good luck with your choice! 👋 Come back anytime.",
-    ru: "Удачи с выбором! 👋 Заходите ещё.",
+    en: "Good luck with your choice! Come back anytime.",
+    ru: "Удачи с выбором! Заходите ещё.",
   },
   affirm: {
     en: "Great! What matters most to you — camera, battery, gaming, screen size or budget?",
     ru: "Отлично! Что для вас важнее всего — камера, батарея, игры, размер экрана или бюджет?",
   },
   offtopic: {
-    en: "I only help with choosing Samsung Galaxy phones 🙂 Tell me what you need — camera, battery, budget, size — and I'll recommend one.",
-    ru: "Я помогаю только с выбором смартфонов Samsung Galaxy 🙂 Скажите, что нужно — камера, батарея, бюджет, размер — и я подберу.",
+    en: "I only help with choosing Samsung Galaxy phones Tell me what you need — camera, battery, budget, size — and I'll recommend one.",
+    ru: "Я помогаю только с выбором смартфонов Samsung Galaxy Скажите, что нужно — камера, батарея, бюджет, размер — и я подберу.",
   },
   clarify: {
     en: "Happy to help you choose! To get it right, tell me two things: roughly what budget, and what matters most to you — camera, battery, gaming, screen size — or who it's for (work, a kid, a parent). Then I'll pick the best match.",

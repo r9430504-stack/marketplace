@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { IconZoom, IconClose } from "@/components/icons";
 
 /**
  * Wraps the model visual. If real photos exist, clicking opens a full-screen
@@ -63,8 +64,8 @@ export default function PhotoViewer({
         <span className="block h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.05] motion-reduce:transition-none motion-reduce:group-hover:scale-100">
           {children}
         </span>
-        <span className="absolute bottom-2 right-2 rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-medium text-white opacity-90 backdrop-blur transition-opacity group-hover:opacity-100">
-          🔍 {many ? `${images.length} photos` : "View"}
+        <span className="absolute bottom-2 right-2 inline-flex items-center gap-1 rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-medium text-white opacity-90 backdrop-blur transition-opacity group-hover:opacity-100">
+          <IconZoom className="h-3.5 w-3.5" /> {many ? `${images.length} photos` : "View"}
         </span>
       </button>
 
@@ -90,9 +91,9 @@ export default function PhotoViewer({
               type="button"
               onClick={close}
               aria-label="Close"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-2xl hover:bg-white/20"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-white/20"
             >
-              ✕
+              <IconClose className="h-5 w-5" />
             </button>
           </div>
 

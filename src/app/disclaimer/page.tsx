@@ -17,7 +17,7 @@ export default function DisclaimerPage() {
       </div>
       <div className="rounded-2xl border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30 p-5 mb-8">
         <p className="font-bold text-amber-900 dark:text-amber-200">
-          ⚠️ This is not the official Samsung site.
+          This is not the official Samsung site.
         </p>
         <p className="text-sm text-amber-800 dark:text-amber-300 mt-1">
           This project is not connected with, affiliated with, or endorsed by Samsung Electronics.

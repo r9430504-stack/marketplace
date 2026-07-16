@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { IconPhone } from "@/components/icons";
 
 export default function NotFound() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-24 text-center">
-      <p className="text-6xl">📱</p>
+      <IconPhone className="mx-auto h-14 w-14 text-gray-300 dark:text-gray-600" />
       <h1 className="mt-6 text-3xl font-bold text-gray-900 dark:text-gray-100">
         Model not found
       </h1>

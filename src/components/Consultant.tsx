@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { localeFromPathname } from "@/lib/i18n";
 import { recordPick } from "@/lib/saved";
+import { IconClose } from "@/components/icons";
 import type { ConsultPhone } from "@/lib/consult";
 
 type ChatMsg = { role: "user" | "assistant"; content: string };
@@ -35,30 +36,30 @@ const T = {
   en: {
     open: "Open the AI consultant",
     title: "Galaxy AI Consultant",
-    greeting: "👋 Hi! I'm Galaxy AI — your smart assistant for choosing a Samsung Galaxy phone. Tell me what matters to you (budget, camera, battery, size…) and I'll pick the right model and open its page for you.",
+    greeting: "Hi! I'm Galaxy AI — your smart assistant for choosing a Samsung Galaxy phone. Tell me what matters to you (budget, camera, battery, size…) and I'll pick the right model and open its page for you.",
     intro: "Ask me anything about Samsung Galaxy phones — I'll recommend the right one from our catalog.",
-    bubble: "👋 Need help choosing a Galaxy? Ask me!",
+    bubble: "Need help choosing a Galaxy? Ask me!",
     suggestions: ["Which Galaxy has the best battery?", "S24 or S25?", "Recommend a compact flagship", "Best Samsung foldable"],
     placeholder: "Ask about a Galaxy phone…",
     send: "Send",
     thinking: "Thinking…",
     goto: (name: string) => `Open ${name} →`,
-    notReady: "AI chat isn't switched on yet — please try again later 🙂",
+    notReady: "AI chat isn't switched on yet — please try again later",
     rate: "A bit too many questions at once — please try again in a minute.",
     error: "Something went wrong. Please try again.",
   },
   ru: {
     open: "Открыть ИИ-консультанта",
     title: "Galaxy AI консультант",
-    greeting: "👋 Привет! Я Galaxy AI — умный помощник по выбору смартфона Samsung Galaxy. Опишите, что для вас важно (бюджет, камера, батарея, размер…), и я подберу подходящую модель и открою её страницу.",
+    greeting: "Привет! Я Galaxy AI — умный помощник по выбору смартфона Samsung Galaxy. Опишите, что для вас важно (бюджет, камера, батарея, размер…), и я подберу подходящую модель и открою её страницу.",
     intro: "Спросите что угодно про смартфоны Samsung Galaxy — подберу подходящий из нашего каталога.",
-    bubble: "👋 Помогу выбрать Galaxy — спросите меня!",
+    bubble: "Помогу выбрать Galaxy — спросите меня!",
     suggestions: ["Какой Galaxy с лучшей батареей?", "S24 или S25?", "Посоветуй компактный флагман", "Лучший складной Samsung"],
     placeholder: "Спросите про телефон Galaxy…",
     send: "Отпр.",
     thinking: "Думаю…",
     goto: (name: string) => `Перейти к ${name} →`,
-    notReady: "Чат с ИИ ещё не подключён — попробуйте позже 🙂",
+    notReady: "Чат с ИИ ещё не подключён — попробуйте позже",
     rate: "Слишком много вопросов сразу — попробуйте через минуту.",
     error: "Что-то пошло не так. Попробуйте ещё раз.",
   },
@@ -159,7 +160,7 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
       let reply: string;
       if (r.status === 503) reply = t.notReady;
       else if (r.status === 429) reply = t.rate;
-      else if (!r.ok) reply = data.detail ? `${t.error}\n\n⚠️ ${data.detail}` : t.error;
+      else if (!r.ok) reply = data.detail ? `${t.error}\n\n${data.detail}` : t.error;
       else reply = data.reply || t.error;
       setMsgs((m) => [...m, { role: "assistant", content: reply }]);
       // Remember what the AI recommended (top pick) in the user's history.
@@ -182,9 +183,9 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
             <button
               onClick={dismissBubble}
               aria-label="Dismiss"
-              className="absolute -top-2 -right-2 z-10 h-6 w-6 rounded-full bg-gray-800 dark:bg-gray-700 text-white text-xs leading-none shadow flex items-center justify-center"
+              className="absolute -top-2 -right-2 z-10 h-6 w-6 rounded-full bg-gray-800 dark:bg-gray-700 text-white shadow flex items-center justify-center"
             >
-              ✕
+              <IconClose className="h-3.5 w-3.5" />
             </button>
             <button onClick={toggleOpen} className="flex items-start gap-2.5 p-3 pr-4 text-left">
               <span className="h-8 w-8 shrink-0 rounded-full bg-[#1428a0] text-white text-sm font-bold grid place-items-center shadow">
@@ -220,7 +221,7 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
           aria-label={t.open}
           className="relative h-14 w-14 rounded-full bg-[#1428a0] text-white text-2xl font-bold shadow-lg hover:scale-105 active:scale-95 transition-transform flex items-center justify-center"
         >
-          {open ? "✕" : "G"}
+          {open ? <IconClose className="h-6 w-6" /> : "G"}
         </button>
       </div>
 
