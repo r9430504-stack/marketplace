@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { t, localeFromPathname, withLocale } from "@/lib/i18n";
 
-const RU_READY = new Set<string>(["/phones"]);
+const RU_READY = new Set<string>(["/phones", "/forum"]);
 
 // Hamburger menu that holds the nav links on small screens (where they don't
 // fit in the header row).
@@ -16,6 +16,7 @@ export default function MobileMenu() {
   const T = t(loc).nav;
   const items: [string, string][] = [
     ["/phones", T.catalog],
+    ["/forum", T.forum],
     ["/compare", T.compare],
     ["/best", T.guides],
     ["/history", T.history],

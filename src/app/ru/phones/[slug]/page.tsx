@@ -225,7 +225,7 @@ export default async function PhonePageRu({
         </section>
       )}
 
-      <section className="reveal-up mt-12">
+      <section id="discussion" className="reveal-up mt-12 scroll-mt-24">
         <Comments slug={phone.slug} locale="ru" />
       </section>
 

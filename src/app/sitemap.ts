@@ -49,6 +49,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/ru/phones`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${SITE_URL}/phones`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${SITE_URL}/compare`, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${SITE_URL}/forum`, changeFrequency: "daily", priority: 0.7 },
     { url: `${SITE_URL}/best`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${SITE_URL}/history`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${SITE_URL}/about`, changeFrequency: "yearly", priority: 0.4 },
