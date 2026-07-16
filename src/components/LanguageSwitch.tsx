@@ -6,7 +6,7 @@ import { localeFromPathname, withLocale } from "@/lib/i18n";
 
 // Paths (locale-stripped) that already have a Russian version. Grows as more
 // pages are translated; until a page is ready, the RU link points to /ru home.
-const RU_READY = new Set<string>(["/", "/phones"]);
+const RU_READY = new Set<string>(["/", "/phones", "/forum", "/favorites", "/compare", "/best", "/history"]);
 
 export default function LanguageSwitch() {
   const path = usePathname() || "/";
