@@ -40,12 +40,13 @@ export default function HeroShowcase({ items }: { items: Item[] }) {
           <Link
             key={p.slug}
             href={`/phones/${p.slug}`}
-            className={`group relative rounded-2xl overflow-hidden glass hover:shadow-xl transition-shadow duration-300 aspect-[4/5] ${
+            className={`img-frame group relative rounded-2xl overflow-hidden glass hover:shadow-xl transition-shadow duration-300 aspect-[4/5] ${
               i % 2 === 1 ? "translate-y-6" : ""
             }`}
           >
+            <span className="img-skeleton absolute inset-0" aria-hidden />
             <div
-              className="floaty h-full w-full"
+              className="floaty relative h-full w-full"
               style={{ animationDelay: `${i * 0.55}s` }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}

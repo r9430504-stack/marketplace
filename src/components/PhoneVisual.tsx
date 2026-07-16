@@ -23,16 +23,22 @@ export default function PhoneVisual({
   if (phone.image) {
     const src = thumb ? `/models/thumbs/${phone.slug}.webp` : phone.image;
     return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={src}
-        alt={`${phone.name} — ${phone.releaseDate}`}
-        className={`img-fade w-full h-full object-contain bg-white ${className}`}
-        width={thumb ? 480 : 900}
-        height={thumb ? 600 : 1125}
-        loading={eager ? "eager" : "lazy"}
-        decoding="async"
-      />
+      // The image fades in over a shimmering skeleton, so a slow-loading photo
+      // shows animated feedback instead of a blank white box. The skeleton is
+      // hidden (via :has) once the photo finishes loading.
+      <span className={`img-frame relative block w-full h-full overflow-hidden ${className}`}>
+        <span className="img-skeleton absolute inset-0" aria-hidden />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={src}
+          alt={`${phone.name} — ${phone.releaseDate}`}
+          className="img-fade relative w-full h-full object-contain bg-white"
+          width={thumb ? 480 : 900}
+          height={thumb ? 600 : 1125}
+          loading={eager ? "eager" : "lazy"}
+          decoding="async"
+        />
+      </span>
     );
   }
 
