@@ -21,7 +21,8 @@ export default function PhoneVisual({
   const s = seriesMeta(phone.series);
 
   if (phone.image) {
-    const src = thumb ? `/models/thumbs/${phone.slug}.webp` : phone.image;
+    // Owner-added models store a full image URL and have no local thumbnail.
+    const src = thumb && !phone.custom ? `/models/thumbs/${phone.slug}.webp` : phone.image;
     return (
       // The image fades in over a shimmering skeleton, so a slow-loading photo
       // shows animated feedback instead of a blank white box. The skeleton is

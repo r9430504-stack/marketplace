@@ -5,6 +5,7 @@ import HeaderNav from "./HeaderNav";
 import ThemeToggle from "./ThemeToggle";
 import FavoritesLink from "./FavoritesLink";
 import AuthButton from "./AuthButton";
+import AdminLink from "./AdminLink";
 import MobileMenu from "./MobileMenu";
 
 export default function SiteHeader() {
@@ -27,6 +28,7 @@ export default function SiteHeader() {
           <FavoritesLink />
           <LanguageSwitch />
           <ThemeToggle />
+          <AdminLink />
           <AuthButton />
           <MobileMenu />
         </div>

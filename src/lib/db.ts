@@ -1,4 +1,5 @@
 import { Pool } from "pg";
+import type { Phone } from "@/lib/phones";
 
 // Postgres access for cloud-synced favorites. Everything degrades gracefully:
 // if DATABASE_URL isn't set, these are no-ops and the app keeps working with
@@ -49,7 +50,12 @@ function ensure(p: Pool): Promise<void> {
            user_id    text        NOT NULL,
            created_at timestamptz NOT NULL DEFAULT now()
          );
-         CREATE INDEX IF NOT EXISTS topic_replies_topic_idx ON topic_replies (topic_id, created_at);`
+         CREATE INDEX IF NOT EXISTS topic_replies_topic_idx ON topic_replies (topic_id, created_at);
+         CREATE TABLE IF NOT EXISTS custom_phones (
+           slug       text        PRIMARY KEY,
+           data       jsonb       NOT NULL,
+           created_at timestamptz NOT NULL DEFAULT now()
+         );`
       )
       .then(() => undefined);
   }
@@ -219,4 +225,49 @@ export async function deleteReply(id: string, userId: string, isOwner: boolean):
   await ensure(p);
   if (isOwner) await p.query("DELETE FROM topic_replies WHERE id = $1", [id]);
   else await p.query("DELETE FROM topic_replies WHERE id = $1 AND user_id = $2", [id, userId]);
+}
+
+// ── Owner-created (custom) phone models ─────────────────────────────────────
+// Stored as a JSON blob of the Phone shape. Merged into the catalog and served
+// on demand for their detail page. Managed only by the site owner.
+export async function getCustomPhones(): Promise<Phone[]> {
+  const p = getPool();
+  if (!p) return [];
+  try {
+    await ensure(p);
+    const r = await p.query("SELECT data FROM custom_phones ORDER BY created_at DESC");
+    return r.rows.map((x: { data: Phone }) => ({ ...x.data, custom: true }));
+  } catch {
+    return [];
+  }
+}
+
+export async function getCustomPhone(slug: string): Promise<Phone | null> {
+  const p = getPool();
+  if (!p) return null;
+  try {
+    await ensure(p);
+    const r = await p.query("SELECT data FROM custom_phones WHERE slug = $1", [slug]);
+    return r.rows[0] ? { ...(r.rows[0].data as Phone), custom: true } : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function upsertCustomPhone(phone: Phone): Promise<void> {
+  const p = getPool();
+  if (!p) return;
+  await ensure(p);
+  await p.query(
+    `INSERT INTO custom_phones (slug, data) VALUES ($1, $2)
+     ON CONFLICT (slug) DO UPDATE SET data = EXCLUDED.data`,
+    [phone.slug, JSON.stringify(phone)]
+  );
+}
+
+export async function deleteCustomPhone(slug: string): Promise<void> {
+  const p = getPool();
+  if (!p) return;
+  await ensure(p);
+  await p.query("DELETE FROM custom_phones WHERE slug = $1", [slug]);
 }

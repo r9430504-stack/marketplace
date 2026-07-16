@@ -1,0 +1,40 @@
+import type { Metadata } from "next";
+import { auth, isOwnerEmail } from "@/auth";
+import BackButton from "@/components/BackButton";
+import AdminPhones from "@/components/AdminPhones";
+import { SERIES } from "@/lib/phones";
+
+export const metadata: Metadata = {
+  title: "Admin",
+  robots: { index: false, follow: false },
+};
+
+export default async function AdminPage() {
+  const session = await auth();
+  const owner = isOwnerEmail(session?.user?.email);
+
+  return (
+    <div className="max-w-3xl mx-auto px-4 py-10">
+      <div className="mb-4">
+        <BackButton fallback="/" label="Back" />
+      </div>
+
+      {owner ? (
+        <>
+          <header className="mb-6">
+            <h1 className="text-3xl font-bold tracking-tight text-black dark:text-gray-100">Admin — add a model</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1">
+              Create a new phone model by filling in the card. Only you can see and use this page.
+            </p>
+          </header>
+          <AdminPhones seriesOptions={SERIES.map((s) => ({ id: s.id, label: s.label }))} />
+        </>
+      ) : (
+        <div className="glass rounded-2xl p-8 text-center">
+          <p className="text-4xl">🔒</p>
+          <p className="mt-3 text-gray-600 dark:text-gray-300">This page is for the site owner only.</p>
+        </div>
+      )}
+    </div>
+  );
+}
