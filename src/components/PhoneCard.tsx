@@ -4,7 +4,15 @@ import type { Locale } from "@/lib/i18n";
 import PhoneVisual from "./PhoneVisual";
 import FavoriteButton from "./FavoriteButton";
 
-export default function PhoneCard({ phone, locale = "en" }: { phone: Phone; locale?: Locale }) {
+export default function PhoneCard({
+  phone,
+  locale = "en",
+  badge,
+}: {
+  phone: Phone;
+  locale?: Locale;
+  badge?: string;
+}) {
   const s = seriesMeta(phone.series);
   const href = locale === "ru" ? `/ru/phones/${phone.slug}` : `/phones/${phone.slug}`;
   return (
@@ -15,6 +23,14 @@ export default function PhoneCard({ phone, locale = "en" }: { phone: Phone; loca
       {/* The emerge transform lives on this wrapper (not the <img>) because the
        * image's `img-fade` class sets `transition: opacity`, which would clobber
        * a transform transition on the same element and make it jump instantly. */}
+      {badge && (
+        <span className="absolute top-2 left-2 z-20 inline-flex items-center gap-1 rounded-full bg-[#1428a0] px-2.5 py-1 text-[11px] font-bold text-white shadow-md">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+            <path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8L3.6 9.6l5.8-.8z" />
+          </svg>
+          {badge}
+        </span>
+      )}
       <FavoriteButton slug={phone.slug} className="absolute top-2 right-2 z-20 bg-white/85 dark:bg-black/50 backdrop-blur" />
       <div className="aspect-[4/5] rounded-t-2xl bg-white [clip-path:inset(-8%_-2%_0_-2%)] origin-bottom group-hover:scale-[1.03] group-hover:-translate-y-0.5 transition-transform duration-[1400ms] ease-[cubic-bezier(0.4,0,0.2,1)]">
         <PhoneVisual phone={phone} thumb className="rounded-t-2xl" />

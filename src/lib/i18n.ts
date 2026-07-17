@@ -48,6 +48,7 @@ type Dict = {
     explore: string;
     flagshipsTitle: string;
     flagshipsSub: string;
+    topSpecBadge: string;
     fullCatalog: string;
     timelineKicker: string;
     timelineTitle: string;
@@ -112,8 +113,9 @@ export const UI: Record<Locale, Dict> = {
       guidesSub: "Explore the range by what matters to you",
       allGuides: "All guides →",
       explore: "Explore →",
-      flagshipsTitle: "Flagships",
-      flagshipsSub: "Recent and landmark models with photos",
+      flagshipsTitle: "Top by specs",
+      flagshipsSub: "Ranked automatically by their specifications — updated as new models are added",
+      topSpecBadge: "Best specs",
       fullCatalog: "Full catalog →",
       timelineKicker: "Timeline",
       timelineTitle: "From the Galaxy S to the Galaxy S25 — year by year",
@@ -179,8 +181,9 @@ export const UI: Record<Locale, Dict> = {
       guidesSub: "Исследуйте модельный ряд по тому, что важно вам",
       allGuides: "Все подборки →",
       explore: "Смотреть →",
-      flagshipsTitle: "Флагманы",
-      flagshipsSub: "Недавние и знаковые модели с фото",
+      flagshipsTitle: "Топ по характеристикам",
+      flagshipsSub: "Автоматический рейтинг по характеристикам — обновляется при добавлении новых моделей",
+      topSpecBadge: "Лучшие характеристики",
       fullCatalog: "Весь каталог →",
       timelineKicker: "Хронология",
       timelineTitle: "От Galaxy S до Galaxy S25 — год за годом",
