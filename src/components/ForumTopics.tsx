@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import type { Locale } from "@/lib/i18n";
 import { timeAgo } from "@/lib/timeago";
-import { IconChat } from "@/components/icons";
+import { IconChat, IconSearchOff } from "@/components/icons";
 
 type Topic = {
   id: string;
@@ -22,21 +22,28 @@ const T = {
   en: {
     add: "New topic",
     empty: "No topics yet — start the first discussion!",
+    searchPh: "Search topics…",
+    noneFound: "No topics match your search.",
     replies: (n: number) => `${n} ${n === 1 ? "reply" : "replies"}`,
   },
   ru: {
     add: "Добавить тему",
     empty: "Тем пока нет — создайте первую!",
+    searchPh: "Поиск по темам…",
+    noneFound: "По запросу ничего не найдено.",
     replies: (n: number) =>
       `${n} ${n % 10 === 1 && n % 100 !== 11 ? "ответ" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? "ответа" : "ответов"}`,
   },
 };
+
+const norm = (s: string) => s.toLowerCase().replace(/\s+/g, " ").trim();
 
 export default function ForumTopics({ locale = "en" }: { locale?: Locale }) {
   const t = T[locale];
   const base = locale === "ru" ? "/ru/forum" : "/forum";
   const [topics, setTopics] = useState<Topic[]>([]);
   const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     let alive = true;
@@ -50,11 +57,37 @@ export default function ForumTopics({ locale = "en" }: { locale?: Locale }) {
     };
   }, []);
 
+  const shown = useMemo(() => {
+    const needle = norm(query);
+    if (!needle) return topics;
+    const terms = needle.split(" ").filter(Boolean);
+    return topics.filter((tp) => {
+      const hay = norm(`${tp.title} ${tp.name} ${tp.line}`);
+      return terms.every((w) => hay.includes(w));
+    });
+  }, [topics, query]);
+
   return (
     <div>
-      {/* Add-topic button, top-right */}
-      <div className="mb-4 flex justify-end">
-        <Link href={`${base}/new`} className="btn-primary px-4 py-2 text-sm">
+      {/* Search + add-topic button */}
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        {!loading && topics.length > 0 && (
+          <div className="relative min-w-0 flex-1">
+            <svg className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+              <circle cx="11" cy="11" r="7" />
+              <path d="M21 21l-4.3-4.3" />
+            </svg>
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={t.searchPh}
+              aria-label={t.searchPh}
+              className="w-full rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 pl-11 pr-4 py-2.5 text-base outline-none focus:border-[#1428a0] focus:ring-1 focus:ring-[#1428a0]"
+            />
+          </div>
+        )}
+        <Link href={`${base}/new`} className="btn-primary shrink-0 px-4 py-2 text-sm ml-auto">
           <span className="text-base leading-none">+</span> {t.add}
         </Link>
       </div>
@@ -76,9 +109,14 @@ export default function ForumTopics({ locale = "en" }: { locale?: Locale }) {
             <span className="text-base leading-none">+</span> {t.add}
           </Link>
         </div>
+      ) : shown.length === 0 ? (
+        <div className="glass rounded-2xl p-8 text-center">
+          <IconSearchOff className="mx-auto h-9 w-9 text-gray-300 dark:text-gray-600" />
+          <p className="mt-3 text-gray-600 dark:text-gray-300">{t.noneFound}</p>
+        </div>
       ) : (
         <ul className="space-y-2">
-          {topics.map((tp) => (
+          {shown.map((tp) => (
             <li key={tp.id}>
               <Link
                 href={`${base}/${tp.id}`}
