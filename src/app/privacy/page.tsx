@@ -6,7 +6,7 @@ import BackButton from "@/components/BackButton";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "How Galaxy Archive handles data, cookies and third-party advertising (Google AdSense). An unofficial, informational reference site.",
+    "How Galaxy Archive handles data and cookies. An unofficial, informational reference site.",
   alternates: { canonical: "/privacy" },
 };
 
@@ -63,73 +63,9 @@ export default function PrivacyPage() {
             Cookies and similar technologies
           </h2>
           <p>
-            Cookies are small text files placed on your device. We use them, and allow selected
-            third parties (such as our advertising partner) to use them, to keep the Site working,
-            understand aggregate usage, and — where applicable — to show and measure advertising.
-            You can block or delete cookies in your browser settings; some parts of the Site may
-            then work less smoothly.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
-            Advertising (Google AdSense)
-          </h2>
-          <ul className="list-disc pl-5 space-y-1">
-            <li>
-              Third-party vendors, including <strong>Google</strong>, use cookies to serve ads based
-              on your prior visits to this and other websites.
-            </li>
-            <li>
-              Google’s use of advertising cookies enables it and its partners to serve ads to you
-              based on your visits to the Site and/or other sites on the Internet.
-            </li>
-            <li>
-              You can opt out of personalized advertising by visiting{" "}
-              <a
-                href="https://www.google.com/settings/ads"
-                className="text-[#1428a0] hover:underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Google Ads Settings
-              </a>
-              .
-            </li>
-            <li>
-              You can also opt out of a third-party vendor’s use of cookies for personalized
-              advertising at{" "}
-              <a
-                href="https://www.aboutads.info/choices/"
-                className="text-[#1428a0] hover:underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                aboutads.info
-              </a>{" "}
-              and{" "}
-              <a
-                href="https://www.youronlinechoices.eu/"
-                className="text-[#1428a0] hover:underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                youronlinechoices.eu
-              </a>
-              .
-            </li>
-          </ul>
-          <p className="mt-2">
-            For more information about how Google uses data from sites that use its services, see{" "}
-            <a
-              href="https://policies.google.com/technologies/partner-sites"
-              className="text-[#1428a0] hover:underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Google’s policy
-            </a>
-            .
+            Cookies are small text files placed on your device. We use them to keep the Site
+            working and to understand aggregate usage. You can block or delete cookies in your
+            browser settings; some parts of the Site may then work less smoothly.
           </p>
         </section>
 

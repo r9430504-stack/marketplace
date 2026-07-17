@@ -18,7 +18,6 @@ import SpecTable from "@/components/SpecTable";
 import BuyLinks from "@/components/BuyLinks";
 import BackButton from "@/components/BackButton";
 import Comments from "@/components/Comments";
-import AdSlot from "@/components/AdSlot";
 import { getCustomPhone } from "@/lib/db";
 import { SITE_URL } from "@/lib/site";
 
@@ -157,8 +156,6 @@ export default async function PhonePageRu({
       </div>
 
       <BuyLinks name={phone.name} locale="ru" />
-
-      <AdSlot />
 
       <section className="reveal-up mt-4">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">История модели</h2>

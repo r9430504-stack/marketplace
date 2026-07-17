@@ -8,7 +8,6 @@ import PhoneCard from "@/components/PhoneCard";
 import HeroShowcase from "@/components/HeroShowcase";
 import HeroBackdrop from "@/components/HeroBackdrop";
 import CountUp from "@/components/CountUp";
-import AdSlot from "@/components/AdSlot";
 
 export default async function HomeContent({ locale = "en" }: { locale?: Locale }) {
   const T = t(locale).home;
@@ -135,10 +134,6 @@ export default async function HomeContent({ locale = "en" }: { locale?: Locale }
           ))}
         </div>
       </section>
-
-      <div className="max-w-6xl mx-auto px-4">
-        <AdSlot />
-      </div>
 
       {/* Collections */}
       <section className="border-y border-gray-200 dark:border-gray-800 bg-[#f5f5f7] dark:bg-[#141414]">

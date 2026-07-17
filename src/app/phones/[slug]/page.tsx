@@ -19,7 +19,6 @@ import BuyLinks from "@/components/BuyLinks";
 import BackButton from "@/components/BackButton";
 import FavoriteButton from "@/components/FavoriteButton";
 import Comments from "@/components/Comments";
-import AdSlot from "@/components/AdSlot";
 import { getCustomPhone } from "@/lib/db";
 import { SITE_URL } from "@/lib/site";
 
@@ -190,8 +189,6 @@ export default async function PhonePage({
       </div>
 
       <BuyLinks name={phone.name} />
-
-      <AdSlot />
 
       {/* History */}
       <section className="reveal-up mt-4">

@@ -8,7 +8,6 @@ import {
 } from "@/lib/collections";
 import PhoneCard from "@/components/PhoneCard";
 import BackButton from "@/components/BackButton";
-import AdSlot from "@/components/AdSlot";
 import { SITE_URL } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -88,8 +87,6 @@ export default async function CollectionPage({
           <PhoneCard key={p.slug} phone={p} />
         ))}
       </div>
-
-      <AdSlot />
 
       <section className="reveal-up mt-12">
         <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-3">More collections</h2>
