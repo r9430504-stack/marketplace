@@ -40,9 +40,10 @@ export function refreshHz(p: Phone): number {
   return m ? Number(m[1]) : 0;
 }
 
-/** Display diagonal in inches (0 if not found). */
+/** Display diagonal in inches (0 if not found). The catalog uses the prime
+ *  glyph ″ (U+2033) as well as a plain quote, so accept both. */
 export function displayIn(p: Phone): number {
-  const m = p.specs.display.match(/(\d+(?:\.\d+)?)\s*(?:inch|")/i);
+  const m = p.specs.display.match(/(\d+(?:\.\d+)?)\s*(?:inch|″|")/i);
   return m ? Number(m[1]) : 0;
 }
 

@@ -61,6 +61,7 @@ export type SeriesId =
   | "Galaxy Note"
   | "Galaxy Z Fold"
   | "Galaxy Z Flip"
+  | "Galaxy Z TriFold"
   | "Galaxy A"
   | "Galaxy M"
   | "Galaxy J"
@@ -115,6 +116,14 @@ export const SERIES: SeriesMeta[] = [
     to: "to-purple-800",
     accent: "text-fuchsia-600 dark:text-fuchsia-400",
     blurb: "Compact clamshells — the cult format's return in the foldable era.",
+  },
+  {
+    id: "Galaxy Z TriFold",
+    label: "Galaxy Z TriFold",
+    from: "from-cyan-500",
+    to: "to-blue-900",
+    accent: "text-cyan-600 dark:text-cyan-400",
+    blurb: "The tri-fold: two hinges, three panels — a phone that opens into a tablet.",
   },
   {
     id: "Galaxy A",
