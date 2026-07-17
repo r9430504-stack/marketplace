@@ -59,6 +59,22 @@ function ensure(p: Pool): Promise<void> {
          CREATE TABLE IF NOT EXISTS site_settings (
            key   text PRIMARY KEY,
            value text NOT NULL
+         );
+         -- Forum moderation flags (added after the initial release).
+         ALTER TABLE topics ADD COLUMN IF NOT EXISTS pinned boolean NOT NULL DEFAULT false;
+         ALTER TABLE topics ADD COLUMN IF NOT EXISTS locked boolean NOT NULL DEFAULT false;
+         -- Likes on threads and replies. One row per (post, user).
+         CREATE TABLE IF NOT EXISTS topic_likes (
+           topic_id   bigint      NOT NULL REFERENCES topics(id) ON DELETE CASCADE,
+           user_id    text        NOT NULL,
+           created_at timestamptz NOT NULL DEFAULT now(),
+           PRIMARY KEY (topic_id, user_id)
+         );
+         CREATE TABLE IF NOT EXISTS reply_likes (
+           reply_id   bigint      NOT NULL REFERENCES topic_replies(id) ON DELETE CASCADE,
+           user_id    text        NOT NULL,
+           created_at timestamptz NOT NULL DEFAULT now(),
+           PRIMARY KEY (reply_id, user_id)
          );`
       )
       .then(() => undefined);
@@ -147,6 +163,20 @@ export type TopicRow = {
   user_id: string;
   created_at: string;
   last_at: string;
+  pinned: boolean;
+  locked: boolean;
+};
+
+export type TopicListRow = {
+  id: string;
+  slug: string;
+  title: string;
+  created_at: string;
+  last_at: string;
+  replies: number;
+  likes: number;
+  pinned: boolean;
+  locked: boolean;
 };
 
 export async function createTopic(
@@ -165,38 +195,104 @@ export async function createTopic(
   return { id: String(r.rows[0].id) };
 }
 
-export async function listTopics(
-  limit = 100
-): Promise<{ id: string; slug: string; title: string; created_at: string; last_at: string; replies: number }[]> {
+export async function listTopics(limit = 100): Promise<TopicListRow[]> {
   const p = getPool();
   if (!p) return [];
   await ensure(p);
   const r = await p.query(
-    `SELECT t.id, t.slug, t.title, t.created_at, t.last_at,
-            (SELECT count(*)::int FROM topic_replies r WHERE r.topic_id = t.id) AS replies
-     FROM topics t ORDER BY t.last_at DESC LIMIT $1`,
+    `SELECT t.id, t.slug, t.title, t.created_at, t.last_at, t.pinned, t.locked,
+            (SELECT count(*)::int FROM topic_replies r WHERE r.topic_id = t.id) AS replies,
+            (SELECT count(*)::int FROM topic_likes l WHERE l.topic_id = t.id) AS likes
+     FROM topics t ORDER BY t.pinned DESC, t.last_at DESC LIMIT $1`,
     [limit]
   );
-  return r.rows as { id: string; slug: string; title: string; created_at: string; last_at: string; replies: number }[];
+  return r.rows as TopicListRow[];
 }
 
 export async function getTopic(id: string): Promise<TopicRow | null> {
   const p = getPool();
   if (!p) return null;
   await ensure(p);
-  const r = await p.query("SELECT id, slug, title, body, user_id, created_at, last_at FROM topics WHERE id = $1", [id]);
+  const r = await p.query(
+    "SELECT id, slug, title, body, user_id, created_at, last_at, pinned, locked FROM topics WHERE id = $1",
+    [id]
+  );
   return (r.rows[0] as TopicRow) ?? null;
 }
 
-export async function listReplies(topicId: string): Promise<CommentRow[]> {
+// A reply plus its like count and whether the current viewer liked it.
+export type ReplyRow = { id: string; user_id: string; body: string; created_at: string; likes: number; liked: boolean };
+
+export async function listReplies(topicId: string, userId?: string | null): Promise<ReplyRow[]> {
   const p = getPool();
   if (!p) return [];
   await ensure(p);
   const r = await p.query(
-    "SELECT id, user_id, body, created_at FROM topic_replies WHERE topic_id = $1 ORDER BY created_at ASC",
-    [topicId]
+    `SELECT r.id, r.user_id, r.body, r.created_at,
+            (SELECT count(*)::int FROM reply_likes rl WHERE rl.reply_id = r.id) AS likes,
+            EXISTS(SELECT 1 FROM reply_likes rl WHERE rl.reply_id = r.id AND rl.user_id = $2) AS liked
+     FROM topic_replies r WHERE r.topic_id = $1 ORDER BY r.created_at ASC`,
+    [topicId, userId ?? ""]
   );
-  return r.rows as CommentRow[];
+  return r.rows as ReplyRow[];
+}
+
+// Like count for a thread + whether the current viewer liked it.
+export async function topicLikeInfo(topicId: string, userId?: string | null): Promise<{ likes: number; liked: boolean }> {
+  const p = getPool();
+  if (!p) return { likes: 0, liked: false };
+  await ensure(p);
+  const r = await p.query(
+    `SELECT (SELECT count(*)::int FROM topic_likes WHERE topic_id = $1) AS likes,
+            EXISTS(SELECT 1 FROM topic_likes WHERE topic_id = $1 AND user_id = $2) AS liked`,
+    [topicId, userId ?? ""]
+  );
+  return { likes: r.rows[0].likes as number, liked: r.rows[0].liked as boolean };
+}
+
+// Toggle a like on a thread; returns the new state and count.
+export async function toggleTopicLike(topicId: string, userId: string): Promise<{ liked: boolean; likes: number }> {
+  const p = getPool();
+  if (!p) return { liked: false, likes: 0 };
+  await ensure(p);
+  const del = await p.query("DELETE FROM topic_likes WHERE topic_id = $1 AND user_id = $2", [topicId, userId]);
+  let liked = false;
+  if (del.rowCount === 0) {
+    await p.query("INSERT INTO topic_likes (topic_id, user_id) VALUES ($1, $2) ON CONFLICT DO NOTHING", [topicId, userId]);
+    liked = true;
+  }
+  const c = await p.query("SELECT count(*)::int AS n FROM topic_likes WHERE topic_id = $1", [topicId]);
+  return { liked, likes: c.rows[0].n as number };
+}
+
+// Toggle a like on a reply; returns the new state and count.
+export async function toggleReplyLike(replyId: string, userId: string): Promise<{ liked: boolean; likes: number }> {
+  const p = getPool();
+  if (!p) return { liked: false, likes: 0 };
+  await ensure(p);
+  const del = await p.query("DELETE FROM reply_likes WHERE reply_id = $1 AND user_id = $2", [replyId, userId]);
+  let liked = false;
+  if (del.rowCount === 0) {
+    await p.query("INSERT INTO reply_likes (reply_id, user_id) VALUES ($1, $2) ON CONFLICT DO NOTHING", [replyId, userId]);
+    liked = true;
+  }
+  const c = await p.query("SELECT count(*)::int AS n FROM reply_likes WHERE reply_id = $1", [replyId]);
+  return { liked, likes: c.rows[0].n as number };
+}
+
+// Owner-only moderation: pin/unpin and lock/unlock a thread.
+export async function setTopicPinned(id: string, pinned: boolean): Promise<void> {
+  const p = getPool();
+  if (!p) return;
+  await ensure(p);
+  await p.query("UPDATE topics SET pinned = $2 WHERE id = $1", [id, pinned]);
+}
+
+export async function setTopicLocked(id: string, locked: boolean): Promise<void> {
+  const p = getPool();
+  if (!p) return;
+  await ensure(p);
+  await p.query("UPDATE topics SET locked = $2 WHERE id = $1", [id, locked]);
 }
 
 export async function addReply(

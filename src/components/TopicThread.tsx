@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useSession, signIn } from "next-auth/react";
 import type { Locale } from "@/lib/i18n";
 import { timeAgo } from "@/lib/timeago";
+import { IconHeart, IconPin, IconLock } from "@/components/icons";
 
 type Topic = {
   id: string;
@@ -17,8 +18,12 @@ type Topic = {
   body: string;
   createdAt: string;
   mine: boolean;
+  pinned: boolean;
+  locked: boolean;
+  likes: number;
+  liked: boolean;
 };
-type Reply = { id: string; body: string; createdAt: string; mine: boolean };
+type Reply = { id: string; body: string; createdAt: string; mine: boolean; likes: number; liked: boolean };
 
 const T = {
   en: {
@@ -37,6 +42,14 @@ const T = {
     profanity: "This reply can't be published — it looks like it contains offensive language. Please rephrase it.",
     error: "Something went wrong. Please try again.",
     confirmDel: "Delete this topic?",
+    like: "Like",
+    lockedNote: "This topic is locked — no new replies can be added.",
+    pin: "Pin",
+    unpin: "Unpin",
+    lock: "Lock",
+    unlock: "Unlock",
+    pinnedTag: "Pinned",
+    lockedTag: "Locked",
   },
   ru: {
     back: "← Все темы",
@@ -54,8 +67,34 @@ const T = {
     profanity: "Этот ответ нельзя опубликовать — похоже, он содержит недопустимую лексику. Пожалуйста, переформулируйте.",
     error: "Что-то пошло не так. Попробуйте ещё раз.",
     confirmDel: "Удалить эту тему?",
+    like: "Нравится",
+    lockedNote: "Тема закрыта — новые ответы добавить нельзя.",
+    pin: "Закрепить",
+    unpin: "Открепить",
+    lock: "Закрыть",
+    unlock: "Открыть",
+    pinnedTag: "Закреплено",
+    lockedTag: "Закрыто",
   },
 };
+
+function LikeButton({ liked, likes, onClick, label }: { liked: boolean; likes: number; onClick: () => void; label: string }) {
+  return (
+    <button
+      onClick={onClick}
+      aria-pressed={liked}
+      aria-label={label}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold transition-all active:scale-95 ${
+        liked
+          ? "border-red-200 bg-red-50 text-red-600 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-300"
+          : "border-gray-300 text-gray-500 hover:border-red-300 hover:text-red-500 dark:border-gray-700 dark:text-gray-400 dark:hover:border-red-500/40 dark:hover:text-red-300"
+      }`}
+    >
+      <IconHeart size={14} filled={liked} />
+      {likes > 0 && <span>{likes}</span>}
+    </button>
+  );
+}
 
 function Warn({ text }: { text: string }) {
   return (
@@ -101,6 +140,7 @@ export default function TopicThread({ id, locale = "en" }: { id: string; locale?
   const base = locale === "ru" ? "/ru/forum" : "/forum";
   const { data, status } = useSession();
   const authed = status === "authenticated" && !!data?.user;
+  const isOwner = !!(data?.user as { isOwner?: boolean } | undefined)?.isOwner;
 
   const [topic, setTopic] = useState<Topic | null>(null);
   const [replies, setReplies] = useState<Reply[]>([]);
@@ -153,6 +193,11 @@ export default function TopicThread({ id, locale = "en" }: { id: string; locale?
         setErr(t.profanity);
         return;
       }
+      if (r.status === 423) {
+        setErr(t.lockedNote);
+        setTopic((tp) => (tp ? { ...tp, locked: true } : tp));
+        return;
+      }
       const d = await r.json().catch(() => ({}));
       if (d.reply) {
         setReplies((x) => [...x, d.reply as Reply]);
@@ -177,6 +222,43 @@ export default function TopicThread({ id, locale = "en" }: { id: string; locale?
       await fetch(`/api/topics/${encodeURIComponent(id)}`, { method: "DELETE" });
     } catch {}
     router.push(base);
+  };
+
+  // Toggle a like on the thread (or a reply when rid is given). Optimistic,
+  // then reconciled with the server's authoritative count.
+  const like = async (rid?: string) => {
+    if (!authed) {
+      signIn("google");
+      return;
+    }
+    if (rid) {
+      setReplies((x) => x.map((r) => (r.id === rid ? { ...r, liked: !r.liked, likes: r.likes + (r.liked ? -1 : 1) } : r)));
+    } else {
+      setTopic((tp) => (tp ? { ...tp, liked: !tp.liked, likes: tp.likes + (tp.liked ? -1 : 1) } : tp));
+    }
+    try {
+      const url = `/api/topics/${encodeURIComponent(id)}/like${rid ? `?reply=${encodeURIComponent(rid)}` : ""}`;
+      const r = await fetch(url, { method: "POST" });
+      const d = await r.json().catch(() => ({}));
+      if (typeof d.likes === "number") {
+        if (rid) setReplies((x) => x.map((rr) => (rr.id === rid ? { ...rr, liked: d.liked, likes: d.likes } : rr)));
+        else setTopic((tp) => (tp ? { ...tp, liked: d.liked, likes: d.likes } : tp));
+      }
+    } catch {
+      /* keep the optimistic value */
+    }
+  };
+
+  // Owner-only: pin/unpin and lock/unlock.
+  const moderate = async (patch: { pinned?: boolean; locked?: boolean }) => {
+    setTopic((tp) => (tp ? { ...tp, ...patch } : tp));
+    try {
+      await fetch(`/api/topics/${encodeURIComponent(id)}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(patch),
+      });
+    } catch {}
   };
 
   if (loading) {
@@ -209,6 +291,20 @@ export default function TopicThread({ id, locale = "en" }: { id: string; locale?
 
       {/* Original post */}
       <div className="glass mt-3 rounded-2xl p-5">
+        {(topic.pinned || topic.locked) && (
+          <div className="mb-2 flex flex-wrap gap-1.5">
+            {topic.pinned && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#eef1fb] dark:bg-[#1b2338] px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-[#1428a0] dark:text-blue-300">
+                <IconPin size={12} /> {t.pinnedTag}
+              </span>
+            )}
+            {topic.locked && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 dark:bg-gray-800 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                <IconLock size={12} /> {t.lockedTag}
+              </span>
+            )}
+          </div>
+        )}
         <div className="flex items-start justify-between gap-3">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{topic.title}</h1>
           {topic.mine && <TrashBtn onClick={delTopic} title={t.remove} />}
@@ -228,6 +324,19 @@ export default function TopicThread({ id, locale = "en" }: { id: string; locale?
               <time dateTime={topic.createdAt}>{timeAgo(topic.createdAt, locale)}</time>
             </div>
             <p className="mt-1 whitespace-pre-wrap break-words text-sm text-gray-800 dark:text-gray-100">{topic.body}</p>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <LikeButton liked={topic.liked} likes={topic.likes} onClick={() => like()} label={t.like} />
+              {isOwner && (
+                <>
+                  <button onClick={() => moderate({ pinned: !topic.pinned })} className="inline-flex items-center gap-1 rounded-full border border-gray-300 dark:border-gray-700 px-2.5 py-1 text-xs font-semibold text-gray-500 hover:text-[#1428a0] dark:text-gray-400 dark:hover:text-blue-300 transition-colors active:scale-95">
+                    <IconPin size={13} /> {topic.pinned ? t.unpin : t.pin}
+                  </button>
+                  <button onClick={() => moderate({ locked: !topic.locked })} className="inline-flex items-center gap-1 rounded-full border border-gray-300 dark:border-gray-700 px-2.5 py-1 text-xs font-semibold text-gray-500 hover:text-[#1428a0] dark:text-gray-400 dark:hover:text-blue-300 transition-colors active:scale-95">
+                    <IconLock size={13} /> {topic.locked ? t.unlock : t.lock}
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -246,6 +355,9 @@ export default function TopicThread({ id, locale = "en" }: { id: string; locale?
                   <time dateTime={r.createdAt}>{timeAgo(r.createdAt, locale)}</time>
                 </div>
                 <p className="mt-1 whitespace-pre-wrap break-words text-sm text-gray-800 dark:text-gray-100">{r.body}</p>
+                <div className="mt-2">
+                  <LikeButton liked={r.liked} likes={r.likes} onClick={() => like(r.id)} label={t.like} />
+                </div>
               </div>
               {r.mine && <TrashBtn onClick={() => delReply(r.id)} title={t.remove} />}
             </li>
@@ -255,7 +367,12 @@ export default function TopicThread({ id, locale = "en" }: { id: string; locale?
 
       {/* Reply box */}
       <div className="mt-6">
-        {authed ? (
+        {topic.locked ? (
+          <div className="glass flex items-center gap-2 rounded-2xl p-4 text-sm text-gray-500 dark:text-gray-400">
+            <IconLock size={16} className="shrink-0" />
+            <span>{t.lockedNote}</span>
+          </div>
+        ) : authed ? (
           <form onSubmit={submit} className="glass rounded-2xl p-3">
             <textarea
               value={input}

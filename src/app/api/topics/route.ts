@@ -50,6 +50,9 @@ export async function GET() {
             ru: m.ru,
             title: t.title,
             replies: t.replies,
+            likes: t.likes,
+            pinned: t.pinned,
+            locked: t.locked,
             createdAt: t.created_at,
             lastAt: t.last_at,
           };
