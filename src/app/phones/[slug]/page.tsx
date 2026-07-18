@@ -38,8 +38,8 @@ export async function generateMetadata({
   const phone = getPhoneBySlug(slug) ?? (await getCustomPhone(slug)) ?? undefined;
   if (!phone) return { title: "Model not found" };
 
-  const title = `${phone.name} — specifications and history`;
-  const description = `${phone.name} (${phone.releaseDate}): ${phone.tagline} ${phone.specs.display} display, ${phone.specs.chipset}, ${phone.specs.mainCamera} camera, ${phone.specs.battery} battery.`;
+  const title = `${phone.name} specs, price & release date (${phone.releaseYear})`;
+  const description = `${phone.name} full specifications: released ${phone.releaseDate}. ${phone.specs.display} display, ${phone.specs.chipset}, ${phone.specs.mainCamera} camera, ${phone.specs.battery} battery${phone.specs.launchPrice ? `, launch price ${phone.specs.launchPrice}` : ""}. Where to buy and full history.`;
   return {
     title,
     description,
