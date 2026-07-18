@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { listTopics, createTopic } from "@/lib/db";
+import { listTopics, createTopic, seedForumIfEmpty } from "@/lib/db";
 import { getAllPhones, seriesMeta, hasRuTranslation } from "@/lib/phones";
 import { cleanText } from "@/lib/moderation";
 import { containsProfanity } from "@/lib/profanity";
@@ -35,6 +35,7 @@ function phoneMeta() {
 // GET /api/topics — list threads (newest activity first). Public, no PII.
 export async function GET() {
   try {
+    await seedForumIfEmpty();
     const topics = await listTopics();
     const meta = phoneMeta();
     return Response.json({

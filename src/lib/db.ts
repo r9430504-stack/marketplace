@@ -1,5 +1,6 @@
 import { Pool } from "pg";
 import type { Phone } from "@/lib/phones";
+import { FORUM_SEED } from "@/lib/forumSeed";
 
 // Postgres access for cloud-synced favorites. Everything degrades gracefully:
 // if DATABASE_URL isn't set, these are no-ops and the app keeps working with
@@ -193,6 +194,41 @@ export async function createTopic(
     [slug, userId, title, body]
   );
   return { id: String(r.rows[0].id) };
+}
+
+// Seed the forum with starter discussions on first use, but only while it's
+// still completely empty. Runs at most once per server process.
+const SEED_USER = "seed@galaxyarchive.org";
+let seedTried = false;
+
+export async function seedForumIfEmpty(): Promise<void> {
+  const p = getPool();
+  if (!p || seedTried) return;
+  seedTried = true;
+  try {
+    await ensure(p);
+    const existing = await p.query("SELECT count(*)::int AS n FROM topics");
+    if ((existing.rows[0]?.n ?? 0) > 0) return;
+    const now = Date.now();
+    for (let i = 0; i < FORUM_SEED.length; i++) {
+      const t = FORUM_SEED[i];
+      const createdAt = new Date(now - (i * 8 + 6) * 3_600_000);
+      const lastAt = t.replies?.length ? new Date(now - (i + 1) * 2 * 3_600_000) : createdAt;
+      const ins = await p.query(
+        "INSERT INTO topics (slug, user_id, title, body, created_at, last_at) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id",
+        [t.slug, SEED_USER, t.title, t.body, createdAt, lastAt]
+      );
+      const id = ins.rows[0].id;
+      for (let j = 0; j < (t.replies?.length ?? 0); j++) {
+        await p.query(
+          "INSERT INTO topic_replies (topic_id, user_id, body, created_at) VALUES ($1,$2,$3,$4)",
+          [id, SEED_USER, t.replies![j], new Date(createdAt.getTime() + (j + 1) * 3_600_000)]
+        );
+      }
+    }
+  } catch {
+    seedTried = false; // allow a retry on a later request if this run failed
+  }
 }
 
 export async function listTopics(limit = 100): Promise<TopicListRow[]> {
