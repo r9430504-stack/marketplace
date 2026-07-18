@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { SITE_NAME } from "@/lib/site";
 import { getAllPhones, seriesMeta } from "@/lib/phones";
-import LanguageSwitch from "./LanguageSwitch";
 import HeaderNav from "./HeaderNav";
 import ThemeToggle from "./ThemeToggle";
 import FavoritesLink from "./FavoritesLink";
@@ -37,7 +36,6 @@ export default function SiteHeader() {
           </div>
           <Search phones={searchIndex} />
           <FavoritesLink />
-          <LanguageSwitch />
           <ThemeToggle />
           <AdminLink />
           <AuthButton />
