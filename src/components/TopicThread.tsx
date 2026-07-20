@@ -134,7 +134,18 @@ function Avatar() {
   );
 }
 
-export default function TopicThread({ id, locale = "en" }: { id: string; locale?: Locale }) {
+export default function TopicThread({
+  id,
+  locale = "en",
+  initialTopic = null,
+  initialReplies = [],
+}: {
+  id: string;
+  locale?: Locale;
+  /** Server-rendered thread so the content is in the initial HTML (for SEO). */
+  initialTopic?: Topic | null;
+  initialReplies?: Reply[];
+}) {
   const t = T[locale];
   const router = useRouter();
   const base = locale === "ru" ? "/ru/forum" : "/forum";
@@ -142,9 +153,11 @@ export default function TopicThread({ id, locale = "en" }: { id: string; locale?
   const authed = status === "authenticated" && !!data?.user;
   const isOwner = !!(data?.user as { isOwner?: boolean } | undefined)?.isOwner;
 
-  const [topic, setTopic] = useState<Topic | null>(null);
-  const [replies, setReplies] = useState<Reply[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [topic, setTopic] = useState<Topic | null>(initialTopic);
+  const [replies, setReplies] = useState<Reply[]>(initialReplies);
+  // With server data we can paint immediately; still refresh to pick up
+  // per-user state (mine/liked) once mounted.
+  const [loading, setLoading] = useState(!initialTopic);
   const [notFound, setNotFound] = useState(false);
   const [input, setInput] = useState("");
   const [posting, setPosting] = useState(false);
