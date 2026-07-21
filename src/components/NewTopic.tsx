@@ -12,8 +12,10 @@ const T = {
     signin: "Sign in with Google to start a topic.",
     signinBtn: "Sign in with Google",
     step1: "1. Choose a model",
-    step2: "2. Topic title",
-    step3: "3. Description",
+    stepCat: "2. Type",
+    step2: "3. Topic title",
+    step3: "4. Description",
+    cats: { discussion: "Discussion", question: "Question", problem: "Problem" } as Record<string, string>,
     search: "Search a model…",
     change: "Change",
     titlePh: "What's your topic about?",
@@ -29,8 +31,10 @@ const T = {
     signin: "Войдите через Google, чтобы создать тему.",
     signinBtn: "Войти через Google",
     step1: "1. Выберите модель",
-    step2: "2. Заголовок темы",
-    step3: "3. Описание",
+    stepCat: "2. Тип",
+    step2: "3. Заголовок темы",
+    step3: "4. Описание",
+    cats: { discussion: "Обсуждение", question: "Вопрос", problem: "Проблема" } as Record<string, string>,
     search: "Поиск модели…",
     change: "Изменить",
     titlePh: "О чём ваша тема?",
@@ -53,6 +57,7 @@ export default function NewTopic({ phones, locale = "en" }: { phones: Phone[]; l
 
   const [q, setQ] = useState("");
   const [sel, setSel] = useState<Phone | null>(null);
+  const [category, setCategory] = useState<"discussion" | "question" | "problem">("discussion");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [busy, setBusy] = useState(false);
@@ -73,7 +78,7 @@ export default function NewTopic({ phones, locale = "en" }: { phones: Phone[]; l
       const r = await fetch("/api/topics", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: sel.slug, title: title.trim(), body: body.trim() }),
+        body: JSON.stringify({ slug: sel.slug, title: title.trim(), body: body.trim(), category }),
       });
       if (r.status === 401) {
         signIn("google");
@@ -162,9 +167,29 @@ export default function NewTopic({ phones, locale = "en" }: { phones: Phone[]; l
         )}
       </div>
 
-      {/* Steps 2 & 3 appear once a model is chosen */}
+      {/* Steps appear once a model is chosen */}
       {sel && (
         <>
+          <div>
+            <p className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-200">{t.stepCat}</p>
+            <div className="flex flex-wrap gap-2">
+              {(["discussion", "question", "problem"] as const).map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => setCategory(c)}
+                  aria-pressed={category === c}
+                  className={`rounded-full px-4 py-2 text-sm font-medium transition-all active:scale-95 ${
+                    category === c
+                      ? "bg-[#1428a0] text-white dark:bg-blue-600"
+                      : "bg-white border border-gray-300 text-gray-600 hover:border-[#1428a0] hover:text-[#1428a0] dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
+                  }`}
+                >
+                  {t.cats[c]}
+                </button>
+              ))}
+            </div>
+          </div>
           <div>
             <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200">{t.step2}</label>
             <input

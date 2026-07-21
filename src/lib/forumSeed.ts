@@ -8,9 +8,10 @@ export type SeedTopic = {
   title: string;
   body: string;
   replies?: string[];
+  category?: "discussion" | "question" | "problem";
 };
 
-export const FORUM_SEED: SeedTopic[] = [
+const DISCUSSIONS: SeedTopic[] = [
   {
     slug: "galaxy-s24-ultra",
     title: "Is the S24 Ultra still worth buying in 2026?",
@@ -221,8 +222,10 @@ export const FORUM_SEED: SeedTopic[] = [
     body: "The S25 Edge is stunningly thin but the battery is smaller. For real owners: does the thinness win you over, or do you wish you'd bought a normal S25 with more battery?",
     replies: ["It feels amazing in the hand, but I do end up topping up in the evening. Trade-off is real."],
   },
+];
 
-  // ── Common problems & fixes (help + long-tail search) ──
+// ── Common problems & fixes (help + long-tail search) — all tagged "problem" ──
+const PROBLEMS: SeedTopic[] = [
   {
     slug: "galaxy-s21-ultra",
     title: "S21 Ultra battery draining fast — here's what fixed it for me",
@@ -320,4 +323,11 @@ export const FORUM_SEED: SeedTopic[] = [
     title: "S23 Ultra slow to focus in low light — camera fix",
     body: "My S23 Ultra hunted for focus in dim rooms. Things that helped: clean the lens (fingerprints wreck autofocus more than you'd think), turn OFF Scene Optimizer if it's over-processing, tap to focus manually, and make sure you're on the latest camera/firmware update — Samsung has shipped several autofocus improvements. Much snappier now.",
   },
+];
+
+// Problem threads carry the "problem" category; everything else is classified
+// at seed time (a question if the title ends with "?", otherwise a discussion).
+export const FORUM_SEED: SeedTopic[] = [
+  ...DISCUSSIONS,
+  ...PROBLEMS.map((t) => ({ ...t, category: "problem" as const })),
 ];

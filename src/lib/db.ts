@@ -64,6 +64,8 @@ function ensure(p: Pool): Promise<void> {
          -- Forum moderation flags (added after the initial release).
          ALTER TABLE topics ADD COLUMN IF NOT EXISTS pinned boolean NOT NULL DEFAULT false;
          ALTER TABLE topics ADD COLUMN IF NOT EXISTS locked boolean NOT NULL DEFAULT false;
+         -- Thread category: 'discussion' | 'question' | 'problem'.
+         ALTER TABLE topics ADD COLUMN IF NOT EXISTS category text NOT NULL DEFAULT 'discussion';
          -- Likes on threads and replies. One row per (post, user).
          CREATE TABLE IF NOT EXISTS topic_likes (
            topic_id   bigint      NOT NULL REFERENCES topics(id) ON DELETE CASCADE,
@@ -156,6 +158,10 @@ export async function deleteComment(id: string, userId: string, isOwner: boolean
 // ── Forum topics (threads) ──────────────────────────────────────────────────
 // A topic is a user-started thread about a model; replies are the discussion.
 // user_id is stored for accountability/moderation and never sent to clients.
+// Thread categories. Kept as a plain string in the DB but constrained here.
+export const TOPIC_CATEGORIES = ["discussion", "question", "problem"] as const;
+export type TopicCategory = (typeof TOPIC_CATEGORIES)[number];
+
 export type TopicRow = {
   id: string;
   slug: string;
@@ -166,6 +172,7 @@ export type TopicRow = {
   last_at: string;
   pinned: boolean;
   locked: boolean;
+  category: string;
 };
 
 export type TopicListRow = {
@@ -178,20 +185,22 @@ export type TopicListRow = {
   likes: number;
   pinned: boolean;
   locked: boolean;
+  category: string;
 };
 
 export async function createTopic(
   slug: string,
   userId: string,
   title: string,
-  body: string
+  body: string,
+  category: TopicCategory = "discussion"
 ): Promise<{ id: string } | null> {
   const p = getPool();
   if (!p) return null;
   await ensure(p);
   const r = await p.query(
-    "INSERT INTO topics (slug, user_id, title, body) VALUES ($1, $2, $3, $4) RETURNING id",
-    [slug, userId, title, body]
+    "INSERT INTO topics (slug, user_id, title, body, category) VALUES ($1, $2, $3, $4, $5) RETURNING id",
+    [slug, userId, title, body, category]
   );
   return { id: String(r.rows[0].id) };
 }
@@ -214,9 +223,11 @@ export async function seedForumIfEmpty(): Promise<void> {
       const t = FORUM_SEED[i];
       const createdAt = new Date(now - (i * 8 + 6) * 3_600_000);
       const lastAt = t.replies?.length ? new Date(now - (i + 1) * 2 * 3_600_000) : createdAt;
+      // Problems are pre-tagged; otherwise a "?" title is a question, else a discussion.
+      const category = t.category ?? (t.title.trim().endsWith("?") ? "question" : "discussion");
       const ins = await p.query(
-        "INSERT INTO topics (slug, user_id, title, body, created_at, last_at) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id",
-        [t.slug, SEED_USER, t.title, t.body, createdAt, lastAt]
+        "INSERT INTO topics (slug, user_id, title, body, category, created_at, last_at) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id",
+        [t.slug, SEED_USER, t.title, t.body, category, createdAt, lastAt]
       );
       const id = ins.rows[0].id;
       for (let j = 0; j < (t.replies?.length ?? 0); j++) {
@@ -236,7 +247,7 @@ export async function listTopics(limit = 100): Promise<TopicListRow[]> {
   if (!p) return [];
   await ensure(p);
   const r = await p.query(
-    `SELECT t.id, t.slug, t.title, t.created_at, t.last_at, t.pinned, t.locked,
+    `SELECT t.id, t.slug, t.title, t.created_at, t.last_at, t.pinned, t.locked, t.category,
             (SELECT count(*)::int FROM topic_replies r WHERE r.topic_id = t.id) AS replies,
             (SELECT count(*)::int FROM topic_likes l WHERE l.topic_id = t.id) AS likes
      FROM topics t ORDER BY t.pinned DESC, t.last_at DESC LIMIT $1`,
@@ -250,7 +261,7 @@ export async function getTopic(id: string): Promise<TopicRow | null> {
   if (!p) return null;
   await ensure(p);
   const r = await p.query(
-    "SELECT id, slug, title, body, user_id, created_at, last_at, pinned, locked FROM topics WHERE id = $1",
+    "SELECT id, slug, title, body, user_id, created_at, last_at, pinned, locked, category FROM topics WHERE id = $1",
     [id]
   );
   return (r.rows[0] as TopicRow) ?? null;

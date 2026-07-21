@@ -13,6 +13,7 @@ type Topic = {
   line: string;
   ru: boolean;
   title: string;
+  category: string;
   replies: number;
   likes: number;
   pinned: boolean;
@@ -22,6 +23,7 @@ type Topic = {
 };
 
 type SortKey = "active" | "new" | "replies" | "likes";
+type CatFilter = "all" | "discussion" | "question" | "problem";
 
 const T = {
   en: {
@@ -32,6 +34,8 @@ const T = {
     pinned: "Pinned",
     locked: "Locked",
     sorts: { active: "Active", new: "New", replies: "Most replies", likes: "Top" } as Record<SortKey, string>,
+    cats: { all: "All", discussion: "Discussions", question: "Questions", problem: "Problems" } as Record<CatFilter, string>,
+    catLabel: { discussion: "Discussion", question: "Question", problem: "Problem" } as Record<string, string>,
     replies: (n: number) => `${n} ${n === 1 ? "reply" : "replies"}`,
   },
   ru: {
@@ -42,12 +46,22 @@ const T = {
     pinned: "Закреплено",
     locked: "Закрыто",
     sorts: { active: "Активные", new: "Новые", replies: "С ответами", likes: "Топ" } as Record<SortKey, string>,
+    cats: { all: "Все", discussion: "Обсуждения", question: "Вопросы", problem: "Проблемы" } as Record<CatFilter, string>,
+    catLabel: { discussion: "Обсуждение", question: "Вопрос", problem: "Проблема" } as Record<string, string>,
     replies: (n: number) =>
       `${n} ${n % 10 === 1 && n % 100 !== 11 ? "ответ" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? "ответа" : "ответов"}`,
   },
 };
 
 const SORT_KEYS: SortKey[] = ["active", "new", "replies", "likes"];
+const CAT_FILTERS: CatFilter[] = ["all", "discussion", "question", "problem"];
+
+// One UI pill styling per category.
+const CAT_STYLE: Record<string, string> = {
+  problem: "bg-red-50 text-red-600 border border-red-200 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/30",
+  question: "bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30",
+  discussion: "bg-[#eef1fb] text-[#1428a0] border border-[#dbe1f6] dark:bg-[#1b2338] dark:text-blue-300 dark:border-[#2b3a5e]",
+};
 
 const norm = (s: string) => s.toLowerCase().replace(/\s+/g, " ").trim();
 
@@ -58,6 +72,7 @@ export default function ForumTopics({ locale = "en" }: { locale?: Locale }) {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("active");
+  const [cat, setCat] = useState<CatFilter>("all");
 
   useEffect(() => {
     let alive = true;
@@ -71,15 +86,21 @@ export default function ForumTopics({ locale = "en" }: { locale?: Locale }) {
     };
   }, []);
 
+  const counts = useMemo(() => {
+    const c: Record<string, number> = { all: topics.length, discussion: 0, question: 0, problem: 0 };
+    for (const tp of topics) c[tp.category] = (c[tp.category] ?? 0) + 1;
+    return c;
+  }, [topics]);
+
   const shown = useMemo(() => {
     const needle = norm(query);
     const terms = needle.split(" ").filter(Boolean);
-    const filtered = needle
-      ? topics.filter((tp) => {
-          const hay = norm(`${tp.title} ${tp.name} ${tp.line}`);
-          return terms.every((w) => hay.includes(w));
-        })
-      : topics.slice();
+    const filtered = topics.filter((tp) => {
+      if (cat !== "all" && tp.category !== cat) return false;
+      if (!needle) return true;
+      const hay = norm(`${tp.title} ${tp.name} ${tp.line}`);
+      return terms.every((w) => hay.includes(w));
+    });
     // Pinned threads always float to the top; the rest follow the chosen sort.
     const by: Record<SortKey, (a: Topic, b: Topic) => number> = {
       active: (a, b) => +new Date(b.lastAt) - +new Date(a.lastAt),
@@ -88,7 +109,7 @@ export default function ForumTopics({ locale = "en" }: { locale?: Locale }) {
       likes: (a, b) => b.likes - a.likes || +new Date(b.lastAt) - +new Date(a.lastAt),
     };
     return filtered.sort((a, b) => Number(b.pinned) - Number(a.pinned) || by[sort](a, b));
-  }, [topics, query, sort]);
+  }, [topics, query, sort, cat]);
 
   return (
     <div>
@@ -114,6 +135,27 @@ export default function ForumTopics({ locale = "en" }: { locale?: Locale }) {
           <span className="text-base leading-none">+</span> {t.add}
         </Link>
       </div>
+
+      {/* Category filter — Discussions / Questions / Problems. */}
+      {!loading && topics.length > 0 && (
+        <div className="mb-3 flex flex-wrap gap-2">
+          {CAT_FILTERS.map((c) => (
+            <button
+              key={c}
+              onClick={() => setCat(c)}
+              aria-pressed={cat === c}
+              className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-all active:scale-95 ${
+                cat === c
+                  ? "bg-[#1428a0] text-white dark:bg-blue-600"
+                  : "bg-white border border-gray-300 text-gray-600 hover:border-[#1428a0] hover:text-[#1428a0] dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
+              }`}
+            >
+              {t.cats[c]}
+              <span className={`ml-1.5 text-xs ${cat === c ? "text-white/70" : "text-gray-400"}`}>{counts[c] ?? 0}</span>
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Sort — iOS-style segmented control, One UI colours. */}
       {!loading && topics.length > 1 && (
@@ -178,6 +220,11 @@ export default function ForumTopics({ locale = "en" }: { locale?: Locale }) {
                     {tp.locked && (
                       <span className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                         <IconLock size={11} /> {t.locked}
+                      </span>
+                    )}
+                    {t.catLabel[tp.category] && (
+                      <span className={`shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${CAT_STYLE[tp.category] ?? CAT_STYLE.discussion}`}>
+                        {t.catLabel[tp.category]}
                       </span>
                     )}
                     <span className="truncate font-semibold text-gray-900 dark:text-gray-100 group-hover:text-[#1428a0] dark:group-hover:text-blue-300">
