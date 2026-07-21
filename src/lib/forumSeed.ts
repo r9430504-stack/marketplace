@@ -221,4 +221,103 @@ export const FORUM_SEED: SeedTopic[] = [
     body: "The S25 Edge is stunningly thin but the battery is smaller. For real owners: does the thinness win you over, or do you wish you'd bought a normal S25 with more battery?",
     replies: ["It feels amazing in the hand, but I do end up topping up in the evening. Trade-off is real."],
   },
+
+  // ── Common problems & fixes (help + long-tail search) ──
+  {
+    slug: "galaxy-s21-ultra",
+    title: "S21 Ultra battery draining fast — here's what fixed it for me",
+    body: "My S21 Ultra was barely lasting half a day. What actually helped: Settings → Battery → Background usage limits to spot the worst apps, turning off Always On Display, and dropping the screen from QHD+ to FHD+ (QHD at 120 Hz is a battery killer). Screen-on time went from ~4h to nearly 7h. What worked for you?",
+    replies: [
+      "FHD+ instead of QHD was the biggest one for me too. Barely notice the difference in daily use.",
+      "Also check for a rogue app in Battery usage — Facebook was eating 20% in the background on mine.",
+    ],
+  },
+  {
+    slug: "galaxy-s22-ultra",
+    title: "S22 Ultra overheating while gaming — fix that worked",
+    body: "The S22 Ultra ran hot and throttled at launch. Two things helped a lot: make sure you're on the latest One UI (the early updates improved thermals a ton), and take the case off while gaming or fast charging. Also turn off background sync for heavy apps. It's night and day compared to launch firmware.",
+    replies: ["Can confirm the updates fixed most of it. It was genuinely bad at launch, fine now."],
+  },
+  {
+    slug: "galaxy-s20-ultra",
+    title: "Green line appeared on my S20 screen out of nowhere — anyone else?",
+    body: "A vertical green line showed up on my S20's AMOLED after an update, no drop or damage. From what I've read this is a known issue on some Samsung OLED panels as they age or after certain updates. Sometimes a software update helps, but usually it's the panel itself — Samsung has repaired some units for free even out of warranty, so it's worth contacting support before paying for a screen.",
+    replies: [
+      "Mine did the same at ~2 years. Samsung service replaced the panel free once I pushed. Ask them.",
+    ],
+  },
+  {
+    slug: "galaxy-note-10-plus",
+    title: "Ghost touch / phantom taps on Note 10+ — how I stopped it",
+    body: "My Note 10+ started registering taps I never made, especially near the curved edges. Fixes to try in order: remove any cheap screen protector, restart in Safe Mode to rule out an app, then wipe the cache partition from recovery. If it only happens while charging, try a different (better quality) cable/charger — a noisy charger can cause it. If none of that works it's likely the digitizer and needs service.",
+  },
+  {
+    slug: "galaxy-s10-plus",
+    title: "S10+ ultrasonic fingerprint scanner got slow/unreliable — fix",
+    body: "The under-display fingerprint reader on my S10+ started failing constantly. What helped: delete and re-register your fingerprints (add the same finger twice for better accuracy), and make sure your screen protector is one that's rated for ultrasonic sensors — the wrong film blocks it. A One UI update also improved recognition speed noticeably.",
+    replies: ["Re-registering each finger twice was the trick for me. Went from 50% to almost always first try."],
+  },
+  {
+    slug: "galaxy-a54-5g",
+    title: "A54 charging slowly — is 25W really the max?",
+    body: "Yes, the A54 caps at 25W, but a lot of people never actually hit it. You need a proper 25W USB-PD (PPS) charger and a good cable — the phone doesn't include one in the box. With a real 25W PD charger mine goes 0–50% in about half an hour. A generic 5W/10W brick will charge painfully slowly.",
+    replies: ["This. Bought a cheap Samsung 25W PD charger and it was a completely different phone."],
+  },
+  {
+    slug: "galaxy-s21",
+    title: "S21 Bluetooth keeps disconnecting from car / earbuds — solved",
+    body: "Constant Bluetooth drops on my S21. What fixed it: Settings → Apps → show system apps → Bluetooth → clear cache, then forget the device and re-pair. Also turn OFF battery optimization for Bluetooth and the earbuds app so the system doesn't kill the connection. Rock solid since.",
+    replies: ["Clearing the Bluetooth cache is criminally underrated. Fixed my car audio dropouts instantly."],
+  },
+  {
+    slug: "galaxy-note-9",
+    title: "Note 9 battery aging in 2026 — is a replacement worth it?",
+    body: "Loved my Note 9 but the battery was down to a few hours. Got the battery replaced at a reputable local shop for cheap and it's basically a new phone again — easily a full day now. If everything else about your Note 9 still works, a battery swap is by far the best value upgrade. Just use a quality cell, not the cheapest one.",
+    replies: [
+      "Did the same. Best money I've spent on an old phone. The Note 9 is still great with a fresh battery.",
+    ],
+  },
+  {
+    slug: "galaxy-s9-plus",
+    title: "S9+ stuck on the boot logo / won't turn on — fix",
+    body: "My S9+ froze on the Samsung logo and wouldn't boot. Steps that usually fix it: force restart by holding Volume Down + Power for ~10 seconds. If it still loops, boot into recovery (Volume Up + Bixby + Power on older models) and 'Wipe cache partition' — this does NOT erase your data. Only factory reset as a last resort. Wiping the cache brought mine back.",
+  },
+  {
+    slug: "galaxy-s20-fe",
+    title: "S20 FE notifications arriving late — how to fix delayed alerts",
+    body: "Classic One UI issue: aggressive battery saving kills background apps so messages arrive late. Fix: Settings → Battery → Background usage limits → make sure your messaging/email apps are NOT in 'Sleeping' or 'Deep sleeping'. Also turn off 'Adaptive battery' or set the app to 'Unrestricted'. Notifications became instant again.",
+    replies: ["Putting WhatsApp and Telegram on 'Unrestricted' fixed months of late notifications for me."],
+  },
+  {
+    slug: "galaxy-z-fold-5",
+    title: "Z Fold 5 inner screen protector bubbling/peeling — don't panic",
+    body: "The pre-applied protector on the inner foldable screen started lifting at the crease. This is normal wear on the FACTORY protector — do NOT peel it off yourself (the display underneath is delicate). Samsung replaces this inner protector for free (or very cheap) at service centres. Book an appointment rather than picking at it.",
+    replies: ["Samsung swapped mine free in 20 minutes. Never remove it yourself, that's how screens die."],
+  },
+  {
+    slug: "galaxy-a53-5g",
+    title: "A53 got laggy after a One UI update — how I fixed the stutter",
+    body: "After a big update my A53 felt sluggish. What helped, in order: wipe the cache partition from recovery, clear cache on heavy apps, restart, and give it a day to re-optimise in the background. If it's still bad, back up and do a clean factory reset — updates sometimes leave old data that drags performance. Smooth again after the cache wipe for me.",
+  },
+  {
+    slug: "galaxy-s8",
+    title: "S8 mobile data stopped working after swapping SIM — fix",
+    body: "No mobile data after putting in a new SIM. The fix is almost always the APN: Settings → Connections → Mobile networks → Access Point Names → reset to default, or add your carrier's APN manually (their website lists it). A network settings reset (Settings → General management → Reset → Reset network settings) also does it. Data came back immediately.",
+  },
+  {
+    slug: "galaxy-a12",
+    title: "Galaxy A12 storage always full and lagging — what to do",
+    body: "The A12 is a budget phone with limited RAM/storage, so it fills up fast. What keeps it usable: add a microSD card and move photos/videos to it, clear app caches regularly, uninstall or disable apps you don't use, and keep at least a few GB free. Don't run 20 apps in the background. It won't be a flagship but these keep it smooth.",
+  },
+  {
+    slug: "galaxy-z-flip-4",
+    title: "Z Flip 4 screen protector lifting at the crease — is this normal?",
+    body: "The factory screen protector on my Flip 4 started peeling along the fold line after a few months. This is expected and it's the protector, not the screen. Same as the Fold: don't remove it yourself, Samsung re-applies it at service. If you peel it off, the exposed foldable layer scratches and cracks easily.",
+    replies: ["Yep, totally normal on clamshells. Free replacement at Samsung service, took them minutes."],
+  },
+  {
+    slug: "galaxy-s23-ultra",
+    title: "S23 Ultra slow to focus in low light — camera fix",
+    body: "My S23 Ultra hunted for focus in dim rooms. Things that helped: clean the lens (fingerprints wreck autofocus more than you'd think), turn OFF Scene Optimizer if it's over-processing, tap to focus manually, and make sure you're on the latest camera/firmware update — Samsung has shipped several autofocus improvements. Much snappier now.",
+  },
 ];
