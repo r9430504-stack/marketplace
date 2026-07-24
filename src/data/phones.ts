@@ -1124,6 +1124,7 @@ export const PHONES: Phone[] = [
   // ───────────────────────── 2026 ─────────────────────────
   {
     slug: "galaxy-z-fold-8-ultra",
+    image: "/models/galaxy-z-fold-8-ultra.jpg",
     name: "Galaxy Z Fold8 Ultra",
     series: "Galaxy Z Fold",
     releaseYear: 2026,
@@ -1151,6 +1152,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-z-fold-8",
+    image: "/models/galaxy-z-fold-8.jpg",
     name: "Galaxy Z Fold8",
     series: "Galaxy Z Fold",
     releaseYear: 2026,
@@ -1178,6 +1180,7 @@ export const PHONES: Phone[] = [
   },
   {
     slug: "galaxy-z-flip-8",
+    image: "/models/galaxy-z-flip-8.jpg",
     name: "Galaxy Z Flip8",
     series: "Galaxy Z Flip",
     releaseYear: 2026,
