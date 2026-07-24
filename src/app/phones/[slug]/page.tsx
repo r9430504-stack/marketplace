@@ -19,7 +19,6 @@ import BuyLinks from "@/components/BuyLinks";
 import BackButton from "@/components/BackButton";
 import FavoriteButton from "@/components/FavoriteButton";
 import Comments from "@/components/Comments";
-import AdSlot from "@/components/AdSlot";
 import { getCustomPhone } from "@/lib/db";
 import { SITE_URL } from "@/lib/site";
 
@@ -39,8 +38,8 @@ export async function generateMetadata({
   const phone = getPhoneBySlug(slug) ?? (await getCustomPhone(slug)) ?? undefined;
   if (!phone) return { title: "Model not found" };
 
-  const title = `${phone.name} — specifications and history`;
-  const description = `${phone.name} (${phone.releaseDate}): ${phone.tagline} ${phone.specs.display} display, ${phone.specs.chipset}, ${phone.specs.mainCamera} camera, ${phone.specs.battery} battery.`;
+  const title = `${phone.name} specs, price & release date (${phone.releaseYear})`;
+  const description = `${phone.name} full specifications: released ${phone.releaseDate}. ${phone.specs.display} display, ${phone.specs.chipset}, ${phone.specs.mainCamera} camera, ${phone.specs.battery} battery${phone.specs.launchPrice ? `, launch price ${phone.specs.launchPrice}` : ""}. Where to buy and full history.`;
   return {
     title,
     description,
@@ -190,8 +189,6 @@ export default async function PhonePage({
       </div>
 
       <BuyLinks name={phone.name} />
-
-      <AdSlot />
 
       {/* History */}
       <section className="reveal-up mt-4">

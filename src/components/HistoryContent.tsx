@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getAllPhones, getYears, seriesMeta, hasRuTranslation, localizedPhone } from "@/lib/phones";
+import { getAllPhones, getYears, seriesMeta, localizedPhone } from "@/lib/phones";
 import BackButton from "@/components/BackButton";
 import { t, type Locale } from "@/lib/i18n";
 
@@ -18,7 +18,7 @@ export default function HistoryContent({ locale = "en" }: { locale?: Locale }) {
   const tt = T[locale];
   const phones = getAllPhones();
   const years = getYears();
-  const link = (slug: string) => `${locale === "ru" && hasRuTranslation(slug) ? "/ru" : ""}/phones/${slug}`;
+  const link = (slug: string) => `${locale === "ru" ? "/ru" : ""}/phones/${slug}`;
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">

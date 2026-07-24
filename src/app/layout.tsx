@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
-import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION, ADSENSE_CLIENT } from "@/lib/site";
+import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION } from "@/lib/site";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import TabBar from "@/components/TabBar";
 import RevealInit from "@/components/RevealInit";
 import MotionInit from "@/components/MotionInit";
 import SiteJsonLd from "@/components/SiteJsonLd";
@@ -59,6 +60,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: "#ffffff",
+  // Let content extend under the notch / home indicator so env(safe-area-*) works.
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -79,26 +82,16 @@ export default function RootLayout({
         <noscript>
           <style>{`.reveal,.reveal-up{opacity:1 !important;transform:none !important}.img-fade{opacity:1 !important}.img-skeleton{display:none !important}`}</style>
         </noscript>
-        {ADSENSE_CLIENT && (
-          <>
-            {/* Warm up the ad host early so the async script resolves faster */}
-            <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
-            <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
-            <script
-              async
-              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
-              crossOrigin="anonymous"
-            />
-          </>
-        )}
       </head>
-      <body className="min-h-full flex flex-col">
+      {/* Extra bottom space on phones so content clears the bottom tab bar. */}
+      <body className="min-h-full flex flex-col pb-[calc(3.75rem+env(safe-area-inset-bottom))] md:pb-0">
         <Providers>
           <MotionInit />
           <SiteJsonLd />
           <SiteHeader />
           <main className="flex-1">{children}</main>
           <SiteFooter />
+          <TabBar />
           <Consultant phones={getConsultPhones()} />
           <WelcomeOverlay />
           <RevealInit />

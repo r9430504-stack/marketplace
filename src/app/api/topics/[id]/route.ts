@@ -1,5 +1,14 @@
 import { auth } from "@/auth";
-import { getTopic, listReplies, addReply, deleteTopic, deleteReply } from "@/lib/db";
+import {
+  getTopic,
+  listReplies,
+  addReply,
+  deleteTopic,
+  deleteReply,
+  topicLikeInfo,
+  setTopicPinned,
+  setTopicLocked,
+} from "@/lib/db";
 import { getAllPhones, seriesMeta, hasRuTranslation } from "@/lib/phones";
 import { cleanText } from "@/lib/moderation";
 import { containsProfanity } from "@/lib/profanity";
@@ -40,7 +49,7 @@ export async function GET(_req: Request, ctx: Ctx) {
     const topic = await getTopic(id);
     if (!topic) return Response.json({ error: "not_found" }, { status: 404 });
     const meta = getAllPhones().find((p) => p.slug === topic.slug);
-    const replies = await listReplies(id);
+    const [replies, like] = await Promise.all([listReplies(id, me), topicLikeInfo(id, me)]);
     return Response.json({
       topic: {
         id: String(topic.id),
@@ -52,12 +61,18 @@ export async function GET(_req: Request, ctx: Ctx) {
         body: topic.body,
         createdAt: topic.created_at,
         mine: canModerate(topic.user_id),
+        pinned: topic.pinned,
+        locked: topic.locked,
+        likes: like.likes,
+        liked: like.liked,
       },
       replies: replies.map((r) => ({
         id: String(r.id),
         body: r.body,
         createdAt: r.created_at,
         mine: canModerate(r.user_id),
+        likes: r.likes,
+        liked: r.liked,
       })),
     });
   } catch {
@@ -79,10 +94,30 @@ export async function POST(req: Request, ctx: Ctx) {
   if (containsProfanity(text)) return Response.json({ error: "profanity" }, { status: 422 });
 
   try {
-    if (!(await getTopic(id))) return Response.json({ error: "not_found" }, { status: 404 });
+    const topic = await getTopic(id);
+    if (!topic) return Response.json({ error: "not_found" }, { status: 404 });
+    if (topic.locked) return Response.json({ error: "locked" }, { status: 423 });
     const c = await addReply(id, me, text);
     if (!c) return Response.json({ error: "disabled" }, { status: 503 });
-    return Response.json({ reply: { id: String(c.id), body: c.body, createdAt: c.created_at, mine: true } });
+    return Response.json({ reply: { id: String(c.id), body: c.body, createdAt: c.created_at, mine: true, likes: 0, liked: false } });
+  } catch {
+    return Response.json({ error: "server" }, { status: 500 });
+  }
+}
+
+// PATCH /api/topics/:id { pinned?, locked? } — owner-only moderation.
+export async function PATCH(req: Request, ctx: Ctx) {
+  const { id } = await ctx.params;
+  if (!isId(id)) return Response.json({ error: "bad_request" }, { status: 400 });
+  const me = await userKey();
+  const isOwner = !!me && !!OWNER && me.toLowerCase() === OWNER;
+  if (!isOwner) return Response.json({ error: "forbidden" }, { status: 403 });
+
+  const body = await req.json().catch(() => ({}) as { pinned?: unknown; locked?: unknown });
+  try {
+    if (typeof body.pinned === "boolean") await setTopicPinned(id, body.pinned);
+    if (typeof body.locked === "boolean") await setTopicLocked(id, body.locked);
+    return Response.json({ ok: true });
   } catch {
     return Response.json({ error: "server" }, { status: 500 });
   }

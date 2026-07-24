@@ -36,7 +36,12 @@ export async function POST(req: Request) {
   const name = str(b.name, 80);
   // Any line name is allowed — a built-in one or a new custom line.
   const series = str(b.series, 40) as SeriesId;
-  const year = Number(b.releaseYear);
+  // One "Release date" field does both jobs: it's the human-readable label and
+  // the source of the year (for the year range, sorting and filters). Pull the
+  // first 4-digit year out of whatever was typed ("January 2025", "2025", …).
+  const releaseDate = str(b.releaseDate, 40);
+  const yearMatch = releaseDate.match(/\b(19|20)\d\d\b/);
+  const year = yearMatch ? Number(yearMatch[0]) : NaN;
   if (name.length < 2) return Response.json({ error: "name" }, { status: 400 });
   if (series.length < 2) return Response.json({ error: "series" }, { status: 400 });
   if (!Number.isFinite(year) || year < 2005 || year > 2100) return Response.json({ error: "year" }, { status: 400 });
@@ -93,7 +98,7 @@ export async function POST(req: Request) {
     name,
     series,
     releaseYear: Math.round(year),
-    releaseDate: str(b.releaseDate, 40) || String(Math.round(year)),
+    releaseDate: releaseDate || String(Math.round(year)),
     tagline: str(b.tagline, 200) || name,
     history: str(b.history, 4000) || "",
     keyFeatures,

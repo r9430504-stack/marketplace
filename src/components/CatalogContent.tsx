@@ -2,7 +2,6 @@ import { getAllPhones, SERIES, type SeriesId } from "@/lib/phones";
 import { getCustomPhones } from "@/lib/db";
 import { t, type Locale } from "@/lib/i18n";
 import PhoneBrowser from "@/components/PhoneBrowser";
-import AdSlot from "@/components/AdSlot";
 import BackButton from "@/components/BackButton";
 
 export default async function CatalogContent({
@@ -41,7 +40,6 @@ export default async function CatalogContent({
         locale={locale}
       />
 
-      <AdSlot />
     </div>
   );
 }
