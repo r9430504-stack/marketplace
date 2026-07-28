@@ -1,8 +1,16 @@
+import { revalidatePath } from "next/cache";
 import { auth, isOwnerEmail } from "@/auth";
 import { getCustomPhones, getCustomPhone, upsertCustomPhone, deleteCustomPhone } from "@/lib/db";
 import { getPhoneBySlug, type Phone, type SeriesId, type Specs } from "@/lib/phones";
 
 export const runtime = "nodejs";
+
+// Clear the cached pages a model appears on so an owner edit shows up at once.
+function revalidateModel(slug: string) {
+  revalidatePath("/"); // home hero + numbers
+  revalidatePath("/phones"); // catalog
+  revalidatePath(`/phones/${slug}`); // the model's own page
+}
 
 async function ownerOnly(): Promise<boolean> {
   try {
@@ -109,6 +117,7 @@ export async function POST(req: Request) {
 
   try {
     await upsertCustomPhone(phone);
+    revalidateModel(slug);
     return Response.json({ ok: true, slug });
   } catch {
     return Response.json({ error: "server" }, { status: 500 });
@@ -122,6 +131,7 @@ export async function DELETE(req: Request) {
   if (!/^[a-z0-9-]{1,64}$/.test(slug)) return Response.json({ error: "bad_request" }, { status: 400 });
   try {
     await deleteCustomPhone(slug);
+    revalidateModel(slug);
   } catch {}
   return Response.json({ ok: true });
 }

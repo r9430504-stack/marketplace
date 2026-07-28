@@ -28,6 +28,9 @@ export function generateStaticParams() {
 
 // Owner-added models aren't in the static set — render them on demand.
 export const dynamicParams = true;
+// Safety net: refresh at most every 60s in case an on-demand revalidation is
+// ever missed. Owner edits trigger an immediate revalidatePath in the API.
+export const revalidate = 60;
 
 export async function generateMetadata({
   params,
