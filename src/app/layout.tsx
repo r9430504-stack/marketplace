@@ -5,6 +5,7 @@ import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION } from "@/lib/site";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import TabBar from "@/components/TabBar";
+import PWARegister from "@/components/PWARegister";
 import RevealInit from "@/components/RevealInit";
 import MotionInit from "@/components/MotionInit";
 import SiteJsonLd from "@/components/SiteJsonLd";
@@ -52,6 +53,17 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
   },
   robots: { index: true, follow: true },
+  // Installable-app metadata: lets iOS open the site full-screen from the home
+  // screen (no browser chrome), like a native app.
+  appleWebApp: {
+    capable: true,
+    title: SITE_NAME,
+    statusBarStyle: "black-translucent",
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
   verification: {
     google: process.env.GOOGLE_SITE_VERIFICATION,
     yandex: process.env.YANDEX_VERIFICATION,
@@ -96,6 +108,7 @@ export default function RootLayout({
           <WelcomeOverlay />
           <RevealInit />
           <FavoritesSync />
+          <PWARegister />
         </Providers>
       </body>
     </html>
