@@ -2,7 +2,6 @@ import Link from "next/link";
 import { getAllPhones, getComparisonPairs, comparisonSlug, seriesMeta } from "@/lib/phones";
 import CompareBuilder from "@/components/CompareBuilder";
 import BackButton from "@/components/BackButton";
-import AdSlot from "@/components/AdSlot";
 import { t, type Locale } from "@/lib/i18n";
 
 const T = {
@@ -76,7 +75,6 @@ export default function CompareIndexContent({ locale = "en" }: { locale?: Locale
         ))}
       </div>
 
-      <AdSlot />
     </div>
   );
 }

@@ -12,9 +12,22 @@ export function parseLaunchUsd(launchPrice?: string): number {
   return m ? parseInt(m[1].replace(/,/g, ""), 10) : 0;
 }
 
-/** Rough estimated street/second-hand price today, in USD. Depreciates the
- * launch price by the model's age (≈12% the first year, ≈26%/yr after), with a
- * sensible floor. Returns 0 if we don't have a launch price. */
+/** Rough estimated street/second-hand price today, in USD.
+ *
+ * Depreciation is calibrated to real mid-2026 used-market averages (Swappa,
+ * BankMyCell, Back Market) across Galaxy flagships and foldables of different
+ * ages:
+ *
+ *   age 1 (S25 Ultra)   ≈ 50% of launch
+ *   age 2 (S24 Ultra)   ≈ 40%
+ *   age 3 (S23 Ultra / Z Fold5) ≈ 31%
+ *   age 4 (S22 Ultra)   ≈ 25%
+ *   age 6 (S20)         ≈ 15%
+ *
+ * i.e. a steep ~50% drop the first year, then ≈21%/yr after. The current-year
+ * model (age 0) still sits near retail. Kept clearly labelled as approximate —
+ * exact prices depend on storage, condition and carrier. Returns 0 with no
+ * launch price. */
 export function estimateCurrentUsd(
   launchUsd: number,
   year: number,
@@ -22,8 +35,8 @@ export function estimateCurrentUsd(
 ): number {
   if (!launchUsd || launchUsd <= 0) return 0;
   const age = Math.max(0, now - year);
-  const factor = age <= 0 ? 1 : 0.88 * Math.pow(0.74, age - 1);
-  const floor = Math.max(35, launchUsd * 0.05);
+  const factor = age <= 0 ? 1 : 0.5 * Math.pow(0.79, age - 1);
+  const floor = Math.max(30, launchUsd * 0.045);
   const cur = Math.max(launchUsd * factor, floor);
   return cur >= 200 ? Math.round(cur / 10) * 10 : Math.round(cur / 5) * 5;
 }

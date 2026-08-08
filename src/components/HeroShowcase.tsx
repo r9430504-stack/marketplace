@@ -10,8 +10,9 @@ type Item = { slug: string; name: string; image: string };
  * toward the cursor (subtle 3D parallax). Motion only — no colour or layout
  * change. Respects prefers-reduced-motion via CSS (.floaty / .hero-parallax).
  */
-export default function HeroShowcase({ items }: { items: Item[] }) {
+export default function HeroShowcase({ items, locale = "en" }: { items: Item[]; locale?: "en" | "ru" }) {
   const ref = useRef<HTMLDivElement>(null);
+  const base = locale === "ru" ? "/ru" : "";
 
   const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const el = ref.current;
@@ -39,7 +40,7 @@ export default function HeroShowcase({ items }: { items: Item[] }) {
         {items.map((p, i) => (
           <Link
             key={p.slug}
-            href={`/phones/${p.slug}`}
+            href={`${base}/phones/${p.slug}`}
             className={`img-frame group relative rounded-2xl overflow-hidden glass hover:shadow-xl transition-shadow duration-300 aspect-[4/5] ${
               i % 2 === 1 ? "translate-y-6" : ""
             }`}

@@ -1,15 +1,23 @@
 import Link from "next/link";
 import { SITE_NAME } from "@/lib/site";
-import LanguageSwitch from "./LanguageSwitch";
+import { getAllPhones, seriesMeta } from "@/lib/phones";
 import HeaderNav from "./HeaderNav";
 import ThemeToggle from "./ThemeToggle";
 import FavoritesLink from "./FavoritesLink";
 import AuthButton from "./AuthButton";
 import AdminLink from "./AdminLink";
-import MobileMenu from "./MobileMenu";
 import BrandMark from "./BrandMark";
+import Search from "./Search";
 
 export default function SiteHeader() {
+  // Lightweight in-memory index for instant search (no DB hit per page).
+  const searchIndex = getAllPhones().map((p) => ({
+    slug: p.slug,
+    name: p.name,
+    line: seriesMeta(p.series).label,
+    year: p.releaseYear,
+  }));
+
   return (
     <nav className="glass border-x-0 border-t-0 sticky top-0 z-20">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-2 sm:gap-4">
@@ -26,12 +34,11 @@ export default function SiteHeader() {
           <div className="hidden md:flex items-center gap-4">
             <HeaderNav />
           </div>
+          <Search phones={searchIndex} />
           <FavoritesLink />
-          <LanguageSwitch />
           <ThemeToggle />
           <AdminLink />
           <AuthButton />
-          <MobileMenu />
         </div>
       </div>
     </nav>

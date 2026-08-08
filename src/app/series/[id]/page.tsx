@@ -5,7 +5,6 @@ import { SERIES, getAllPhones, seriesSlug, seriesFromSlug } from "@/lib/phones";
 import { SERIES_INTRO } from "@/lib/seriesContent";
 import PhoneCard from "@/components/PhoneCard";
 import BackButton from "@/components/BackButton";
-import AdSlot from "@/components/AdSlot";
 import { SITE_URL } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -94,8 +93,6 @@ export default async function SeriesPage({
           <PhoneCard key={p.slug} phone={p} />
         ))}
       </div>
-
-      <AdSlot />
 
       {/* Other lines */}
       <section className="reveal-up mt-12">

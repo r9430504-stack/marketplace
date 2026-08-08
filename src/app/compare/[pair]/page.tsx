@@ -11,7 +11,6 @@ import { keyDifferences } from "@/lib/compare";
 import PhoneVisual from "@/components/PhoneVisual";
 import CompareTable from "@/components/CompareTable";
 import BackButton from "@/components/BackButton";
-import AdSlot from "@/components/AdSlot";
 import { SITE_URL } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -140,8 +139,6 @@ export default async function ComparePage({
           </p>
         )}
       </section>
-
-      <AdSlot />
 
       <section className="reveal-up mt-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">

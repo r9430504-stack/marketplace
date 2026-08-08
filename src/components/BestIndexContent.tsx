@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getCollections, collectionPhones } from "@/lib/collections";
 import BackButton from "@/components/BackButton";
-import AdSlot from "@/components/AdSlot";
 import { t, type Locale } from "@/lib/i18n";
 
 const T = {
@@ -86,7 +85,6 @@ export default function BestIndexContent({ locale = "en" }: { locale?: Locale })
         })}
       </div>
 
-      <AdSlot />
     </div>
   );
 }

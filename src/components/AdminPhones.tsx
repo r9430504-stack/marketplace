@@ -121,8 +121,7 @@ export default function AdminPhones({ seriesOptions }: { seriesOptions: SeriesOp
     setF({
       name: p.name ?? "",
       series: p.series ?? seriesOptions[0]?.id ?? "",
-      releaseYear: p.releaseYear != null ? String(p.releaseYear) : "",
-      releaseDate: p.releaseDate ?? "",
+      releaseDate: p.releaseDate ?? (p.releaseYear != null ? String(p.releaseYear) : ""),
       tagline: p.tagline ?? "",
       image: p.image ?? "",
       keyFeatures: (p.keyFeatures ?? []).join(", "),
@@ -144,7 +143,6 @@ export default function AdminPhones({ seriesOptions }: { seriesOptions: SeriesOp
         body: JSON.stringify({
           name: f.name,
           series: f.series,
-          releaseYear: f.releaseYear,
           releaseDate: f.releaseDate,
           tagline: f.tagline,
           image: f.image,
@@ -160,7 +158,12 @@ export default function AdminPhones({ seriesOptions }: { seriesOptions: SeriesOp
         reset();
         loadList();
       } else {
-        const err = d.error === "exists" ? "A model with this name already exists." : `Couldn't save (${d.error ?? r.status}).`;
+        const err =
+          d.error === "exists"
+            ? "A model with this name already exists."
+            : d.error === "year"
+              ? "Add a year to the release date (e.g. “January 2025” or “2025”)."
+              : `Couldn't save (${d.error ?? r.status}).`;
         setMsg({ ok: false, text: err });
       }
     } catch {
@@ -203,12 +206,15 @@ export default function AdminPhones({ seriesOptions }: { seriesOptions: SeriesOp
             </datalist>
           </label>
           <label className="block">
-            <span className="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-200">Release year *</span>
-            <input className={inputCls} type="number" value={f.releaseYear ?? ""} onChange={(e) => set("releaseYear", e.target.value)} placeholder="2025" required />
-          </label>
-          <label className="block">
-            <span className="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-200">Release date</span>
-            <input className={inputCls} value={f.releaseDate ?? ""} onChange={(e) => set("releaseDate", e.target.value)} placeholder="January 2025" />
+            <span className="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-200">Release date *</span>
+            <input
+              className={inputCls}
+              value={f.releaseDate ?? ""}
+              onChange={(e) => set("releaseDate", e.target.value)}
+              placeholder="January 2025 — or just 2025"
+              required
+            />
+            <span className="mt-1 block text-xs text-gray-400">The year is picked up from this automatically.</span>
           </label>
         </div>
 

@@ -36,7 +36,7 @@ const T = {
 };
 
 function Card({ p, locale }: { p: FavPhone; locale: Locale }) {
-  const href = locale === "ru" && p.hasRu ? `/ru/phones/${p.slug}` : `/phones/${p.slug}`;
+  const href = locale === "ru" ? `/ru/phones/${p.slug}` : `/phones/${p.slug}`;
   return (
     <Link
       href={href}

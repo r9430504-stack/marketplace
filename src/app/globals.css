@@ -55,6 +55,26 @@
   }
 }
 
+/* iOS-style search sheet: drops in from the top edge. */
+@keyframes sheetDrop {
+  from {
+    opacity: 0;
+    transform: translateY(-14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.search-sheet {
+  animation: sheetDrop 0.26s cubic-bezier(0.32, 0.72, 0, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .search-sheet {
+    animation: none;
+  }
+}
+
 /* First-visit welcome: soft ambient Gemini glow around the viewport edges
  * (blue on the left, purple on the right). Two blurred colour "blobs" slowly
  * drift, scale and breathe so the light keeps moving and floating — the way
@@ -191,6 +211,10 @@
  * right without ever adding a horizontal scrollbar. */
 html {
   overflow-x: clip;
+  /* Keep the layout stable when a scrollbar appears/disappears (sheet open). */
+  scrollbar-gutter: stable;
+  /* Don't let iOS/Safari inflate font sizes on rotate. */
+  -webkit-text-size-adjust: 100%;
 }
 body {
   background: var(--background);
@@ -198,6 +222,19 @@ body {
   font-family: var(--font-geist-sans), "Segoe UI", Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
+}
+
+/* Tactile feel: no grey flash on tap, native-like momentum scrolling. */
+a,
+button,
+[role="button"],
+summary {
+  -webkit-tap-highlight-color: transparent;
+}
+.overflow-y-auto,
+.overflow-y-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 /*

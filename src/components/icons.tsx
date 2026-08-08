@@ -82,3 +82,74 @@ export function IconWarn(p: IconProps) {
     </Svg>
   );
 }
+
+/** House — the Home tab. */
+export function IconHome(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M3 10.5 12 3l9 7.5" />
+      <path d="M5 9.5V21h14V9.5" />
+    </Svg>
+  );
+}
+
+/** Four squares — the Catalog / browse tab. */
+export function IconGrid(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <rect x="3.5" y="3.5" width="7" height="7" rx="1.6" />
+      <rect x="13.5" y="3.5" width="7" height="7" rx="1.6" />
+      <rect x="3.5" y="13.5" width="7" height="7" rx="1.6" />
+      <rect x="13.5" y="13.5" width="7" height="7" rx="1.6" />
+    </Svg>
+  );
+}
+
+/** Two panels side by side — the Compare tab. */
+export function IconCompare(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <rect x="3.5" y="4" width="7" height="16" rx="1.6" />
+      <rect x="13.5" y="4" width="7" height="16" rx="1.6" />
+    </Svg>
+  );
+}
+
+/** Star — the Guides / picks tab. */
+export function IconStar(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8L3.6 9.6l5.8-.8z" />
+    </Svg>
+  );
+}
+
+/** Heart — like / reaction. Fill it (fill="currentColor") to show the liked state. */
+export function IconHeart({ className = "", size = 24, filled = false }: IconProps & { filled?: boolean }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill={filled ? "currentColor" : "none"}
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden
+    >
+      <path d="M12 20.3l-1.45-1.32C5.4 14.25 2 11.18 2 7.6 2 5 4.05 3 6.6 3c1.54 0 3.02.72 3.9 1.86C11.38 3.72 12.86 3 14.4 3 16.95 3 19 5 19 7.6c0 3.58-3.4 6.65-8.55 11.38L12 20.3z" />
+    </svg>
+  );
+}
+
+/** Pushpin — a pinned thread. */
+export function IconPin(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M9 3h6l-1 5 3 3v2H7v-2l3-3-1-5z" />
+      <path d="M12 13v8" />
+    </Svg>
+  );
+}

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Forum — Samsung Galaxy discussions",
   description:
     "Community forum for Samsung Galaxy phones. See which models people are discussing and join the conversation on any model's page.",
-  alternates: { canonical: "/forum", languages: { en: "/forum", ru: "/ru/forum" } },
+  alternates: { canonical: "/forum" },
 };
 
 export default function ForumPage() {

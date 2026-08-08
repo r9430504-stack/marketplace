@@ -11,14 +11,22 @@ export default function HeaderNav() {
   const path = usePathname() || "/";
   const loc = localeFromPathname(path);
   const T = t(loc).nav;
-
-  const cls =
-    "nav-link text-gray-600 dark:text-gray-300 hover:text-[#1428a0] dark:hover:text-blue-400 font-medium transition-colors";
+  // Strip /ru so the active check works in both languages.
+  const norm = path.replace(/^\/ru(?=\/|$)/, "") || "/";
 
   const link = (enPath: string, label: string) => {
     const href = loc === "ru" && RU_READY.has(enPath) ? withLocale(enPath, "ru") : enPath;
+    const active = norm === enPath || norm.startsWith(enPath + "/");
     return (
-      <Link href={href} className={cls}>
+      <Link
+        href={href}
+        aria-current={active ? "page" : undefined}
+        className={`nav-link font-medium transition-colors ${
+          active
+            ? "text-[#1428a0] dark:text-blue-400"
+            : "text-gray-600 dark:text-gray-300 hover:text-[#1428a0] dark:hover:text-blue-400"
+        }`}
+      >
         {label}
       </Link>
     );
