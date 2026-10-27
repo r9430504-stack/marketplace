@@ -1,27 +1,19 @@
 import Link from "next/link";
-import { getAllPhones, getPhoneBySlug, SERIES, seriesSlug } from "@/lib/phones";
+import { getAllPhones, SERIES, seriesSlug } from "@/lib/phones";
 import { getCustomPhones, getSiteSettings } from "@/lib/db";
 import { getCollections } from "@/lib/collections";
+import { rankBySpecs } from "@/lib/ranking";
 import { t, type Locale } from "@/lib/i18n";
 import PhoneCard from "@/components/PhoneCard";
 import HeroShowcase from "@/components/HeroShowcase";
 import HeroBackdrop from "@/components/HeroBackdrop";
 import CountUp from "@/components/CountUp";
-import AdSlot from "@/components/AdSlot";
-
-const SHOWCASE_SLUGS = [
-  "galaxy-s24-ultra",
-  "galaxy-s25-ultra",
-  "galaxy-note-20-ultra",
-  "galaxy-s6-edge",
-];
 
 export default async function HomeContent({ locale = "en" }: { locale?: Locale }) {
   const T = t(locale).home;
   // Include any owner-added models so every number here updates automatically.
   const [custom, settings] = await Promise.all([getCustomPhones(), getSiteSettings()]);
   const phones = [...getAllPhones(), ...custom];
-  const featured = phones.filter((p) => p.image).slice(0, 6);
   const total = phones.length;
   const seriesCount = new Set(phones.map((p) => p.series)).size;
   const firstYear = Math.min(...phones.map((p) => p.releaseYear));
@@ -30,9 +22,12 @@ export default async function HomeContent({ locale = "en" }: { locale?: Locale }
   const heroTitle = settings[`home_title_${locale}`] || T.h1;
   const heroIntro = settings[`home_subtitle_${locale}`] || T.intro(total, firstYear, lastYear);
 
-  const showcase = SHOWCASE_SLUGS.map(getPhoneBySlug).filter(
-    (p): p is NonNullable<typeof p> => Boolean(p?.image)
-  );
+  // Automatic spec ranking drives what gets featured — highest specs first.
+  const ranked = rankBySpecs(phones).map((r) => r.phone);
+  // Flagship grid: the best-scoring models that have a photo to show.
+  const featured = ranked.filter((p) => p.image).slice(0, 6);
+  // Hero cluster: top built-in models (they have ready thumbnails to float).
+  const showcase = ranked.filter((p) => !p.custom && p.image).slice(0, 4);
 
   const stats: { n: number | string; l: string }[] = [
     { n: total, l: T.stats.models },
@@ -80,6 +75,7 @@ export default async function HomeContent({ locale = "en" }: { locale?: Locale }
             <div className="rise" style={{ animationDelay: "240ms" }}>
               <HeroShowcase
                 items={showcase.map((p) => ({ slug: p.slug, name: p.name, image: p.image as string }))}
+                locale={locale}
               />
             </div>
           )}
@@ -133,15 +129,11 @@ export default async function HomeContent({ locale = "en" }: { locale?: Locale }
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {featured.map((p) => (
-            <PhoneCard key={p.slug} phone={p} />
+          {featured.map((p, i) => (
+            <PhoneCard key={p.slug} phone={p} locale={locale} badge={i === 0 ? T.topSpecBadge : undefined} />
           ))}
         </div>
       </section>
-
-      <div className="max-w-6xl mx-auto px-4">
-        <AdSlot />
-      </div>
 
       {/* Collections */}
       <section className="border-y border-gray-200 dark:border-gray-800 bg-[#f5f5f7] dark:bg-[#141414]">

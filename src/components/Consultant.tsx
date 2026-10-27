@@ -136,7 +136,7 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
     const slug = path.split("/").filter(Boolean).pop() ?? "";
     const p = phones.find((x) => x.slug === slug);
     if (!p) return path;
-    return locale === "ru" && p.hasRu ? `/ru/phones/${p.slug}` : `/phones/${p.slug}`;
+    return locale === "ru" ? `/ru/phones/${p.slug}` : `/phones/${p.slug}`;
   };
   const nameFor = (path: string) => {
     const slug = path.split("/").filter(Boolean).pop() ?? "";
@@ -176,7 +176,7 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
   return (
     <>
       {bubble && !open && (
-        <div className="fixed bottom-24 right-5 z-[60] w-[min(17.5rem,calc(100vw-2.5rem))] animate-[fadeIn_.35s_ease]">
+        <div className="fixed bottom-[9.5rem] md:bottom-24 right-5 z-[60] w-[min(17.5rem,calc(100vw-2.5rem))] animate-[fadeIn_.35s_ease]">
           {/* A chat-style message from the consultant: avatar, name and text
            * with a speech-bubble tail pointing down toward the button. */}
           <div className="relative rounded-2xl bg-white dark:bg-[#1a1a1a] shadow-2xl border border-gray-200 dark:border-gray-800">
@@ -212,7 +212,7 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
         </div>
       )}
 
-      <div className="fixed bottom-5 right-5 z-[60] h-14 w-14">
+      <div className="fixed bottom-[4.75rem] md:bottom-5 right-5 z-[60] h-14 w-14">
         {/* Breathing ring — only while closed, so the assistant looks "alive". */}
         {!open && <span className="fab-ring" aria-hidden />}
         <button
@@ -226,7 +226,7 @@ export default function Consultant({ phones }: { phones: ConsultPhone[] }) {
       </div>
 
       {open && (
-        <div className="fixed bottom-24 right-5 z-[60] w-[calc(100vw-2.5rem)] max-w-sm rounded-2xl bg-white dark:bg-[#1a1a1a] shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden flex flex-col h-[75vh] max-h-[560px]">
+        <div className="fixed bottom-[9.5rem] md:bottom-24 right-5 z-[60] w-[calc(100vw-2.5rem)] max-w-sm rounded-2xl bg-white dark:bg-[#1a1a1a] shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden flex flex-col h-[70vh] max-h-[560px]">
           <div className="bg-[#1428a0] text-white px-4 py-3 flex items-center gap-2 shrink-0">
             <span className="h-8 w-8 rounded-full bg-white/15 flex items-center justify-center font-bold">G</span>
             <span className="font-semibold">{t.title}</span>

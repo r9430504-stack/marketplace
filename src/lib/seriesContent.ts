@@ -13,6 +13,8 @@ export const SERIES_INTRO: Record<SeriesId, string> = {
     "The Galaxy Z Fold is Samsung's book-style foldable: a phone that opens into a tablet-sized screen. It turned foldables from a concept into a mature, everyday productivity device.",
   "Galaxy Z Flip":
     "The Galaxy Z Flip revived the clamshell format for the foldable era — a full-size phone that folds down to fit in a pocket, with a handy cover screen for quick glances.",
+  "Galaxy Z TriFold":
+    "The Galaxy Z TriFold is Samsung's tri-fold flagship — two hinges fold the device into three panels, so a pocketable phone opens out into a roughly 10-inch tablet. It sits above the Z Fold as the most ambitious Galaxy foldable yet.",
   "Galaxy A":
     "The Galaxy A series is Samsung's mid-range, bringing flagship-inspired design, big screens and capable cameras to a friendlier price. It's among the best-selling Android lines in the world.",
   "Galaxy M":

@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Samsung Galaxy guides and collections",
   description:
     "Curated Samsung Galaxy collections: foldables, Ultra flagships, S Pen phones, big-battery models, affordable Galaxy phones and landmark firsts.",
-  alternates: { canonical: "/best", languages: { en: "/best", ru: "/ru/best" } },
+  alternates: { canonical: "/best" },
 };
 
 export default function BestIndexPage() {

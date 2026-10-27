@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { auth, isOwnerEmail } from "@/auth";
 import { getSiteSettings, setSiteSettings } from "@/lib/db";
 import { cleanText } from "@/lib/moderation";
@@ -39,6 +40,7 @@ export async function POST(req: Request) {
   }
   try {
     await setSiteSettings(entries);
+    revalidatePath("/"); // home hero text updates immediately
     return Response.json({ ok: true });
   } catch {
     return Response.json({ error: "server" }, { status: 500 });

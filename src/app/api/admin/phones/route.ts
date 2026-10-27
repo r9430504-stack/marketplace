@@ -1,8 +1,16 @@
+import { revalidatePath } from "next/cache";
 import { auth, isOwnerEmail } from "@/auth";
 import { getCustomPhones, getCustomPhone, upsertCustomPhone, deleteCustomPhone } from "@/lib/db";
 import { getPhoneBySlug, type Phone, type SeriesId, type Specs } from "@/lib/phones";
 
 export const runtime = "nodejs";
+
+// Clear the cached pages a model appears on so an owner edit shows up at once.
+function revalidateModel(slug: string) {
+  revalidatePath("/"); // home hero + numbers
+  revalidatePath("/phones"); // catalog
+  revalidatePath(`/phones/${slug}`); // the model's own page
+}
 
 async function ownerOnly(): Promise<boolean> {
   try {
@@ -36,7 +44,12 @@ export async function POST(req: Request) {
   const name = str(b.name, 80);
   // Any line name is allowed — a built-in one or a new custom line.
   const series = str(b.series, 40) as SeriesId;
-  const year = Number(b.releaseYear);
+  // One "Release date" field does both jobs: it's the human-readable label and
+  // the source of the year (for the year range, sorting and filters). Pull the
+  // first 4-digit year out of whatever was typed ("January 2025", "2025", …).
+  const releaseDate = str(b.releaseDate, 40);
+  const yearMatch = releaseDate.match(/\b(19|20)\d\d\b/);
+  const year = yearMatch ? Number(yearMatch[0]) : NaN;
   if (name.length < 2) return Response.json({ error: "name" }, { status: 400 });
   if (series.length < 2) return Response.json({ error: "series" }, { status: 400 });
   if (!Number.isFinite(year) || year < 2005 || year > 2100) return Response.json({ error: "year" }, { status: 400 });
@@ -93,7 +106,7 @@ export async function POST(req: Request) {
     name,
     series,
     releaseYear: Math.round(year),
-    releaseDate: str(b.releaseDate, 40) || String(Math.round(year)),
+    releaseDate: releaseDate || String(Math.round(year)),
     tagline: str(b.tagline, 200) || name,
     history: str(b.history, 4000) || "",
     keyFeatures,
@@ -104,6 +117,7 @@ export async function POST(req: Request) {
 
   try {
     await upsertCustomPhone(phone);
+    revalidateModel(slug);
     return Response.json({ ok: true, slug });
   } catch {
     return Response.json({ error: "server" }, { status: 500 });
@@ -117,6 +131,7 @@ export async function DELETE(req: Request) {
   if (!/^[a-z0-9-]{1,64}$/.test(slug)) return Response.json({ error: "bad_request" }, { status: 400 });
   try {
     await deleteCustomPhone(slug);
+    revalidateModel(slug);
   } catch {}
   return Response.json({ ok: true });
 }
